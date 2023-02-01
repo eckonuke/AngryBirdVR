@@ -2,6 +2,7 @@
 
 
 #include "KYI_SlingShot.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AKYI_SlingShot::AKYI_SlingShot()
@@ -15,7 +16,7 @@ AKYI_SlingShot::AKYI_SlingShot()
 void AKYI_SlingShot::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	//GameplayStatics::PredictProjectilePath();
 }
 
 // Called every frame
