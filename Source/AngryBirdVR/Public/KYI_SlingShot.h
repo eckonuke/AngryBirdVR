@@ -27,4 +27,6 @@ public:
 public:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* compBox;
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* compMesh;
 };
