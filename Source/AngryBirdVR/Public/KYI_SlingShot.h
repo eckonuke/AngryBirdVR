@@ -23,4 +23,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+public:
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* compBox;
 };

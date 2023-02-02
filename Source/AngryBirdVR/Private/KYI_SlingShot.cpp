@@ -3,13 +3,14 @@
 
 #include "KYI_SlingShot.h"
 #include "Kismet/GameplayStatics.h"
+#include <Components/BoxComponent.h>
 
 // Sets default values
 AKYI_SlingShot::AKYI_SlingShot()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	compBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 }
 
 // Called when the game starts or when spawned
