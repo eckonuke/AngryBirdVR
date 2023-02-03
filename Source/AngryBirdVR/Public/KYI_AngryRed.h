@@ -26,4 +26,8 @@ public:
 public:
 	UPROPERTY(EditAnywhere)
 	class USkeletalMeshComponent* skeletalMesh;
+	UPROPERTY(EditAnywhere)
+	class USphereComponent* sphereComp;
+	UPROPERTY(EditAnywhere)
+	class UProjectileMovementComponent* movement;
 };
