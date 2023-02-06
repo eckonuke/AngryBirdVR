@@ -20,8 +20,14 @@ AKYI_AngryRed::AKYI_AngryRed()
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Resource/Red/Red.Red'"));
 	if (tempMesh.Succeeded())
 		skeletalMesh->SetSkeletalMesh(tempMesh.Object);
+	skeletalMesh->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 	skeletalMesh->SetupAttachment(sphereComp);
 	movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
+	movement->SetUpdatedComponent(sphereComp);
+	movement->InitialSpeed = 2000;
+	movement->MaxSpeed = 2000;
+	movement->bShouldBounce = true;
+	movement->Bounciness = 0.5f;
 }
 
 // Called when the game starts or when spawned
