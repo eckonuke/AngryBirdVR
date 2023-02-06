@@ -7,6 +7,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include <Components/SphereComponent.h>
 
+
 // Sets default values
 AKYI_AngryRed::AKYI_AngryRed()
 {
@@ -24,7 +25,7 @@ AKYI_AngryRed::AKYI_AngryRed()
 	skeletalMesh->SetupAttachment(sphereComp);
 	movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
 	movement->SetUpdatedComponent(sphereComp);
-	movement->InitialSpeed = 2000;
+	movement->InitialSpeed = 1000;
 	movement->MaxSpeed = 2000;
 	movement->bShouldBounce = true;
 	movement->Bounciness = 0.5f;

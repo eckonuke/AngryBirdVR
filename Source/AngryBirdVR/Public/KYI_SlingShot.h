@@ -22,11 +22,16 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	void PredictPath();
+	void Fire();
 
 public:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* compBox;
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* compMesh;
+	UPROPERTY(EditAnywhere)
+	class UArrowComponent* firePos;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AKYI_AngryRed> birdFactory;
 };

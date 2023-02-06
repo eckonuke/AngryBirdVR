@@ -4,6 +4,9 @@
 #include "KYI_SlingShot.h"
 #include "Kismet/GameplayStatics.h"
 #include <Components/BoxComponent.h>
+#include "Kismet/GameplayStatics.h"
+#include "KYI_AngryRed.h"
+#include <Components/ArrowComponent.h>
 
 // Sets default values
 AKYI_SlingShot::AKYI_SlingShot()
@@ -17,14 +20,15 @@ AKYI_SlingShot::AKYI_SlingShot()
 	if (tempMesh.Succeeded())
 		compMesh->SetStaticMesh(tempMesh.Object);
 	compMesh->SetupAttachment(compBox);
-	
+	firePos = CreateDefaultSubobject<UArrowComponent>(TEXT("FirePos"));
+	firePos->SetupAttachment(compBox);
 }
 
 // Called when the game starts or when spawned
 void AKYI_SlingShot::BeginPlay()
 {
 	Super::BeginPlay();
-	//GameplayStatics::PredictProjectilePath();
+	
 }
 
 // Called every frame
@@ -32,5 +36,17 @@ void AKYI_SlingShot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AKYI_SlingShot::PredictPath() {
+	FPredictProjectilePathParams PredictParams;
+	FPredictProjectilePathResult PredictResult;
+	UGameplayStatics::PredictProjectilePath(GetWorld(), PredictParams, PredictResult);
+}
+
+void AKYI_SlingShot::Fire(){
+	PredictPath();
+	FTransform position = firePos->GetComponentTransform();
+	GetWorld()->SpawnActor<AKYI_AngryRed>(birdFactory, position);
 }
 
