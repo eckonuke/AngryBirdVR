@@ -16,6 +16,7 @@ AKYI_AngryRed::AKYI_AngryRed()
 	
 	sphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
 	SetRootComponent(sphereComp);
+	sphereComp->SetSphereRadius(20);
 	//Skeletal Mesh ¼³Á¤
 	skeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Resource/Red/Red.Red'"));
