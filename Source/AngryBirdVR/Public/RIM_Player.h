@@ -110,5 +110,5 @@ public:
 public:
 	//스킬 사용 ---> 테스트
 	void inputSkill();
-
+	void PredictionPath();
 };

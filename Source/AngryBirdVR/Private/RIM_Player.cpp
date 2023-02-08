@@ -246,3 +246,7 @@ void ARIM_Player::inputSkill()
 
 
 }
+
+void ARIM_Player::PredictionPath() {
+
+}
