@@ -41,10 +41,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UMotionControllerComponent* compLeftCon;
 	//¸Þ½Ã
- 	//UPROPERTY(EditAnywhere)
- 	//class USkeletalMeshComponent* meshLeftHand; //¢º½ºÄÌ·¹Å»¸Þ½Ã
  	UPROPERTY(EditAnywhere)
- 	class UStaticMeshComponent* meshLeftHand; //¢º½ºÅÂÆ½¸Þ½Ã
+ 	class USkeletalMeshComponent* meshLeftHand; //¢º½ºÄÌ·¹Å»¸Þ½Ã
+/* 	UPROPERTY(EditAnywhere)
+ 	class UStaticMeshComponent* meshLeftHand;*/ //¢º½ºÅÂÆ½¸Þ½Ã
 	//·Î±×
 	UPROPERTY(EditAnywhere)
 	class UTextRenderComponent* logLeft;
