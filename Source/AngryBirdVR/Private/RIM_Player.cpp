@@ -11,7 +11,6 @@
 #include "RIM_BirdBlue.h"
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h>
 #include <Components/TextRenderComponent.h>
-#include "BirdSkill.h"
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -131,9 +130,6 @@ ARIM_Player::ARIM_Player()
 	//MoveComponent 추가
 	compMove = CreateDefaultSubobject<URIM_MoveComponent>(TEXT("MoveComponent"));
 
-	//BirdSkillComponent 추가
-	//compSkill = CreateDefaultSubobject<UBirdSkill>(TEXT("SkillComponent"));
-
 	//발사Component 추가
 	//용일님 코드
 
@@ -154,20 +150,7 @@ void ARIM_Player::BeginPlay()
 	//3. 가져온 Subsystem 에 IMC 를 등록한다.(우선순위 0번)
 	subsys->AddMappingContext(vrMapping, 0);
 
-	//[새(총알) 생성]
-// 	//새를 생성한다
-// 	blueBird = GetWorld()->SpawnActor<ARIM_BirdBlue>(birdFactory, GetActorLocation(), GetActorRotation());
-// 	//생성된 새를 비활성화한다
-// 	blueBird->SetActive(false);
-// 	//생성한 새를 arrayBlueBird 에 추가
-// 	arrayBlueBird.Add(blueBird);
 
-
-
-
-	
-	//게임 시작할 때 새(총알)가 안 보인다 ★★★새총에서 안 보인다
-	//blueBird->meshBlue->SetVisibility(false);
 	
 	//일정 시간 지난 후 첫번째 새 노출
 // 	FTimerHandle settingTimer;
@@ -192,21 +175,17 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	if (EnhancedInputComponent != nullptr)
 	{
+		//오른손 그립 ---> 새 스킬 사용 ★★★실제 게임에서는 오른손 트리거 사용
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::inputSkill);
+
 		//이동 함수 실행 ---> 오른손 트리거
 		compMove->SetupPlayerInputComponent(EnhancedInputComponent);
-
-		//스킬 함수 실행 ---> 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용
-		//compSkill->SetupPlayerInputComponent(EnhancedInputComponent);
 		
 		//발사 함수 실행 ---> 만약 트리거 이면 조건 코드 추가 필요...?
 		//용일님 코드
 
 
 
-		//오른손 그립 ---> 새 스킬 사용 ★★★실제 게임에서는 오른손 트리거 사용 ---> 테스트
-		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::inputSkill);
-
-		
 
 	}
 
@@ -222,7 +201,7 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 // 	//blueBird->meshBlue->SetVisibility(true);
 // }
 
-//스킬 사용 ---> 테스트
+//스킬 사용
 void ARIM_Player::inputSkill()
 {
 	FString msg = FString(__FUNCTION__); //확인용 로그
@@ -230,10 +209,7 @@ void ARIM_Player::inputSkill()
 
 	FRotator actorRot;
 
-
 	//GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 200, actorRot.Yaw);
-
-
 	//GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 200, birdBlue->GetActorRotation());
 
 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, GetActorRotation());

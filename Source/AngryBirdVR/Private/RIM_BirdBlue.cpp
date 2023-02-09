@@ -74,13 +74,3 @@ void ARIM_BirdBlue::Tick(float DeltaTime)
 //	Destroy();
 //}
 
-// 파란새 고유 능력
-// void ARIM_BirdBlue::BlueBirdSkill()
-// {
-// 	//한 번에 나올 총알 갯수
-// 	int32 count = 2;
-// 	//총알 간의 각도
-// 	int32 unitAngle = 60 / count;
-// 
-// 
-// }

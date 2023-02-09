@@ -24,10 +24,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USphereComponent* compCollision;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* meshBlue;
 
 	//새(총알) 발사체의 이동. 발사체 형태의 물리 기능을 제고하는 컴포넌트
@@ -44,14 +44,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	class ARIM_Player* player;
 
-	//
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class ARIM_BirdBlue> blueFactory;
 
 public:
 	//일정 시간 지난 후 새 파괴
-	void Death();
+	//void Death();
 
-	//파란새 고유 능력
-	void BlueBirdSkill();
 };

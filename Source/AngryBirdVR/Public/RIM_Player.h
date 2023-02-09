@@ -81,30 +81,19 @@ public:
 	UPROPERTY(EditAnywhere)
 	class URIM_MoveComponent* compMove;
 
-	//BirdSkillComponent 를 Player 에 추가
-	//UPROPERTY(EditAnywhere)
-	//class UBirdSkill* compSkill;
-
 	//발사Component 를 Player 에 추가
 	//UPROPERTY(EditAnywhere)
 	//용일님 코드
 
+
  public:
  	//파란새
+	UPROPERTY()
 	class ARIM_BirdBlue* birdBlue;
 
 	//파란새(총알)
  	UPROPERTY(EditAnywhere)
  	TSubclassOf<class ARIM_BirdBlue> blueFactory;
-
-
-
-	//새 세팅 딜레이 시간
-	//UPROPERTY(EditAnywhere)
-	//float delaySettingTime = 5.0f;
-
-	//일정 시간 지난 후 첫번째 새 노출
-	//void birdSetting();
 
 
 public:
