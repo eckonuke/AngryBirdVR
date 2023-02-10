@@ -39,16 +39,16 @@ ARIM_Player::ARIM_Player()
 	compLeftCon = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("LeftController")); //플레이어에 컴포넌트 추가
 	compLeftCon->SetupAttachment(RootComponent); //루트컴포넌트 자식으로 세팅
  	//메시(스켈레탈)
-// 	meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
-// 	meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
-// 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempLeftHand(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/MannequinsXR/Meshes/SKM_MannyXR_left.SKM_MannyXR_left'")); //▶엔진 기본 에셋 사용. 추후 변경
-// 	if (tempLeftHand.Succeeded())
-// 	{
-// 		meshLeftHand->SetSkeletalMesh(tempLeftHand.Object);
-// 	}
-// 	meshLeftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
-// 	meshLeftHand->SetRelativeLocation(FVector(0, -20, 0)); //▶필요 시 추후 변경 
-// 	meshLeftHand->SetRelativeRotation(FRotator(-25.0f, 180.0f, 90.0f)); //▶필요 시 추후 변경 
+ 	meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
+ 	meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
+ 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempLeftHand(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/MannequinsXR/Meshes/SKM_MannyXR_left.SKM_MannyXR_left'")); //▶엔진 기본 에셋 사용. 추후 변경
+ 	if (tempLeftHand.Succeeded())
+ 	{
+ 		meshLeftHand->SetSkeletalMesh(tempLeftHand.Object);
+ 	}
+ 	meshLeftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
+ 	meshLeftHand->SetRelativeLocation(FVector(0, -20, 0)); //▶필요 시 추후 변경 
+ 	meshLeftHand->SetRelativeRotation(FRotator(-25.0f, 180.0f, 90.0f)); //▶필요 시 추후 변경 
 
 	//메시(테스트총)
 // 	meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
@@ -64,17 +64,17 @@ ARIM_Player::ARIM_Player()
 // 	meshLeftHand->SetRelativeScale3D(FVector(0.5f)); //▶필요 시 추후 변경 
 	
  	//메시(스테틱)
-	meshLeftHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftHand")); //플레이어에 메시 컴포넌트 추가. StaticMeshComponent 인클루드
-	meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
-	ConstructorHelpers::FObjectFinder<UStaticMesh> tempLeftHand(TEXT("/Script/Engine.StaticMesh'/Game/Resource/Test_SlingShot/SlingShot_01/Source/Slingshot2.Slingshot2'")); //▶추후 변경
-	if (tempLeftHand.Succeeded())
-	{
-		meshLeftHand->SetStaticMesh(tempLeftHand.Object);
-	}
-	meshLeftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
-	meshLeftHand->SetRelativeLocation(FVector(20, 0, -15)); //▶필요 시 추후 변경
-	meshLeftHand->SetRelativeRotation(FRotator(0.0f, 90.0f, -30.0f)); //▶필요 시 추후 변경
-	meshLeftHand->SetRelativeScale3D(FVector(0.18f)); //▶필요 시 추후 변경
+	//meshLeftHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftHand")); //플레이어에 메시 컴포넌트 추가. StaticMeshComponent 인클루드
+	//meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
+	//ConstructorHelpers::FObjectFinder<UStaticMesh> tempLeftHand(TEXT("/Script/Engine.StaticMesh'/Game/Resource/Test_SlingShot/SlingShot_01/Source/Slingshot2.Slingshot2'")); //▶추후 변경
+	//if (tempLeftHand.Succeeded())
+	//{
+	//	meshLeftHand->SetStaticMesh(tempLeftHand.Object);
+	//}
+	//meshLeftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
+	//meshLeftHand->SetRelativeLocation(FVector(20, 0, -15)); //▶필요 시 추후 변경
+	//meshLeftHand->SetRelativeRotation(FRotator(0.0f, 90.0f, -30.0f)); //▶필요 시 추후 변경
+	//meshLeftHand->SetRelativeScale3D(FVector(0.18f)); //▶필요 시 추후 변경
 	//로그(확인용)
 	logLeft = CreateDefaultSubobject<UTextRenderComponent>(TEXT("LeftLogText"));
 	logLeft->SetupAttachment(compLeftCon);
@@ -220,5 +220,9 @@ void ARIM_Player::inputSkill()
 	actorRot.Yaw += 30;
 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, actorRot);
 
+
+}
+
+void ARIM_Player::PredictionPath() {
 
 }

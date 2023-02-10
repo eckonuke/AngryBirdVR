@@ -22,5 +22,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class USkeletalMeshComponent* skeletalMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class USphereComponent* sphereComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UProjectileMovementComponent* movement;
 
+	void BirdYellowSkill();
 };

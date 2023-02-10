@@ -41,10 +41,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UMotionControllerComponent* compLeftCon;
 	//메시
- 	//UPROPERTY(EditAnywhere)
- 	//class USkeletalMeshComponent* meshLeftHand; //▶스켈레탈메시
  	UPROPERTY(EditAnywhere)
- 	class UStaticMeshComponent* meshLeftHand; //▶스태틱메시
+ 	class USkeletalMeshComponent* meshLeftHand; //▶스켈레탈메시
+/* 	UPROPERTY(EditAnywhere)
+ 	class UStaticMeshComponent* meshLeftHand;*/ //▶스태틱메시
 	//로그
 	UPROPERTY(EditAnywhere)
 	class UTextRenderComponent* logLeft;
@@ -99,5 +99,5 @@ public:
 public:
 	//스킬 사용 ---> 테스트
 	void inputSkill();
-
+	void PredictionPath();
 };
