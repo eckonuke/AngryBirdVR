@@ -5,9 +5,13 @@
 #include <Components/CapsuleComponent.h>
 #include <Components/SphereComponent.h>
 #include <Components/StaticMeshComponent.h>
+#include "KYI_AngryRed.h"
+#include "KYI_AngryChuck.h"
 #include "RIM_BirdBlue.h"
+#include "RIM_BirdBlack.h"
 #include <GameFramework/Character.h>
 #include "KYI_Wood.h"
+#include "KYI_Glass.h"
 
 // Sets default values
 ARIM_Pig::ARIM_Pig()
@@ -42,8 +46,8 @@ void ARIM_Pig::BeginPlay()
 	Super::BeginPlay();
 	
 	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapBird); //새 -----> 적
-	//compCollision->OnComponentBeginOverlap.AddDynamic(this, ARIM_Pig::ComponentBeginOverlapObject); //오브젝트 -----> 적
-	//compCollision->OnComponentHit.AddDynamic(this, ARIM_Pig::ComponentHitEnemy) //적 낙하
+	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapObject); //오브젝트(나무, 유리) -----> 적
+	//compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapEnemy) //적 낙하 ★★★일단 오버랩으로 진행. OnComponentHit 추후 확인
 }
 
 // Called every frame
@@ -51,34 +55,43 @@ void ARIM_Pig::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//조건에 따른 죽음
 	Damaged();
 
 }
 
 
-//[적이 죽는 경우]
-//1. 새가 적에게 닿으면 적이 반드시 죽는다.
-//2. 오브젝트(나무, 유리 등)가 적에게 닿았을 때 오브젝트의 충격?속도?가 OOO 보다 크면 적이 죽는다.
-//3. 적이 낙하하면 떨어질 때 충격?속도?가 000 보다 크면 적가 죽는다.
-//4. 적이 땅에 닿으면 반드시 죽는다. ---> 킬존 만들어서 구현
+//[적(돼지)이 죽는 조건]
+//1. 새가 적에게 닿는다. 적이 반드시 죽는다.(없어진다)
+//2. 적이 오브젝트(나무, 유리 등)에 닿는다. 일정 충격 이상일 경우 적이 죽는다.(없어진다)
+//3. 적이 땅에 닿는다. 적이 반드시 죽는다. ---> 킬존 만들어서 구현
 
 
 //조건에 따른 죽음
 void ARIM_Pig::Damaged()
 {
-	if (birdAttack == true) //새가 적에게 닿으면
+	if (redBirdAttack == true || yellowBirdAttack == true || blueBirdAttack == true || blackBierdAttack == true) //새가 적에게 닿으면
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Bird Attack -----> Enemy Die!!!!!!!!!!"));
+		UE_LOG(LogTemp, Warning, TEXT("Bird Attack -----> Enemy Destroy !!!!!!!!!!"));
 		Die(); //적이 반드시 죽는다
  	}
-// 	else if (IsObjectAttack == true) //오브젝트(나무, 유리 등)가 적에게 닿았을 때
-// 	{ 	
-// 		if ()//오브젝트 collision 의 충격? 속도? 가 OOO 보다 크면
-// 		{
-// 			Die(); //적이 죽는다
-// 		}
-// 	}
-// 	else if (EnemyFall == true) //적이 떨어질 때
+	else if (woodAttack == true) //나무가 적에게 닿았을 때
+	{ 	
+		//if () //나무 collision 의 충격? 속도? 가 OOO 보다 크면
+		//{
+			UE_LOG(LogTemp, Warning, TEXT("Wood Attack -----> Enemy Destroy !!!!!!!!!!"));
+			Die(); //적이 죽는다
+		//}
+	}
+	else if (glassAttack == true) //유리가 적에게 닿았을 때
+	{
+		//if () //유리(나무보다 약함) collision 의 충격? 속도? 가 OOO 보다 크면
+		//{
+			UE_LOG(LogTemp, Warning, TEXT("Glass Attack -----> Enemy Destroy !!!!!!!!!!"));
+			Die(); //적이 죽는다
+		//}
+	}
+// 	else if (enemyFall == true) //적이 떨어질 때
 // 	{
 // 		if ()//적 collision 의 충격? 속도? 가 OOO 보다 크면
 // 		{
@@ -91,32 +104,62 @@ void ARIM_Pig::Damaged()
 //새 -----> 적
 void ARIM_Pig::ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->GetName().Contains(TEXT("BirdBlue"))) //새가 적과 닿으면
+	if (OtherActor->GetName().Contains(TEXT("red"))) //빨간 새가 적과 닿으면
  	{
- 		blue = Cast<ARIM_BirdBlue>(OtherActor);
-		birdAttack = true;
+		AKYI_AngryRed* redOverlap = Cast<AKYI_AngryRed>(OtherActor);
+		redBirdAttack = true;
 
-		UE_LOG(LogTemp, Warning, TEXT("Bird ---> Overlap ---> Enemy !!!!!!!!!!"));
+		UE_LOG(LogTemp, Warning, TEXT("Red Bird ---> Overlap ---> Enemy !!!!!!!!!!"));
+	}
+	else if (OtherActor->GetName().Contains(TEXT("yellow"))) //노란 새가 적과 닿으면
+	{
+		AKYI_AngryChuck* yellowOverlap = Cast<AKYI_AngryChuck>(OtherActor);
+		yellowBirdAttack = true;
+
+		UE_LOG(LogTemp, Warning, TEXT("Yellow Bird ---> Overlap ---> Enemy !!!!!!!!!!"));
+	}
+	else if (OtherActor->GetName().Contains(TEXT("blue"))) //파란 새가 적과 닿으면
+	{
+		ARIM_BirdBlue* blueOverlap = Cast<ARIM_BirdBlue>(OtherActor);
+		blueBirdAttack = true;
+
+		UE_LOG(LogTemp, Warning, TEXT("Blue Bird ---> Overlap ---> Enemy !!!!!!!!!!"));
+	}
+	else if (OtherActor->GetName().Contains(TEXT("black"))) //검은 새가 적과 닿으면
+	{
+		ARIM_BirdBlack* blackOverlap = Cast<ARIM_BirdBlack>(OtherActor);
+		blackBierdAttack = true;
+
+		UE_LOG(LogTemp, Warning, TEXT("Black Bird ---> Overlap ---> Enemy !!!!!!!!!!"));
 	}
 }
 
 
 //오브젝트 -----> 적
-// void ARIM_Pig::ComponentBeginOverlapObject(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-// {
-// 	if (OtherActor->GetName().Contains(TEXT("Wood"))) //오브젝트에 닿으면 ★★★일단 '나무'로 세팅
-// 	{
-// 		wood = Cast<AKYI_Wood>(OtherActor);
-// 		ObjectAttack = true;
-// 	}
-// }
+ void ARIM_Pig::ComponentBeginOverlapObject(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->GetName().Contains(TEXT("Wood"))) //오브젝트 "나무"에 닿으면
+	{
+		AKYI_Wood* woodOverlap = Cast<AKYI_Wood>(OtherActor);
+		woodAttack = true;
+
+		UE_LOG(LogTemp, Warning, TEXT("Wood ---> Overlap ---> Enemy !!!!!!!!!!"));
+	}
+	else if (OtherActor->GetName().Contains(TEXT("Glass"))) //오브젝트 "유리"에 닿으면
+	{
+		AKYI_Glass* glassOverlap = Cast<AKYI_Glass>(OtherActor);
+		glassAttack = true;
+
+		UE_LOG(LogTemp, Warning, TEXT("Glass ---> Overlap ---> Enemy !!!!!!!!!!"));
+	}
+}
 
 
-//적 낙하
-// void ARIM_Pig::ComponentHitEnemy() //★★★ 코드 필요
+//적 낙하 -----> 떨어져서 오브젝트 등에 부딪힌다
+// void ARIM_Pig::ComponentBeginOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 // {
 // 
-// 	EnemyFall = true;
+// 	enemyFall = true;
 // 
 // }
 

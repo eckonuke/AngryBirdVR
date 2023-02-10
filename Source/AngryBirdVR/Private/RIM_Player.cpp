@@ -118,10 +118,10 @@ ARIM_Player::ARIM_Player()
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 	//파란새 클래스 가져와서 등록. 내가 원하는 때에 스폰하려고 파란새를 변수에 담아 놓음...? ★★★우선 파란새로 진행 ---> 테스트
-	ConstructorHelpers::FClassFinder<ARIM_BirdBlue> tempBlue(TEXT("/Script/Engine.Blueprint'/Game/BluePrints/BP_BirdBlue.BP_BirdBlue_C'")); // 블루프린트 경로. _C'
+	ConstructorHelpers::FClassFinder<ARIM_BirdBlue> tempBlue(TEXT("/Script/Engine.Blueprint'/Game/BluePrints/BP_AngryBlue.BP_AngryBlue_C'")); // 블루프린트 경로. _C'
 	if (tempBlue.Succeeded())
 	{
-		blueFactory = tempBlue.Class; //BP_BirdBlue 세팅 됨
+		blueFactory = tempBlue.Class; //BP_AngryBirdBlue 세팅 됨
 	}
 
 

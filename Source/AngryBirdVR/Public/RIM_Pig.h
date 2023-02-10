@@ -30,33 +30,49 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* compMesh;
 
-	bool birdAttack = false;
-	bool ObjectAttack = false;
-	bool EnemyFall = false;
+	bool redBirdAttack = false;
+	bool yellowBirdAttack = false;
+	bool blueBirdAttack = false;
+	bool blackBierdAttack = false;
+	bool woodAttack = false;
+	bool glassAttack = false;
+	bool enemyFall = false;
 
 public:
+	UPROPERTY()
+	class AKYI_AngryRed* red;
+
+	UPROPERTY()
+	class AKYI_AngryChuck* yellow;
+
 	UPROPERTY()
 	class ARIM_BirdBlue* blue;
 
 	UPROPERTY()
+	class ARIM_BirdBlack* black;
+
+	UPROPERTY()
 	class AKYI_Wood* wood;
 
-public:
-	//조건별로 죽음
-	UFUNCTION()
-	void Damaged();
+	UPROPERTY()
+	class AKYI_Glass* glass;
 
+public:
 	//새
 	UFUNCTION()
 	void ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	//오브젝트
-	//UFUNCTION()
-	//void ComponentBeginOverlapObject(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void ComponentBeginOverlapObject(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	//돼지
  	//UFUNCTION()
- 	//void ComponentHitEnemy() //★★★ 코드 필요
+ 	//void ComponentBeginOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	//조건별로 죽음
+	UFUNCTION()
+	void Damaged();
 
 	//죽음
 	UFUNCTION()
