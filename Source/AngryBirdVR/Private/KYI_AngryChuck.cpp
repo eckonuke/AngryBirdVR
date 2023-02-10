@@ -2,13 +2,29 @@
 
 
 #include "KYI_AngryChuck.h"
+#include <GameFramework/ProjectileMovementComponent.h>
+#include <Components/SkeletalMeshComponent.h>
+#include <Components/SphereComponent.h>
 
 // Sets default values
 AKYI_AngryChuck::AKYI_AngryChuck()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	sphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
+	SetRootComponent(sphereComp);
+	sphereComp->SetSphereRadius(20);
+	sphereComp->SetSimulatePhysics(true);
+	//Skeletal Mesh ¼³Á¤
+	skeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+	//skeletalMesh->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+	skeletalMesh->SetupAttachment(sphereComp);
+	movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
+	movement->SetUpdatedComponent(sphereComp);
+	movement->InitialSpeed = 1000;
+	movement->MaxSpeed = 2000;
+	movement->bShouldBounce = true;
+	movement->Bounciness = 0.5f;
 }
 
 // Called when the game starts or when spawned
@@ -19,9 +35,12 @@ void AKYI_AngryChuck::BeginPlay()
 }
 
 // Called every frame
-void AKYI_AngryChuck::Tick(float DeltaTime)
-{
+void AKYI_AngryChuck::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+}
+
+void AKYI_AngryChuck::BirdYellowSkill() {
+	
 }
 

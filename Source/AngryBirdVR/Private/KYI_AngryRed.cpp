@@ -44,6 +44,6 @@ void AKYI_AngryRed::BeginPlay()
 void AKYI_AngryRed::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
 
