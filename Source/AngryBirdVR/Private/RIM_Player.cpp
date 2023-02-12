@@ -11,6 +11,7 @@
 #include "RIM_BirdBlue.h"
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h>
 #include <Components/TextRenderComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -176,7 +177,7 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	if (EnhancedInputComponent != nullptr)
 	{
 		//오른손 그립 ---> 새 스킬 사용 ★★★실제 게임에서는 오른손 트리거 사용
-		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::inputSkill);
+		//EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::inputSkill);
 
 		//이동 함수 실행 ---> 오른손 트리거
 		compMove->SetupPlayerInputComponent(EnhancedInputComponent);
@@ -224,5 +225,5 @@ void ARIM_Player::inputSkill()
 }
 
 void ARIM_Player::PredictionPath() {
-
+	
 }

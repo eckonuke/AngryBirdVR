@@ -30,34 +30,34 @@ public:
 public:
 	//[카메라]
 	//카메라
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UCameraComponent* compCamera;
 	//메시
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* meshCamera;
 
 	//[왼손/새총]
 	//모션 컨트롤러
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UMotionControllerComponent* compLeftCon;
 	//메시
- 	UPROPERTY(EditAnywhere)
+ 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
  	class USkeletalMeshComponent* meshLeftHand; //▶스켈레탈메시
 /* 	UPROPERTY(EditAnywhere)
  	class UStaticMeshComponent* meshLeftHand;*/ //▶스태틱메시
 	//로그
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UTextRenderComponent* logLeft;
 
 	//[오른손]
 	//모션 컨트롤러
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UMotionControllerComponent* compRightCon;
 	//메시
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USkeletalMeshComponent* meshRightHand; //▶스켈레탈메시
 	//로그
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UTextRenderComponent* logRight;
 
 public:
@@ -67,18 +67,18 @@ public:
 
 public:
 	//Input Mapping Context. 블루프린트에서 만든 IMC_MyVRMapping
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UInputMappingContext* vrMapping;
 
 	//Input Action. 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용 ---> 테스트
-	UPROPERTY(EditAnyWhere)
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	class UInputAction* rightGrip;
 
 
 public:
 	//[플레이어에 액터컴포넌트 추가]
 	//MoveComponent 를 Player 에 추가
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class URIM_MoveComponent* compMove;
 
 	//발사Component 를 Player 에 추가
@@ -88,11 +88,11 @@ public:
 
  public:
  	//파란새
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class ARIM_BirdBlue* birdBlue;
 
 	//파란새(총알)
- 	UPROPERTY(EditAnywhere)
+ 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
  	TSubclassOf<class ARIM_BirdBlue> blueFactory;
 
 

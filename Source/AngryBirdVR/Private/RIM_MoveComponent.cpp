@@ -55,7 +55,7 @@ void URIM_MoveComponent::SetupPlayerInputComponent(class UEnhancedInputComponent
 
 	//[오른손]
 		//오른손 트리거 ---> 이동
-		PlayerInputComponent->BindAction(rightTrigger, ETriggerEvent::Triggered, this, &URIM_MoveComponent::rightTriggerShowLine);
+		PlayerInputComponent->BindAction(rightTrigger, ETriggerEvent::Started, this, &URIM_MoveComponent::rightTriggerShowLine);
 		PlayerInputComponent->BindAction(rightTrigger, ETriggerEvent::Completed, this, &URIM_MoveComponent::rightTriggerHideLine);
 
 	//테스트
