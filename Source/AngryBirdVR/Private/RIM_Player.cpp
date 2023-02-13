@@ -14,6 +14,7 @@
 #include "RIM_BirdBlack.h"
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h>
 #include <Components/TextRenderComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -293,5 +294,5 @@ void ARIM_Player::BlackSkill()
 
 
 void ARIM_Player::PredictionPath() {
-
+	
 }
