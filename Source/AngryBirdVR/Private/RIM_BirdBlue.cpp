@@ -36,8 +36,8 @@ ARIM_BirdBlue::ARIM_BirdBlue()
 	//발사체 ★★★영상에 의하면 필요없으나 일단 넣음
 	compMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	compMovement->SetUpdatedComponent(compCollision);
-	compMovement->InitialSpeed = 2000; //초기속도. ▶필요시 추후 수정
-	compMovement->MaxSpeed = 5000; //최대속도. ▶필요시 추후 수정
+	compMovement->InitialSpeed = 0; //초기속도. ▶필요시 추후 수정
+	compMovement->MaxSpeed = 0; //최대속도. ▶필요시 추후 수정
 	compMovement->bShouldBounce = true; //반동여부. 튕기는 여부
 	compMovement->Bounciness = 0.5f; //얼마나 잘 튕기에 할 것인가. 반동. 탄성. ▶필요시 추후 수정
 	//InitialLifeSpan = 10.0f; //생명 시간. ▶필요시 추후 수정
