@@ -70,9 +70,17 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UInputMappingContext* vrMapping;
 
-	//Input Action. 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용 ---> 테스트
+	//Input Action. 오른손 그립. 새 스킬 사용 ★★★실제 게임에서는 오른손 트리거 사용 ---> 테스트
 	UPROPERTY(EditAnyWhere)
 	class UInputAction* rightGrip;
+
+	//파란새 스킬 ---> 테스트
+	UPROPERTY(EditAnywhere)
+	class UInputAction* rightA;
+
+	//검은새 스킬 ---> 테스트
+	UPROPERTY(EditAnywhere)
+	class UInputAction* rightB;
 
 
 public:
@@ -95,9 +103,24 @@ public:
  	UPROPERTY(EditAnywhere)
  	TSubclassOf<class ARIM_BirdBlue> blueFactory;
 
+	//검은새
+	UPROPERTY()
+	class ARIM_BirdBlack* birdBlack;
+
+	//검은새(총알)
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ARIM_BirdBlack> blackFactory;
+
 
 public:
-	//스킬 사용 ---> 테스트
-	void inputSkill();
+	//스킬 사용
+	void InputSkill();
+
+	//파란새 스킬
+	void BlueSkill();
+
+	//검은새 스킬
+	void BlackSkill();
+
 	void PredictionPath();
 };

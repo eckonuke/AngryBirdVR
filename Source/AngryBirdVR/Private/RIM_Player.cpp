@@ -8,7 +8,10 @@
 #include <Components/SkeletalMeshComponent.h>
 #include "RIM_MoveComponent.h"
 #include "EnhancedInputComponent.h"
+#include "KYI_AngryRed.h"
+#include "KYI_AngryChuck.h"
 #include "RIM_BirdBlue.h"
+#include "RIM_BirdBlack.h"
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h>
 #include <Components/TextRenderComponent.h>
 
@@ -121,7 +124,14 @@ ARIM_Player::ARIM_Player()
 	ConstructorHelpers::FClassFinder<ARIM_BirdBlue> tempBlue(TEXT("/Script/Engine.Blueprint'/Game/BluePrints/BP_AngryBlue.BP_AngryBlue_C'")); // 블루프린트 경로. _C'
 	if (tempBlue.Succeeded())
 	{
-		blueFactory = tempBlue.Class; //BP_AngryBirdBlue 세팅 됨
+		blueFactory = tempBlue.Class;
+	}
+
+	//검은새 클래스 가져와서 등록
+	ConstructorHelpers::FClassFinder<ARIM_BirdBlue> tempBlack(TEXT("/Script/Engine.Blueprint'/Game/BluePrints/BP_AngryBlack.BP_AngryBlack_C'")); // 블루프린트 경로. _C'
+	if (tempBlack.Succeeded())
+	{
+		blackFactory = tempBlack.Class;
 	}
 
 
@@ -175,8 +185,8 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	if (EnhancedInputComponent != nullptr)
 	{
-		//오른손 그립 ---> 새 스킬 사용 ★★★실제 게임에서는 오른손 트리거 사용
-		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::inputSkill);
+		//새 스킬들 사용 ---> 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::InputSkill);
 
 		//이동 함수 실행 ---> 오른손 트리거
 		compMove->SetupPlayerInputComponent(EnhancedInputComponent);
@@ -184,6 +194,12 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		//발사 함수 실행 ---> 만약 트리거 이면 조건 코드 추가 필요...?
 		//용일님 코드
 
+
+
+		//테스트 ---> 파란새 스킬
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::BlueSkill);
+		//테스트 ---> 검은새 스킬
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::BlackSkill);
 
 
 
@@ -202,26 +218,79 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 // }
 
 //스킬 사용
-void ARIM_Player::inputSkill()
+void ARIM_Player::InputSkill()
 {
-	FString msg = FString(__FUNCTION__); //확인용 로그
-	logRight->SetText(FText::FromString(msg)); //확인용 로그
+// 	FString msg = FString(__FUNCTION__); //확인용 로그
+// 	logRight->SetText(FText::FromString(msg)); //확인용 로그
+// 
+// 	FRotator actorRot;
+// 
+// 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, GetActorRotation());
+// 	
+// 	actorRot = GetActorRotation();
+// 	actorRot.Yaw -= 30;
+// 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, actorRot);
+// 	
+// 	actorRot = GetActorRotation();
+// 	actorRot.Yaw += 30;
+// 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, actorRot);
+
+// 	if () //노란새 스킬 사용 조건
+// 	{
+// 		UE_LOG(LogTemp, Warning, TEXT("Yellow Skill -----> Fire !!!!!!!!!!"));
+// 
+// 	
+// 
+// 	}
+// 	else if () //파란새 스킬 사용 조건
+// 	{
+// 		UE_LOG(LogTemp, Warning, TEXT("Blue Skill -----> Fire !!!!!!!!!!"));
+// 
+// 		BlueSkill();
+// 		//★★★ 한 번 스킬 사용하고 사용 못하게 하는 코드 추가 필요
+// 
+// 	}
+// 	else if () //검은새 스킬 사용 조건
+// 	{
+// 		UE_LOG(LogTemp, Warning, TEXT("Black Skill -----> Fire !!!!!!!!!!"));
+// 
+// 		BlackSkill();
+// 		//★★★ 한 번 스킬 사용하고 사용 못하게 하는 코드 추가 필요
+// 
+// 	}
+
+	
+}
+
+
+//파란새 스킬
+void ARIM_Player::BlueSkill()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Blue Skill !!!!!!!!!!"));
 
 	FRotator actorRot;
 
-	//GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 200, actorRot.Yaw);
-	//GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 200, birdBlue->GetActorRotation());
-
 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, GetActorRotation());
+
 	actorRot = GetActorRotation();
 	actorRot.Yaw -= 30;
 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, actorRot);
+
 	actorRot = GetActorRotation();
 	actorRot.Yaw += 30;
 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, actorRot);
-
-
 }
+
+
+//검은새 스킬
+void ARIM_Player::BlackSkill()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Black Skill !!!!!!!!!!"));
+	
+	birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
+	Destroy(); //새가 터진다. 없어진다
+}
+
 
 void ARIM_Player::PredictionPath() {
 

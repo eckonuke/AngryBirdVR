@@ -44,10 +44,21 @@ public:
 	UPROPERTY(EditAnywhere)
 	class ARIM_Player* player;
 
+	UPROPERTY(EditAnywhere)
+	float blastRange = 1000.0f;
+
+	UPROPERTY(EditAnywhere)
+	float ImpulseRange = 1500.0f;
 
 public:
 	//일정 시간 지난 후 새 파괴
 	//void Death();
+
+	//폭탄에 범위에 따른 피해. 파괴 또는 충격
+	UFUNCTION()
+	void ExplosionDamage();
+
+
 
 
 };

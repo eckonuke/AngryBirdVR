@@ -5,6 +5,14 @@
 #include <Components/SphereComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <GameFramework/ProjectileMovementComponent.h>
+#include "DrawDebugHelpers.h"
+#include "KYI_AngryRed.h"
+#include "KYI_AngryChuck.h"
+#include "RIM_BirdBlue.h"
+#include "RIM_BirdBlack.h"
+#include "KYI_Wood.h"
+#include "KYI_Glass.h"
+#include "RIM_Pig.h"
 
 // Sets default values
 ARIM_BirdBlack::ARIM_BirdBlack()
@@ -70,3 +78,81 @@ void ARIM_BirdBlack::Tick(float DeltaTime)
 //}
 
 
+//[새가 터지면 발생하는 일]
+//1. blastRange(폭탄 범위) 에서 폭탄에 일정 거리 이하로 위치해 있을 때, 적, 나무, 유리 파괴된다.
+//2. blastRange(폭탄 범위) 에서 폭탄에 일정 거리 이상으로 위치해 있을 때, 적, 나무, 유리 충격으로 날아간다.
+
+
+//새 폭발 범위에 따른 피해. 파괴 또는 충격
+void ARIM_BirdBlack::ExplosionDamage()
+{
+	//충돌 정보
+	TArray<FOverlapResult> hitInfos;
+
+	//검은새 위치
+	FVector center = meshBlack->GetComponentLocation();
+
+	//검은새 폭발 범위(blastRange)
+	FCollisionShape blastCollision = FCollisionShape::MakeSphere(blastRange);
+
+	//★★★???
+	FCollisionObjectQueryParams objectQuerry;
+	//★★★???
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	//★★★???
+	objectQuerry.AddObjectTypesToQuery(ECC_WorldDynamic);
+
+	//폭발 범위 그리기
+	//DrawDebugSphere(GetWorld(), center, blastCollision.GetSphereRadius(), 50, FColor::Cyan, true);
+
+	//Ignore 빼고 blastRange(폭발 범위) 안에 있는 모든 물체를 다 체크 한다
+	if (GetWorld()->OverlapMultiByObjectType(hitInfos, center, FQuat::Identity, objectQuerry, FCollisionShape::MakeSphere(blastRange), params))
+	{
+		//★★★???
+		for (FOverlapResult& hit : hitInfos) // [i] = FOverlapResult& hit
+		{
+			hit.GetActor()->GetActorLocation();
+			ARIM_Pig* pigTNT = Cast<ARIM_Pig>(hit.GetActor());
+			AKYI_Wood* woodTNT = Cast<AKYI_Wood>(hit.GetActor());
+			AKYI_Glass* glassTNT = Cast<AKYI_Glass>(hit.GetActor());
+
+			if (500 > 100) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
+			{
+				if (pigTNT != nullptr) //돼지
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Pig ---> Black Explosion ---> Pig Destory !!!!!!!!!!"));
+					pigTNT->Destroy();
+				}
+				else if (woodTNT != nullptr) //나무
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Wood ---> Black Explosion ---> Wood Destory !!!!!!!!!!"));
+					Destroy();
+				}
+				else if (glassTNT != nullptr) //유리
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Glass ---> Black Explosion ---> Glass Destory !!!!!!!!!!"));
+					Destroy();
+				}
+			}
+			else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
+			{
+				if (pigTNT != nullptr) //돼지
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Pig ---> Black Explosion ---> Pig Impulse !!!!!!!!!!"));
+					pigTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
+				}
+// 				else if (woodTNT != nullptr) //나무
+// 				{
+// 					UE_LOG(LogTemp, Warning, TEXT("Wood ---> Black Explosion ---> Wood Impulse !!!!!!!!!!"));
+// 					woodTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
+// 				}
+// 				else if (glassTNT != nullptr) //유리
+// 				{
+// 					UE_LOG(LogTemp, Warning, TEXT("Glass ---> Black Explosion ---> Glass Impulse !!!!!!!!!!"));
+// 					glassTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
+// 				}
+			}
+		}
+	}
+}

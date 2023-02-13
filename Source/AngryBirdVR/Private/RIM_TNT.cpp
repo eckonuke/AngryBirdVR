@@ -46,41 +46,6 @@ void ARIM_TNT::BeginPlay()
 	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_TNT::ComponentBeginOverlapObject); //오브젝트(나무, 유리, 돼지) -----> 폭탄
 
 
-//-----------------------------------------------------------------------------------------------------------------------> ↓삭제 예정
-
-// 	TArray<FHitResult> hitInfos; //충돌 정보
-// 	FVector location = meshTNT->GetComponentLocation(); //TNT 위치
-// 	FVector startLocation = location; //시작 위치
-// 	FVector endLocation = location; //끝 위치
-// 	FCollisionShape blastCollision = FCollisionShape::MakeSphere(blastRange); //폭발 범위 콜리전
-// 
-// 	//폭발 범위 그림
-// 	DrawDebugSphere(GetWorld(), GetActorLocation(), blastCollision.GetSphereRadius(), 50, FColor::Cyan, true);
-// 
-// 	//스윕에 충돌한 것 확인
-// 	bool isHit = GetWorld()->SweepMultiByChannel(hitInfos, startLocation, endLocation, FQuat::Identity, ECC_WorldDynamic, blastCollision);
-// 
-// 	//스윕에 충돌했다면
-// 	if (isHit)
-// 	{
-// 		for (auto& Hit : hitInfos)
-// 		{
-// 			ARIM_Pig* pigCollision = Cast<ARIM_Pig>((Hit.GetActor())->GetRootComponent());
-// 
-// 			if (pigCollision != nullptr)
-// 			{
-// 			 	UE_LOG(LogTemp, Warning, TEXT("Pig ---> TNT ---> Die !!!!!!!!!!"));
-// 				pig->Die();
-// 			}			
-// 		}
-// 	}
-// 
-// 
-// 
-// 	TArray<AActor> sweepActors;
-
-//-----------------------------------------------------------------------------------------------------------------------> ↑삭제 예정
-
 
 }
 
@@ -140,7 +105,7 @@ void ARIM_TNT::ExplosionDamage()
 			AKYI_Wood* woodTNT = Cast<AKYI_Wood>(hit.GetActor());
 			AKYI_Glass* glassTNT = Cast<AKYI_Glass>(hit.GetActor());
 
-			if (500 > 100) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다.
+			if (500 > 100) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
 			{
 				if (pigTNT != nullptr) //돼지
 				{
@@ -158,7 +123,7 @@ void ARIM_TNT::ExplosionDamage()
 					Destroy();
 				}
 			}
-			else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다.
+			else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
 			{
 				if (pigTNT != nullptr) //돼지
 				{
