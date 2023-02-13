@@ -273,9 +273,9 @@ void ARIM_Player::BlueSkill()
 
 	birdBlue = GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, compLeftCon->GetComponentLocation() + GetActorForwardVector() * 200, GetActorRotation());
 
+	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 200, actorRot);
 	actorRot = birdBlue->GetActorRotation();
 	actorRot.Yaw -= 30;
-	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 200, actorRot);
 
 	actorRot = birdBlue->GetActorRotation();
 	actorRot.Yaw += 30;
@@ -286,8 +286,9 @@ void ARIM_Player::BlueSkill()
 //검은새 스킬
 void ARIM_Player::BlackSkill()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Black Skill !!!!!!!!!!"));
-	if (birdBlack != nullptr) {
+	AActor* tempActor = UGameplayStatics::GetActorOfClass(GetWorld(), blackFactory);
+	birdBlack = Cast<ARIM_BirdBlack>(tempActor);
+	if (birdBlack){
 		birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
 		birdBlack->Destroy(); //새가 터진다. 없어진다
 	}
