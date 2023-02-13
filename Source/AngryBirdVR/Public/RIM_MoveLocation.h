@@ -27,6 +27,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* compCollision;
 
+	UPROPERTY(editanywhere)
+	class URIM_MoveComponent* moveComponent
+
+public:
+	UFUNCTION
+	void ComponentBeginOverlapMove(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 
 };

@@ -142,16 +142,16 @@ void ARIM_BirdBlack::ExplosionDamage()
 					UE_LOG(LogTemp, Warning, TEXT("Pig ---> Black Explosion ---> Pig Impulse !!!!!!!!!!"));
 					pigTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
 				}
-// 				else if (woodTNT != nullptr) //唱公
-// 				{
-// 					UE_LOG(LogTemp, Warning, TEXT("Wood ---> Black Explosion ---> Wood Impulse !!!!!!!!!!"));
-// 					woodTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
-// 				}
-// 				else if (glassTNT != nullptr) //蜡府
-// 				{
-// 					UE_LOG(LogTemp, Warning, TEXT("Glass ---> Black Explosion ---> Glass Impulse !!!!!!!!!!"));
-// 					glassTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
-// 				}
+// * 				else if (woodTNT != nullptr) //唱公
+// * 				{
+// * 					UE_LOG(LogTemp, Warning, TEXT("Wood ---> Black Explosion ---> Wood Impulse !!!!!!!!!!"));
+// * 					woodTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
+// * 				}
+// * 				else if (glassTNT != nullptr) //蜡府
+// * 				{
+// * 					UE_LOG(LogTemp, Warning, TEXT("Glass ---> Black Explosion ---> Glass Impulse !!!!!!!!!!"));
+// * 					glassTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
+// * 				}
 			}
 		}
 	}

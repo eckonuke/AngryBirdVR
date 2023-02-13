@@ -198,9 +198,9 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 
 		//테스트 ---> 파란새 스킬
-		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::BlueSkill);
+		EnhancedInputComponent->BindAction(rightA, ETriggerEvent::Started, this, &ARIM_Player::BlueSkill);
 		//테스트 ---> 검은새 스킬
-		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::BlackSkill);
+		EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::BlackSkill);
 
 
 
@@ -288,8 +288,12 @@ void ARIM_Player::BlackSkill()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Black Skill !!!!!!!!!!"));
 	
-	birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
-	Destroy(); //새가 터진다. 없어진다
+	if (birdBlack != nullptr)
+	{
+		birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
+		birdBlack->Destroy(); //새가 터진다. 없어진다
+	}
+
 }
 
 

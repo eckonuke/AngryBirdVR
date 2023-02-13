@@ -100,8 +100,8 @@ void URIM_MoveComponent::DrawMoveLine()
 
 		if (i > 0)
 		{
-			//if (GetWorld()->LineTraceSingleByChannel(hitInfo, lineLocation[i - 1], lineLocation[i], ECC_Visibility))
-			if (GetWorld()->LineTraceSingleByProfile(hitInfo, lineLocation[i - 1], lineLocation[i], TEXT("MoveLocation")))
+			if (GetWorld()->LineTraceSingleByChannel(hitInfo, lineLocation[i - 1], lineLocation[i], ECC_Visibility))
+			//if (GetWorld()->LineTraceSingleByProfile(hitInfo, lineLocation[i - 1], lineLocation[i], TEXT("MoveLocation")))
 			{
 				//부딪힌 지점을 마지막 좌표로 넣고 반복문을 강제 종료한다.
 				lineLocation.Add(hitInfo.ImpactPoint);
