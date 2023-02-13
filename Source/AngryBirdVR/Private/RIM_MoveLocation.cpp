@@ -22,7 +22,7 @@ void ARIM_MoveLocation::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapMove);
+	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_MoveLocation::ComponentBeginOverlapMove);
 }
 
 // Called every frame
@@ -33,7 +33,7 @@ void ARIM_MoveLocation::Tick(float DeltaTime)
 }
 
 
-void ComponentBeginOverlapMove(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ARIM_MoveLocation::ComponentBeginOverlapMove(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
 }
