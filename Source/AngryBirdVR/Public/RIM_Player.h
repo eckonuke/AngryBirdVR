@@ -108,7 +108,7 @@ public:
 	class ARIM_BirdBlack* birdBlack;
 
 	//검은새(총알)
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ARIM_BirdBlack> blackFactory;
 
 

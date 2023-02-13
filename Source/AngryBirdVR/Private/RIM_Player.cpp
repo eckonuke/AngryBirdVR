@@ -129,11 +129,11 @@ ARIM_Player::ARIM_Player()
 	}
 
 	//검은새 클래스 가져와서 등록
-	ConstructorHelpers::FClassFinder<ARIM_BirdBlue> tempBlack(TEXT("/Script/Engine.Blueprint'/Game/BluePrints/BP_AngryBlack.BP_AngryBlack_C'")); // 블루프린트 경로. _C'
-	if (tempBlack.Succeeded())
-	{
-		blackFactory = tempBlack.Class;
-	}
+	//ConstructorHelpers::FClassFinder<ARIM_BirdBlue> tempBlack(TEXT("/Script/Engine.Blueprint'/Game/BluePrints/BP_AngryBlack.BP_AngryBlack_C'")); // 블루프린트 경로. _C'
+	//if (tempBlack.Succeeded())
+	//{
+	//	blackFactory = tempBlack.Class;
+	//}
 
 
 
@@ -271,29 +271,27 @@ void ARIM_Player::BlueSkill()
 
 	FRotator actorRot;
 
-	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, GetActorRotation());
+	birdBlue = GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, compLeftCon->GetComponentLocation() + GetActorForwardVector() * 200, GetActorRotation());
 
-	actorRot = GetActorRotation();
+	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 200, actorRot);
+	actorRot = birdBlue->GetActorRotation();
 	actorRot.Yaw -= 30;
-	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, actorRot);
 
-	actorRot = GetActorRotation();
+	actorRot = birdBlue->GetActorRotation();
 	actorRot.Yaw += 30;
-	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, actorRot);
+	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 200, actorRot);
 }
 
 
 //검은새 스킬
 void ARIM_Player::BlackSkill()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Black Skill !!!!!!!!!!"));
-	
-	if (birdBlack != nullptr)
-	{
+	AActor* tempActor = UGameplayStatics::GetActorOfClass(GetWorld(), blackFactory);
+	birdBlack = Cast<ARIM_BirdBlack>(tempActor);
+	if (birdBlack){
 		birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
 		birdBlack->Destroy(); //새가 터진다. 없어진다
 	}
-
 }
 
 

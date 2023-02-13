@@ -127,12 +127,12 @@ void ARIM_BirdBlack::ExplosionDamage()
 				else if (woodTNT != nullptr) //나무
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Wood ---> Black Explosion ---> Wood Destory !!!!!!!!!!"));
-					Destroy();
+					woodTNT->Destroy();
 				}
 				else if (glassTNT != nullptr) //유리
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Glass ---> Black Explosion ---> Glass Destory !!!!!!!!!!"));
-					Destroy();
+					glassTNT->Destroy();
 				}
 			}
 			else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
