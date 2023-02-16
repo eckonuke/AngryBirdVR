@@ -30,4 +30,7 @@ public:
 		class UProjectileMovementComponent* movement;
 
 	void BirdYellowSkill();
+
+private:
+	class ARIM_Player* player;
 };

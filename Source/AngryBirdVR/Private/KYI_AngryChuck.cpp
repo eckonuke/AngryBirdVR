@@ -5,11 +5,12 @@
 #include <GameFramework/ProjectileMovementComponent.h>
 #include <Components/SkeletalMeshComponent.h>
 #include <Components/SphereComponent.h>
+#include "RIM_Player.h"
 
 // Sets default values
 AKYI_AngryChuck::AKYI_AngryChuck()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	sphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collision"));
 	SetRootComponent(sphereComp);
@@ -31,7 +32,8 @@ AKYI_AngryChuck::AKYI_AngryChuck()
 void AKYI_AngryChuck::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	SetLifeSpan(5);
+	player = Cast<ARIM_Player>(GetOwner());
 }
 
 // Called every frame

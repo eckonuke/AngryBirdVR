@@ -15,6 +15,7 @@
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h>
 #include <Components/TextRenderComponent.h>
 #include <Kismet/GameplayStatics.h>
+#include <Components/SphereComponent.h>
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -196,7 +197,7 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		//테스트 ---> 파란새 스킬
 		//EnhancedInputComponent->BindAction(rightA, ETriggerEvent::Started, this, &ARIM_Player::BlueSkill);
 		//테스트 ---> 검은새 스킬
-		EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::BlackSkill);
+		EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::YellowSkill);
 		//이동 함수 실행 ---> 오른손 트리거
 		compMove->SetupPlayerInputComponent(EnhancedInputComponent);
 	}
@@ -274,6 +275,14 @@ void ARIM_Player::BlueSkill()
 }
 
 
+void ARIM_Player::YellowSkill() {
+	yellowBird = Cast<AKYI_AngryChuck>(UGameplayStatics::GetActorOfClass(GetWorld(), AKYI_AngryChuck::StaticClass()));
+	if (yellowBird) {
+		FVector speed = yellowBird->sphereComp->GetPhysicsLinearVelocity();
+		yellowBird->sphereComp->AddImpulse(speed* power);
+	}
+}
+
 //검은새 스킬
 void ARIM_Player::BlackSkill()
 {
@@ -283,9 +292,4 @@ void ARIM_Player::BlackSkill()
 		birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
 		birdBlack->Destroy(); //새가 터진다. 없어진다
 	}
-}
-
-
-void ARIM_Player::PredictionPath() {
-	
 }

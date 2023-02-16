@@ -119,8 +119,22 @@ public:
 	//파란새 스킬
 	void BlueSkill();
 
+	//노란새 스킬
+	void YellowSkill();
+
 	//검은새 스킬
 	void BlackSkill();
 
-	void PredictionPath();
+private:
+	bool bShouldPredict = false;
+	FVector rightHandPosition;
+	FVector fireVelocity;
+	float power = 1000000;
+	int32 birdCount = 0;
+	int32 redCount = 0;
+	int32 blueCount = 0;
+	int32 yellowCount = 0;
+	int32 blackCount = 0;
+
+	class AKYI_AngryChuck* yellowBird;
 };
