@@ -16,6 +16,7 @@
 #include <Components/TextRenderComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <Components/SphereComponent.h>
+#include "PredictionObject.h"
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -174,7 +175,21 @@ void ARIM_Player::BeginPlay()
 void ARIM_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (bShouldPredict) {
+		fireVelocity = (compLeftCon->GetComponentLocation() - rightHandPosition) * power;
+		FHitResult hitInfo;
+		TArray<FVector> pathPosition;
+		FVector lastTrace;
+		TArray<AActor*> params;
+		params.Add(this);
+		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), hitInfo, pathPosition, lastTrace, compLeftCon->GetComponentLocation(),
+			fireVelocity, false, 5.0f, ECC_WorldDynamic, false, params, EDrawDebugTrace::None, 1.0f, 15.0f, 1.0f, 0.0f);
+		TSubclassOf<APredictionObject> pathFactory;
+		for (int32 i = 0; i < pathPosition.Num(); i++) {
+			AActor* prediction = GetWorld()->SpawnActor<APredictionObject>(pathFactory, pathPosition[i], FRotator(0));
+			prediction->SetActorRelativeScale3D(FVector(0.01f));
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -188,7 +203,8 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	if (EnhancedInputComponent != nullptr)
 	{
 		//새 스킬들 사용 ---> 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용
-		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::InputSkill);
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Ongoing, this, &ARIM_Player::readyShoot);
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Completed, this, &ARIM_Player::shootBird);
 		//발사 함수 실행 ---> 만약 트리거 이면 조건 코드 추가 필요...?
 		//용일님 코드
 
@@ -257,10 +273,7 @@ void ARIM_Player::InputSkill()
 
 
 //파란새 스킬
-void ARIM_Player::BlueSkill()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Blue Skill !!!!!!!!!!"));
-
+void ARIM_Player::BlueSkill() {
 	FRotator actorRot;
 
 	birdBlue = GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, compLeftCon->GetComponentLocation() + GetActorForwardVector() * 200, GetActorRotation());
@@ -291,5 +304,36 @@ void ARIM_Player::BlackSkill()
 	if (birdBlack){
 		birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
 		birdBlack->Destroy(); //새가 터진다. 없어진다
+	}
+}
+
+void ARIM_Player::readyShoot() {
+	bShouldPredict = true;
+	rightHandPosition = compRightCon->GetComponentLocation();
+}
+
+void ARIM_Player::shootBird() {
+	bShouldPredict = false;
+	switch (birdCount) {
+	case 0: 
+		birdRed = GetWorld()->SpawnActor<AKYI_AngryRed>(redFactory, compLeftCon->GetComponentLocation(), GetActorRotation());
+		birdRed->sphereComp->AddImpulse(fireVelocity);
+		birdCount++;
+		break;
+	case 1:
+		birdYellow = GetWorld()->SpawnActor<AKYI_AngryChuck>(yellowFactory, compLeftCon->GetComponentLocation(), GetActorRotation());
+		birdYellow->sphereComp->AddImpulse(fireVelocity);
+		birdCount++;
+		break;
+	case 2:
+		birdBlue = GetWorld()->SpawnActor<ARIM_BirdBlue>(blackFactory, compLeftCon->GetComponentLocation(), GetActorRotation());
+		birdBlue->compCollision->AddImpulse(fireVelocity);
+		birdCount++;
+		break;
+	case 3:
+		birdBlack = GetWorld()->SpawnActor<ARIM_BirdBlack>(blackFactory, compLeftCon->GetComponentLocation(), GetActorRotation());
+		birdBlack->compCollision->AddImpulse(fireVelocity);
+		birdCount = 0;
+		break;
 	}
 }

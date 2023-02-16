@@ -95,18 +95,27 @@ public:
 
 
  public:
+	 //파란새
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		 class AKYI_AngryRed* birdRed;
+	 //파란새(총알)
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		 TSubclassOf<class AKYI_AngryRed> redFactory;
+	 //파란새
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		 class AKYI_AngryChuck* birdYellow;
+	 //파란새(총알)
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		 TSubclassOf<class AKYI_AngryChuck> yellowFactory;
  	//파란새
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class ARIM_BirdBlue* birdBlue;
-
 	//파란새(총알)
  	UPROPERTY(EditAnywhere, BlueprintReadWrite)
  	TSubclassOf<class ARIM_BirdBlue> blueFactory;
-
 	//검은새
 	UPROPERTY()
 	class ARIM_BirdBlack* birdBlack;
-
 	//검은새(총알)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ARIM_BirdBlack> blackFactory;
@@ -115,21 +124,23 @@ public:
 public:
 	//스킬 사용
 	void InputSkill();
-
 	//파란새 스킬
 	void BlueSkill();
-
 	//노란새 스킬
 	void YellowSkill();
-
 	//검은새 스킬
 	void BlackSkill();
+	//발사 준비
+	void readyShoot();
+	//발사
+	void shootBird();
 
+	float score = 0;
 private:
 	bool bShouldPredict = false;
 	FVector rightHandPosition;
 	FVector fireVelocity;
-	float power = 1000000;
+	float power = 50;
 	int32 birdCount = 0;
 	int32 redCount = 0;
 	int32 blueCount = 0;
