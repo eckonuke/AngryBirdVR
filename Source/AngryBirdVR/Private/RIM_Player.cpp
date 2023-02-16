@@ -188,10 +188,6 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	{
 		//새 스킬들 사용 ---> 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용
 		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::InputSkill);
-
-		//이동 함수 실행 ---> 오른손 트리거
-		compMove->SetupPlayerInputComponent(EnhancedInputComponent);
-		
 		//발사 함수 실행 ---> 만약 트리거 이면 조건 코드 추가 필요...?
 		//용일님 코드
 
@@ -201,14 +197,9 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		//EnhancedInputComponent->BindAction(rightA, ETriggerEvent::Started, this, &ARIM_Player::BlueSkill);
 		//테스트 ---> 검은새 스킬
 		EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::BlackSkill);
-
-
-
+		//이동 함수 실행 ---> 오른손 트리거
+		compMove->SetupPlayerInputComponent(EnhancedInputComponent);
 	}
-
-
-
-
 }
 
 
