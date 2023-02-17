@@ -22,6 +22,7 @@ APredictionObject::APredictionObject()
 	if (tempMat.Succeeded()) {
 		mesh->SetMaterial(0, tempMat.Object);
 	}
+	SetRootComponent(mesh);
 }
 
 // Called when the game starts or when spawned

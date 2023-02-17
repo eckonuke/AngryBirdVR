@@ -42,7 +42,7 @@ public:
 	class UMotionControllerComponent* compLeftCon;
 	//¸Þ½Ã
  	UPROPERTY(EditAnywhere, BlueprintReadWrite)
- 	class USkeletalMeshComponent* meshLeftHand; //¢º½ºÄÌ·¹Å»¸Þ½Ã
+ 	class UStaticMeshComponent* meshLeftHand; //¢º½ºÄÌ·¹Å»¸Þ½Ã
 /* 	UPROPERTY(EditAnywhere)
  	class UStaticMeshComponent* meshLeftHand;*/ //¢º½ºÅÂÆ½¸Þ½Ã
 	//·Î±×
@@ -138,14 +138,14 @@ public:
 	void shootBird();
 
 	float score = 0;
+	int32 birdCount = 3;
+	int32 redCount = 1;
+	int32 blueCount = 1;
+	int32 yellowCount = 1;
+	int32 blackCount = 1;
 private:
 	bool bShouldPredict = false;
 	FVector rightHandPosition;
 	FVector fireVelocity;
-	float power = 100;
-	int32 birdCount = 0;
-	int32 redCount = 0;
-	int32 blueCount = 0;
-	int32 yellowCount = 0;
-	int32 blackCount = 0;
+	float power = 1000;
 };

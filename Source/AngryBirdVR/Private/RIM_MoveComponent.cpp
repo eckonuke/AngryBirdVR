@@ -148,12 +148,14 @@ void URIM_MoveComponent::rightTriggerHideLine()
 	if (position != nullptr) {
 		TeleportFade();
 		//1초 뒤에 Teleport를 실행해야한다
+		//////////////////////김용일 수정//////////////////
 		FTimerHandle WaitHandle;
 		float WaitTime = 1;
 		currentWorld->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
 				Teleport();
 			}), WaitTime, false); //반복도 여기서 추가 변수를 선언해 설정가능
+		//////////////////////김용일 수정//////////////////
 	}
 }
 
