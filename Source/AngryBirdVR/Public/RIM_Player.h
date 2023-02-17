@@ -81,7 +81,8 @@ public:
 	//검은새 스킬 ---> 테스트
 	UPROPERTY(EditAnywhere)
 	class UInputAction* rightB;
-
+	UPROPERTY(EditAnywhere)
+	class UInputAction* leftX;
 
 public:
 	//[플레이어에 액터컴포넌트 추가]
@@ -136,6 +137,8 @@ public:
 	void readyShoot();
 	//발사
 	void shootBird();
+	//발사 취소
+	void cancelShoot();
 
 	float score = 0;
 	int32 birdCount = 3;
@@ -145,7 +148,10 @@ public:
 	int32 blackCount = 1;
 private:
 	bool bShouldPredict = false;
+	bool bWillShoot = true;
 	FVector rightHandPosition;
 	FVector fireVelocity;
 	float power = 1000;
+	float cancelLength = 0;
+	float cancelRange = 10;
 };

@@ -174,6 +174,7 @@ void ARIM_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (bShouldPredict) {
+		rightHandPosition = compRightCon->GetComponentLocation();
 		fireVelocity = (compLeftCon->GetComponentLocation() - rightHandPosition) * 50;
 		//FHitResult hitInfo;
 		//TArray<FVector> pathPosition;
@@ -195,18 +196,12 @@ void ARIM_Player::Tick(float DeltaTime)
 		FPredictProjectilePathResult PredictResult;
 		bool bHit = UGameplayStatics::PredictProjectilePath(GetWorld(), params, PredictResult);
 		PredictResult.PathData;
-
-		for (const FPredictProjectilePathPointData& PathPoint : PredictResult.PathData)
-		{
+		for (const FPredictProjectilePathPointData& PathPoint : PredictResult.PathData) {
 			FVector location = FVector(PathPoint.Location.X, PathPoint.Location.Y, PathPoint.Location.Z + 30);
 			AActor* prediction = GetWorld()->SpawnActor<APredictionObject>(pathFactory, location, FRotator(0.0f));
 			APredictionObject* path = Cast<APredictionObject>(prediction);
 			path->mesh->SetCollisionProfileName(TEXT("NoCollision"));
 		}
-		/*for (int32 i = 0; i < pathPosition.Num(); i++) {
-			AActor* prediction = GetWorld()->SpawnActor<APredictionObject>(pathFactory, pathPosition[i], FRotator(0));
-			prediction->SetActorRelativeScale3D(FVector(0.01f));
-		}*/
 	}
 }
 
@@ -225,7 +220,7 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Completed, this, &ARIM_Player::shootBird);
 		//발사 함수 실행 ---> 만약 트리거 이면 조건 코드 추가 필요...?
 		//용일님 코드
-
+		EnhancedInputComponent->BindAction(leftX, ETriggerEvent::Started, this, &ARIM_Player::cancelShoot);
 
 
 		//테스트 ---> 파란새 스킬
@@ -301,10 +296,13 @@ void ARIM_Player::BlackSkill()
 
 void ARIM_Player::readyShoot() {
 	bShouldPredict = true;
-	rightHandPosition = compRightCon->GetComponentLocation();
+	bWillShoot = true;
 }
 
 void ARIM_Player::shootBird() {
+	if (!bWillShoot) {
+		return;
+	}
 	bShouldPredict = false;
 	FVector position = compLeftCon->GetComponentLocation();
 	position.Z += 30;
@@ -328,4 +326,9 @@ void ARIM_Player::shootBird() {
 		birdBlack->compCollision->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
 		blackCount--;
 	}
+}
+
+void ARIM_Player::cancelShoot() {
+	bWillShoot = false;
+	bShouldPredict = false;
 }
