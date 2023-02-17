@@ -96,19 +96,19 @@ public:
 
  public:
 	 //파란새
-	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	 UPROPERTY()
 		 class AKYI_AngryRed* birdRed;
 	 //파란새(총알)
 	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		 TSubclassOf<class AKYI_AngryRed> redFactory;
 	 //파란새
-	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	 UPROPERTY()
 		 class AKYI_AngryChuck* birdYellow;
 	 //파란새(총알)
 	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		 TSubclassOf<class AKYI_AngryChuck> yellowFactory;
  	//파란새
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
 	class ARIM_BirdBlue* birdBlue;
 	//파란새(총알)
  	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -120,7 +120,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ARIM_BirdBlack> blackFactory;
 
-
+	//경로 공장
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class APredictionObject> pathFactory;
 public:
 	//스킬 사용
 	void InputSkill();
@@ -140,12 +142,10 @@ private:
 	bool bShouldPredict = false;
 	FVector rightHandPosition;
 	FVector fireVelocity;
-	float power = 50;
+	float power = 100;
 	int32 birdCount = 0;
 	int32 redCount = 0;
 	int32 blueCount = 0;
 	int32 yellowCount = 0;
 	int32 blackCount = 0;
-
-	class AKYI_AngryChuck* yellowBird;
 };

@@ -15,8 +15,8 @@ APredictionObject::APredictionObject()
 	if (tempMesh.Succeeded()) {
 		mesh->SetStaticMesh(tempMesh.Object);
 	}
-	mesh->SetRelativeScale3D(FVector(0.01f));
-	mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	mesh->SetRelativeScale3D(FVector(0.1f));
+	mesh->SetCollisionProfileName(TEXT("NoCollision"));
 	mesh->SetCollisionObjectType(ECC_GameTraceChannel3);
 	ConstructorHelpers::FObjectFinder<UMaterial> tempMat(TEXT("/Script/Engine.Material'/Game/BluePrints/Mat_PredObj.Mat_PredObj'"));
 	if (tempMat.Succeeded()) {

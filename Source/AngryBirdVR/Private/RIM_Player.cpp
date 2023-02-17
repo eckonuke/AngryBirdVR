@@ -21,7 +21,7 @@
 // Sets default values
 ARIM_Player::ARIM_Player()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	//[플레이어]
@@ -44,17 +44,17 @@ ARIM_Player::ARIM_Player()
 	//컨트롤러
 	compLeftCon = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("LeftController")); //플레이어에 컴포넌트 추가
 	compLeftCon->SetupAttachment(RootComponent); //루트컴포넌트 자식으로 세팅
- 	//메시(스켈레탈)
- 	meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
- 	meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
- 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempLeftHand(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/MannequinsXR/Meshes/SKM_MannyXR_left.SKM_MannyXR_left'")); //▶엔진 기본 에셋 사용. 추후 변경
- 	if (tempLeftHand.Succeeded())
- 	{
- 		meshLeftHand->SetSkeletalMesh(tempLeftHand.Object);
- 	}
- 	meshLeftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
- 	meshLeftHand->SetRelativeLocation(FVector(0, -20, 0)); //▶필요 시 추후 변경 
- 	meshLeftHand->SetRelativeRotation(FRotator(-25.0f, 180.0f, 90.0f)); //▶필요 시 추후 변경 
+	//메시(스켈레탈)
+	meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
+	meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempLeftHand(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/MannequinsXR/Meshes/SKM_MannyXR_left.SKM_MannyXR_left'")); //▶엔진 기본 에셋 사용. 추후 변경
+	if (tempLeftHand.Succeeded())
+	{
+		meshLeftHand->SetSkeletalMesh(tempLeftHand.Object);
+	}
+	meshLeftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
+	meshLeftHand->SetRelativeLocation(FVector(0, -20, 0)); //▶필요 시 추후 변경 
+	meshLeftHand->SetRelativeRotation(FRotator(-25.0f, 180.0f, 90.0f)); //▶필요 시 추후 변경 
 
 	//메시(테스트총)
 // 	meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
@@ -68,8 +68,8 @@ ARIM_Player::ARIM_Player()
 // 	meshLeftHand->SetRelativeLocation(FVector(0, -20, 0)); //▶필요 시 추후 변경 
 // 	meshLeftHand->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f)); //▶필요 시 추후 변경 
 // 	meshLeftHand->SetRelativeScale3D(FVector(0.5f)); //▶필요 시 추후 변경 
-	
- 	//메시(스테틱)
+
+	//메시(스테틱)
 	//meshLeftHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftHand")); //플레이어에 메시 컴포넌트 추가. StaticMeshComponent 인클루드
 	//meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
 	//ConstructorHelpers::FObjectFinder<UStaticMesh> tempLeftHand(TEXT("/Script/Engine.StaticMesh'/Game/Resource/Test_SlingShot/SlingShot_01/Source/Slingshot2.Slingshot2'")); //▶추후 변경
@@ -164,7 +164,7 @@ void ARIM_Player::BeginPlay()
 	subsys->AddMappingContext(vrMapping, 0);
 
 
-	
+
 	//일정 시간 지난 후 첫번째 새 노출
 // 	FTimerHandle settingTimer;
 // 	GetWorld()->GetTimerManager().SetTimer(settingTimer, this, &ARIM_Player::birdSetting, delaySettingTime, false); //타이머
@@ -177,18 +177,37 @@ void ARIM_Player::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (bShouldPredict) {
 		fireVelocity = (compLeftCon->GetComponentLocation() - rightHandPosition) * power;
-		FHitResult hitInfo;
-		TArray<FVector> pathPosition;
-		FVector lastTrace;
-		TArray<AActor*> params;
-		params.Add(this);
-		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), hitInfo, pathPosition, lastTrace, compLeftCon->GetComponentLocation(),
-			fireVelocity, false, 5.0f, ECC_WorldDynamic, false, params, EDrawDebugTrace::None, 1.0f, 15.0f, 1.0f, 0.0f);
-		TSubclassOf<APredictionObject> pathFactory;
-		for (int32 i = 0; i < pathPosition.Num(); i++) {
+		//FHitResult hitInfo;
+		//TArray<FVector> pathPosition;
+		//FVector lastTrace;
+		//TArray<AActor*> params;
+		//params.Add(this);
+		//UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), hitInfo, pathPosition, lastTrace, compLeftCon->GetComponentLocation(),
+		//	fireVelocity, false, 5.0f, ECC_WorldDynamic, false, params, EDrawDebugTrace::None, 1.0f, 15.0f, 1.0f, 0.0f);
+		FPredictProjectilePathParams params;
+		params.StartLocation = compLeftCon->GetComponentLocation();
+		params.LaunchVelocity = fireVelocity;
+		params.bTraceWithCollision = false;
+		params.bTraceComplex = false;
+		params.DrawDebugType = EDrawDebugTrace::ForDuration;
+		params.DrawDebugTime = 1.0f;
+		params.SimFrequency = 15.0f;
+		params.OverrideGravityZ = 0.0f;
+		params.TraceChannel = ECC_WorldDynamic; // Trace by channel
+		FPredictProjectilePathResult PredictResult;
+		bool bHit = UGameplayStatics::PredictProjectilePath(GetWorld(), params, PredictResult);
+		PredictResult.PathData;
+		
+		for (const FPredictProjectilePathPointData& PathPoint : PredictResult.PathData)
+		{
+			AActor* prediction = GetWorld()->SpawnActor<APredictionObject>(pathFactory, PathPoint.Location, FRotator(0.0f));
+			APredictionObject* path = Cast<APredictionObject>(prediction);
+			path->mesh->SetCollisionProfileName(TEXT("NoCollision"));
+		}
+		/*for (int32 i = 0; i < pathPosition.Num(); i++) {
 			AActor* prediction = GetWorld()->SpawnActor<APredictionObject>(pathFactory, pathPosition[i], FRotator(0));
 			prediction->SetActorRelativeScale3D(FVector(0.01f));
-		}
+		}*/
 	}
 }
 
@@ -203,7 +222,7 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	if (EnhancedInputComponent != nullptr)
 	{
 		//새 스킬들 사용 ---> 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용
-		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Ongoing, this, &ARIM_Player::readyShoot);
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::readyShoot);
 		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Completed, this, &ARIM_Player::shootBird);
 		//발사 함수 실행 ---> 만약 트리거 이면 조건 코드 추가 필요...?
 		//용일님 코드
@@ -220,7 +239,7 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 
-	//일정 시간 지난 후 첫번째 새 노출
+//일정 시간 지난 후 첫번째 새 노출
 // void ARIM_Player::birdSetting()
 // {
 // 	//blueBird->meshBlue->SetVisibility(true);
@@ -229,46 +248,8 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 //스킬 사용
 void ARIM_Player::InputSkill()
 {
-// 	FString msg = FString(__FUNCTION__); //확인용 로그
-// 	logRight->SetText(FText::FromString(msg)); //확인용 로그
-// 
-// 	FRotator actorRot;
-// 
-// 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, GetActorRotation());
-// 	
-// 	actorRot = GetActorRotation();
-// 	actorRot.Yaw -= 30;
-// 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, actorRot);
-// 	
-// 	actorRot = GetActorRotation();
-// 	actorRot.Yaw += 30;
-// 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, GetActorLocation() + GetActorForwardVector() * 200, actorRot);
-
-// 	if () //노란새 스킬 사용 조건
-// 	{
-// 		UE_LOG(LogTemp, Warning, TEXT("Yellow Skill -----> Fire !!!!!!!!!!"));
-// 
-// 	
-// 
-// 	}
-// 	else if () //파란새 스킬 사용 조건
-// 	{
-// 		UE_LOG(LogTemp, Warning, TEXT("Blue Skill -----> Fire !!!!!!!!!!"));
-// 
-// 		BlueSkill();
-// 		//★★★ 한 번 스킬 사용하고 사용 못하게 하는 코드 추가 필요
-// 
-// 	}
-// 	else if () //검은새 스킬 사용 조건
-// 	{
-// 		UE_LOG(LogTemp, Warning, TEXT("Black Skill -----> Fire !!!!!!!!!!"));
-// 
-// 		BlackSkill();
-// 		//★★★ 한 번 스킬 사용하고 사용 못하게 하는 코드 추가 필요
-// 
-// 	}
-
-	
+	birdYellow = Cast<AKYI_AngryChuck>(UGameplayStatics::GetActorOfClass(GetWorld(), yellowFactory));
+	birdBlack = Cast<ARIM_BirdBlack>(UGameplayStatics::GetActorOfClass(GetWorld(), blackFactory));
 }
 
 
@@ -278,21 +259,21 @@ void ARIM_Player::BlueSkill() {
 
 	birdBlue = GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, compLeftCon->GetComponentLocation() + GetActorForwardVector() * 200, GetActorRotation());
 
-	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 2000, actorRot);
 	actorRot = birdBlue->GetActorRotation();
 	actorRot.Yaw -= 30;
+	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 2000, actorRot);
 
 	actorRot = birdBlue->GetActorRotation();
 	actorRot.Yaw += 30;
 	GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, birdBlue->GetActorLocation() + birdBlue->GetActorForwardVector() * 2000, actorRot);
 }
 
-
+//노란새 스킬
 void ARIM_Player::YellowSkill() {
-	yellowBird = Cast<AKYI_AngryChuck>(UGameplayStatics::GetActorOfClass(GetWorld(), AKYI_AngryChuck::StaticClass()));
-	if (yellowBird) {
-		FVector speed = yellowBird->sphereComp->GetPhysicsLinearVelocity();
-		yellowBird->sphereComp->AddImpulse(speed* power);
+	birdYellow = Cast<AKYI_AngryChuck>(UGameplayStatics::GetActorOfClass(GetWorld(), yellowFactory));
+	if (birdYellow) {
+		FVector speed = birdYellow->sphereComp->GetPhysicsLinearVelocity();
+		birdYellow->sphereComp->AddImpulse(speed * power);
 	}
 }
 
@@ -301,7 +282,7 @@ void ARIM_Player::BlackSkill()
 {
 	AActor* tempActor = UGameplayStatics::GetActorOfClass(GetWorld(), blackFactory);
 	birdBlack = Cast<ARIM_BirdBlack>(tempActor);
-	if (birdBlack){
+	if (birdBlack) {
 		birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
 		birdBlack->Destroy(); //새가 터진다. 없어진다
 	}
@@ -314,25 +295,26 @@ void ARIM_Player::readyShoot() {
 
 void ARIM_Player::shootBird() {
 	bShouldPredict = false;
+	FVector position = compLeftCon->GetComponentLocation();
 	switch (birdCount) {
-	case 0: 
-		birdRed = GetWorld()->SpawnActor<AKYI_AngryRed>(redFactory, compLeftCon->GetComponentLocation(), GetActorRotation());
-		birdRed->sphereComp->AddImpulse(fireVelocity);
+	case 0:
+		birdRed = GetWorld()->SpawnActor<AKYI_AngryRed>(redFactory, position, GetActorRotation());
+		birdRed->sphereComp->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
 		birdCount++;
 		break;
 	case 1:
-		birdYellow = GetWorld()->SpawnActor<AKYI_AngryChuck>(yellowFactory, compLeftCon->GetComponentLocation(), GetActorRotation());
-		birdYellow->sphereComp->AddImpulse(fireVelocity);
+		birdYellow = GetWorld()->SpawnActor<AKYI_AngryChuck>(yellowFactory, position, GetActorRotation());
+		birdYellow->sphereComp->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
 		birdCount++;
 		break;
 	case 2:
-		birdBlue = GetWorld()->SpawnActor<ARIM_BirdBlue>(blackFactory, compLeftCon->GetComponentLocation(), GetActorRotation());
-		birdBlue->compCollision->AddImpulse(fireVelocity);
+		birdBlue = GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, position, GetActorRotation());
+		birdBlue->compCollision->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
 		birdCount++;
 		break;
 	case 3:
-		birdBlack = GetWorld()->SpawnActor<ARIM_BirdBlack>(blackFactory, compLeftCon->GetComponentLocation(), GetActorRotation());
-		birdBlack->compCollision->AddImpulse(fireVelocity);
+		birdBlack = GetWorld()->SpawnActor<ARIM_BirdBlack>(blackFactory, position, GetActorRotation());
+		birdBlack->compCollision->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
 		birdCount = 0;
 		break;
 	}
