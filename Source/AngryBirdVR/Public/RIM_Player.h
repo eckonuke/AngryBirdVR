@@ -40,8 +40,6 @@ public:
 	//모션 컨트롤러
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UMotionControllerComponent* compLeftCon;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UWidgetInteractionComponent* compWidgetPointer_left;
 	//메시
  	UPROPERTY(EditAnywhere, BlueprintReadWrite)
  	class UStaticMeshComponent* meshLeftHand; //▶스켈레탈메시
@@ -50,20 +48,23 @@ public:
 	//로그
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UTextRenderComponent* logLeft;
+	//컨트롤러에 붙인 포인터(선)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWidgetInteractionComponent* compWidgetPointer_left;
 
 	//[오른손]
 	//모션 컨트롤러
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UMotionControllerComponent* compRightCon;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UWidgetInteractionComponent* compWidgetPointer_right;
-		
 	//메시
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USkeletalMeshComponent* meshRightHand; //▶스켈레탈메시
 	//로그
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UTextRenderComponent* logRight;
+	//컨트롤러에 붙인 포인터(선)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWidgetInteractionComponent* compWidgetPointer_right;
 
 public:
 	//헤드 장비의 기준 위치 설정
@@ -94,27 +95,25 @@ public:
 	//MoveComponent 를 Player 에 추가
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class URIM_MoveComponent* compMove;
-	//WidgetPointerComponent 를 Player 에 추가. (위젯. 레이저 포인터로 가르켜서 누른다)
+
+	//WidgetPointerComponent 를 Player 에 추가. (위젯! 레이저 포인터로 가르켜서 누른다. 레이저 포인터 아님)
 	UPROPERTY(EditAnywhere)
-		class URIM_WidgetPointerComponent* widgetComp;
-	//발사Component 를 Player 에 추가
-	//UPROPERTY(EditAnywhere)
-	//용일님 코드
+	class URIM_WidgetPointerComponent* widgetComp; //RIM_WidgetPointerComponent 컴포넌트. 포인터가 작동하기 위해 필요 ---> 용일님 추가
 
 
  public:
-	 //파란새
-	 UPROPERTY()
-		 class AKYI_AngryRed* birdRed;
-	 //파란새(총알)
-	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		 TSubclassOf<class AKYI_AngryRed> redFactory;
-	 //파란새
-	 UPROPERTY()
-		 class AKYI_AngryChuck* birdYellow;
-	 //파란새(총알)
-	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		 TSubclassOf<class AKYI_AngryChuck> yellowFactory;
+	//레드 ---> 용일님 추가
+	UPROPERTY()
+	class AKYI_AngryRed* birdRed;
+	//레드(총알) ---> 용일님 추가
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AKYI_AngryRed> redFactory;
+	//옐로 ---> 용일님 추가
+	UPROPERTY()
+	class AKYI_AngryChuck* birdYellow;
+	//옐로(총알) ---> 용일님 추가
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AKYI_AngryChuck> yellowFactory;
  	//파란새
 	UPROPERTY()
 	class ARIM_BirdBlue* birdBlue;
@@ -128,32 +127,36 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ARIM_BirdBlack> blackFactory;
 
-	//경로 공장
+	//경로 공장 ---> 용일님 추가
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class APredictionObject> pathFactory;
+
 public:
 	//스킬 사용
 	void InputSkill();
 	//파란새 스킬
 	void BlueSkill();
-	//노란새 스킬
+	//노란새 스킬 ---> 용일님 추가
 	void YellowSkill();
 	//검은새 스킬
 	void BlackSkill();
-	//발사 준비
+	//발사 준비 ---> 용일님 추가
 	void readyShoot();
-	//발사
+	//발사 ---> 용일님 추가
 	void shootBird();
-	//발사 취소
+	//발사 취소 ---> 용일님 추가
 	void cancelShoot();
 
+	//아래 코드 용일님 추가
 	float score = 0;
 	int32 birdCount = 3;
 	int32 redCount = 1;
 	int32 blueCount = 1;
 	int32 yellowCount = 1;
 	int32 blackCount = 1;
+
 private:
+	//아래 코드 용일님 추가
 	bool bShouldPredict = false;
 	bool bWillShoot = true;
 	FVector rightHandPosition;
@@ -161,4 +164,5 @@ private:
 	float power = 1000;
 	float cancelLength = 0;
 	float cancelRange = 10;
+
 };

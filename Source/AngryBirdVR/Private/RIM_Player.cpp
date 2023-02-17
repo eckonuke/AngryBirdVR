@@ -19,6 +19,7 @@
 #include "PredictionObject.h"
 #include <UMG/Public/Components/WidgetInteractionComponent.h>
 #include "RIM_WidgetPointerComponent.h"
+#include "AngryBirdVR_GameModeBase.h"
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -48,17 +49,17 @@ ARIM_Player::ARIM_Player()
 	compLeftCon->SetupAttachment(RootComponent); //루트컴포넌트 자식으로 세팅
 	compWidgetPointer_left = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Left Widget Pointer"));
 	compWidgetPointer_left->SetupAttachment(compLeftCon);
-	////메시(스켈레탈)
-	//meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
-	//meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
-	//ConstructorHelpers::FObjectFinder<USkeletalMesh> tempLeftHand(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/MannequinsXR/Meshes/SKM_MannyXR_left.SKM_MannyXR_left'")); //▶엔진 기본 에셋 사용. 추후 변경
-	//if (tempLeftHand.Succeeded())
-	//{
-	//	meshLeftHand->SetSkeletalMesh(tempLeftHand.Object);
-	//}
-	//meshLeftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
-	//meshLeftHand->SetRelativeLocation(FVector(0, -20, 0)); //▶필요 시 추후 변경 
-	//meshLeftHand->SetRelativeRotation(FRotator(-25.0f, 180.0f, 90.0f)); //▶필요 시 추후 변경 
+	//메시(스켈레탈)
+// 	meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
+// 	meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
+// 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempLeftHand(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/MannequinsXR/Meshes/SKM_MannyXR_left.SKM_MannyXR_left'")); //▶엔진 기본 에셋 사용. 추후 변경
+// 	if (tempLeftHand.Succeeded())
+// 	{
+// 		meshLeftHand->SetSkeletalMesh(tempLeftHand.Object);
+// 	}
+// 	meshLeftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
+// 	meshLeftHand->SetRelativeLocation(FVector(0, -20, 0)); //▶필요 시 추후 변경 
+// 	meshLeftHand->SetRelativeRotation(FRotator(-25.0f, 180.0f, 90.0f)); //▶필요 시 추후 변경 
 
 	//메시(테스트총)
 // 	meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
@@ -94,6 +95,9 @@ ARIM_Player::ARIM_Player()
 	//logLeft >SetVerticalAlignment(EVRTA_TextCenter);
 	//모션 소스 선택
 	compLeftCon->MotionSource = "Left"; //★★★???
+	//컨트롤러에 붙인 포인터(선). UWidgetInteractionComponent 추가. 
+	compWidgetPointer_left = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Widget Pointer Left"));
+	compWidgetPointer_left->SetupAttachment(compLeftCon);
 
 	//[오른손]
 	//컨트롤러
@@ -121,6 +125,9 @@ ARIM_Player::ARIM_Player()
 	//logRight > SetVerticalAlignment(EVRTA_TextCenter);
 	//모션 소스 선택
 	compRightCon->MotionSource = "Right"; //★★★???
+	//컨트롤러에 붙인 포인터(선). UWidgetInteractionComponent 추가. 
+	compWidgetPointer_right = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Widget Pointer Right"));
+	compWidgetPointer_right->SetupAttachment(compLeftCon);
 
 	//[컨트롤러]
 	//axis 값을 이용해서 캐릭터(컨트롤러)를 회전한다
@@ -146,11 +153,12 @@ ARIM_Player::ARIM_Player()
 
 
 	//[플레이어에 액터 컴포넌트 추가]
-	//MoveComponent 추가
+	//이동, 텔레포트 관련
 	compMove = CreateDefaultSubobject<URIM_MoveComponent>(TEXT("MoveComponent"));
+	//위젯 관련
 	widgetComp = CreateDefaultSubobject<URIM_WidgetPointerComponent>(TEXT("Widget Component"));
-	//발사Component 추가
-	//용일님 코드
+
+
 }
 
 // Called when the game starts or when spawned
@@ -167,11 +175,14 @@ void ARIM_Player::BeginPlay()
 	//3. 가져온 Subsystem 에 IMC 를 등록한다.(우선순위 0번)
 	subsys->AddMappingContext(vrMapping, 0);
 
-	birdCount = 3;
+	birdCount = 3; // ---> 용일님 추가
 
-	//일정 시간 지난 후 첫번째 새 노출
-// 	FTimerHandle settingTimer;
-// 	GetWorld()->GetTimerManager().SetTimer(settingTimer, this, &ARIM_Player::birdSetting, delaySettingTime, false); //타이머
+	//아래 코드 용일님 추가
+	//게임모드 케스팅 
+	AAngryBirdVR_GameModeBase* gameMode = Cast<AAngryBirdVR_GameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	//불러온 게임모드한테 플레이어가 나라고 알려 줌
+	gameMode->player = this;
+
 
 }
 
@@ -222,31 +233,33 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	if (EnhancedInputComponent != nullptr)
 	{
 		//새 스킬들 사용 ---> 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용
-		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::readyShoot);
-		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Completed, this, &ARIM_Player::shootBird);
-		//발사 함수 실행 ---> 만약 트리거 이면 조건 코드 추가 필요...?
-		//용일님 코드
-		EnhancedInputComponent->BindAction(leftX, ETriggerEvent::Started, this, &ARIM_Player::cancelShoot);
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::readyShoot); // ---> 용일님 추가
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Completed, this, &ARIM_Player::shootBird); // ---> 용일님 추가
+
+		EnhancedInputComponent->BindAction(leftX, ETriggerEvent::Started, this, &ARIM_Player::cancelShoot); // ---> 용일님 추가
 
 
 		//테스트 ---> 파란새 스킬
-		//EnhancedInputComponent->BindAction(rightA, ETriggerEvent::Started, this, &ARIM_Player::BlueSkill);
+		//EnhancedInputComponent->BindAction(rightA, ETriggerEvent::Started, this, &ARIM_Player::BlueSkill); // ---> 용일님 수정
 		//테스트 ---> 검은새 스킬
-		EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::InputSkill);
+		//EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::BlackSkill); // ---> 용일님 수정
+		EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::InputSkill); // ---> 용일님 수정. 위에 코드를 수정
+		
+
 		//이동 함수 실행 ---> 오른손 트리거
 		compMove->SetupPlayerInputComponent(EnhancedInputComponent);
-		widgetComp->SetupPlayerInputComponent(EnhancedInputComponent); //RIM_WidgetPointerComponent
+
+		//위젯 포인터 사용 ---> 오른손/왼손 트리거
+		//compWidgetPointer_right->SetupPlayerInputComponent(EnhancedInputComponent); // ----> 이거 아님
+		//compWidgetPointer_left->SetupPlayerInputComponent(EnhancedInputComponent); // ----> 이거 아님
+		widgetComp->SetupPlayerInputComponent(EnhancedInputComponent); //RIM_WidgetPointerComponent 컴포넌트. 포인터가 작동하기 위해 필요 ---> 용일님 추가
+
+
 	}
 }
 
 
-//일정 시간 지난 후 첫번째 새 노출
-// void ARIM_Player::birdSetting()
-// {
-// 	//blueBird->meshBlue->SetVisibility(true);
-// }
-
-//스킬 사용
+//스킬 사용 ---> 용일님 전체 수정
 void ARIM_Player::InputSkill()
 {
 	birdYellow = Cast<AKYI_AngryChuck>(UGameplayStatics::GetActorOfClass(GetWorld(), yellowFactory));
@@ -264,7 +277,7 @@ void ARIM_Player::InputSkill()
 }
 
 
-//파란새 스킬
+//파란새 스킬 ---> 용일님 수정
 void ARIM_Player::BlueSkill() {
 	FRotator actorRot;
 	ARIM_BirdBlue* tempBlue;
@@ -281,7 +294,7 @@ void ARIM_Player::BlueSkill() {
 	thirdBlue->compCollision->AddImpulse(birdBlue->compCollision->GetPhysicsLinearVelocity(), FName("NAME_NONE"), true);
 }
 
-//노란새 스킬
+//노란새 스킬 ---> 용일님 추가
 void ARIM_Player::YellowSkill() {
 	birdYellow = Cast<AKYI_AngryChuck>(UGameplayStatics::GetActorOfClass(GetWorld(), yellowFactory));
 	if (birdYellow) {
@@ -290,22 +303,26 @@ void ARIM_Player::YellowSkill() {
 	}
 }
 
-//검은새 스킬
+//검은새 스킬 
 void ARIM_Player::BlackSkill()
 {
-	AActor* tempActor = UGameplayStatics::GetActorOfClass(GetWorld(), blackFactory);
-	birdBlack = Cast<ARIM_BirdBlack>(tempActor);
-	if (birdBlack) {
+	AActor* tempActor = UGameplayStatics::GetActorOfClass(GetWorld(), blackFactory); //---> 용일님 추가
+	birdBlack = Cast<ARIM_BirdBlack>(tempActor); //---> 용일님 추가
+	
+	// 아래 코드 중 if 조건 용일님 추가
+	if (birdBlack) { 
 		birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
 		birdBlack->Destroy(); //새가 터진다. 없어진다
 	}
 }
 
+//아래 코드 용일님 추가
 void ARIM_Player::readyShoot() {
 	bShouldPredict = true;
 	bWillShoot = true;
 }
 
+//아래 코드 용일님 추가
 void ARIM_Player::shootBird() {
 	if (!bWillShoot) {
 		return;
@@ -335,6 +352,7 @@ void ARIM_Player::shootBird() {
 	}
 }
 
+//아래 코드 용일님 추가
 void ARIM_Player::cancelShoot() {
 	bWillShoot = false;
 	bShouldPredict = false;
