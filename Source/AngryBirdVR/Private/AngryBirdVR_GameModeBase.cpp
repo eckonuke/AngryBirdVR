@@ -20,9 +20,6 @@ void AAngryBirdVR_GameModeBase::BeginPlay() //추가
 	Super::BeginPlay();
 
 	//플레이어
-	player = Cast<ARIM_Player>(GetOwner());
-
-
 }
 
 void AAngryBirdVR_GameModeBase::Tick(float DeltaTime) //추가
@@ -30,18 +27,17 @@ void AAngryBirdVR_GameModeBase::Tick(float DeltaTime) //추가
 	Super::Tick(DeltaTime);
 
 	currentTime += DeltaTime;
+	if (player) {
+		if (player->birdCount == 0 || EnemyAllDie == true) //새가 0개 이거나 적이 다 죽으면
+		{
+			if (currentTime < 2) //2초 지나고
+			{
+				//점수 위젯을 보여준다
+				GetWorld()->SpawnActor<ARIM_WidgetInGameScoreActor>(ARIM_WidgetInGameScoreActor::StaticClass(), player->GetActorLocation() + player->GetActorForwardVector() * 200, FRotator(0.0f, 180.0f, 0.0f)); //★★★★★★
 
-	//if (player->birdCount == 0 || EnemyAllDie == true) //새가 0개 이거나 적이 다 죽으면
-	//{
-	//	if (currentTime < 2) //2초 지나고
-	//	{
-	//		//점수 위젯을 보여준다
-	//		GetWorld()->SpawnActor<ARIM_WidgetInGameScoreActor>(ARIM_WidgetInGameScoreActor::StaticClass(), player->GetActorLocation() + player->GetActorForwardVector()* 200, FRotator(0.0f, 180.0f, 0.0f)); //★★★★★★
-
-	//	}
-	//}
-
-
+			}
+		}
+	}
 }
 
 

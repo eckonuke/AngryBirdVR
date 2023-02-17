@@ -19,6 +19,7 @@
 #include "PredictionObject.h"
 #include <UMG/Public/Components/WidgetInteractionComponent.h>
 #include "RIM_WidgetPointerComponent.h"
+#include "AngryBirdVR_GameModeBase.h"
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -168,6 +169,9 @@ void ARIM_Player::BeginPlay()
 	subsys->AddMappingContext(vrMapping, 0);
 
 	birdCount = 3;
+
+	AAngryBirdVR_GameModeBase* gameMode = Cast<AAngryBirdVR_GameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	gameMode->player = this;
 
 	//일정 시간 지난 후 첫번째 새 노출
 // 	FTimerHandle settingTimer;
