@@ -37,7 +37,7 @@ AKYI_AngryRed::AKYI_AngryRed()
 void AKYI_AngryRed::BeginPlay()
 {
 	Super::BeginPlay();
-	//UGameplayStatics::GetAllActorsOfClass
+	SetLifeSpan(5);
 }
 
 // Called every frame

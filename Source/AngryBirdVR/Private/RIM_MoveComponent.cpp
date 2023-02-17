@@ -31,7 +31,7 @@ void URIM_MoveComponent::BeginPlay()
 
 	//플레이어 클레스 캐싱
 	player = Cast<ARIM_Player>(GetOwner()); //인클루드
-	
+	currentWorld = GetWorld();
 	
 }
 
@@ -147,7 +147,15 @@ void URIM_MoveComponent::rightTriggerHideLine()
 	bIsShowLine = false; //라인 안 보인다
 	if (position != nullptr) {
 		TeleportFade();
-		Teleport();
+		//1초 뒤에 Teleport를 실행해야한다
+		//////////////////////김용일 수정//////////////////
+		FTimerHandle WaitHandle;
+		float WaitTime = 1;
+		currentWorld->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+			{
+				Teleport();
+			}), WaitTime, false); //반복도 여기서 추가 변수를 선언해 설정가능
+		//////////////////////김용일 수정//////////////////
 	}
 }
 
@@ -156,8 +164,8 @@ void URIM_MoveComponent::TeleportFade()
 {
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraFade(0, 1.0f, 1.0f, FLinearColor::Black);
 
-	FTimerHandle fadeTimer; //매개변수. 전달자 용도
-	GetWorld()->GetTimerManager().SetTimer(fadeTimer, this, &URIM_MoveComponent::Teleport, 1.0f, false); //타이머
+	//FTimerHandle fadeTimer; //매개변수. 전달자 용도
+	//currentWorld->GetTimerManager().SetTimer(fadeTimer, this, &URIM_MoveComponent::Teleport, 1.0f, false); //타이머
 }
 
 

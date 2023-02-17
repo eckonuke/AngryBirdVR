@@ -42,7 +42,7 @@ public:
 	class UMotionControllerComponent* compLeftCon;
 	//메시
  	UPROPERTY(EditAnywhere, BlueprintReadWrite)
- 	class USkeletalMeshComponent* meshLeftHand; //▶스켈레탈메시
+ 	class UStaticMeshComponent* meshLeftHand; //▶스켈레탈메시
 /* 	UPROPERTY(EditAnywhere)
  	class UStaticMeshComponent* meshLeftHand;*/ //▶스태틱메시
 	//로그
@@ -70,7 +70,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UInputMappingContext* vrMapping;
 
-	//Input Action. 오른손 그립. 새 스킬들 사용 ★★★실제 게임에서는 오른손 트리거 사용 ---> 테스트
+	//Input Action. 오른손 그립. 새 스킬 사용 ★★★실제 게임에서는 오른손 트리거 사용 ---> 테스트
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	class UInputAction* rightGrip;
 
@@ -81,7 +81,8 @@ public:
 	//검은새 스킬 ---> 테스트
 	UPROPERTY(EditAnywhere)
 	class UInputAction* rightB;
-
+	UPROPERTY(EditAnywhere)
+	class UInputAction* leftX;
 
 public:
 	//[플레이어에 액터컴포넌트 추가]
@@ -89,44 +90,68 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class URIM_MoveComponent* compMove;
 
-	//WidgetPointerComponent 를 Player 에 추가. (위젯. 레이저 포인터로 가르켜서 누른다)
-	UPROPERTY(EditAnywhere)
-	class URIM_WidgetPointerComponent* widgetComp; //RIM_WidgetPointerComponent 컴포넌트. 포인터가 작동하기 위해 필요 ---> 용일님 추가
-	UPROPERTY(EditAnywhere)
-	class UWidgetInteractionComponent* compWidgetPointer_right; //컨트롤러에 붙인 포인터(선)
-	UPROPERTY(EditAnywhere)
-	class UWidgetInteractionComponent* compWidgetPointer_left; //컨트롤러에 붙인 포인터(선)
+	//발사Component 를 Player 에 추가
+	//UPROPERTY(EditAnywhere)
+	//용일님 코드
 
 
  public:
+	 //파란새
+	 UPROPERTY()
+		 class AKYI_AngryRed* birdRed;
+	 //파란새(총알)
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		 TSubclassOf<class AKYI_AngryRed> redFactory;
+	 //파란새
+	 UPROPERTY()
+		 class AKYI_AngryChuck* birdYellow;
+	 //파란새(총알)
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		 TSubclassOf<class AKYI_AngryChuck> yellowFactory;
  	//파란새
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
 	class ARIM_BirdBlue* birdBlue;
-
 	//파란새(총알)
  	UPROPERTY(EditAnywhere, BlueprintReadWrite)
  	TSubclassOf<class ARIM_BirdBlue> blueFactory;
-
 	//검은새
 	UPROPERTY()
 	class ARIM_BirdBlack* birdBlack;
-
 	//검은새(총알)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ARIM_BirdBlack> blackFactory;
 
-
+	//경로 공장
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class APredictionObject> pathFactory;
 public:
-	//Input Action. 오른손 그립. 새 스킬들 사용 ★★★실제 게임에서는 오른손 트리거 사용 ---> 테스트
+	//스킬 사용
 	void InputSkill();
-
 	//파란새 스킬
 	void BlueSkill();
-
+	//노란새 스킬
+	void YellowSkill();
 	//검은새 스킬
 	void BlackSkill();
+	//발사 준비
+	void readyShoot();
+	//발사
+	void shootBird();
+	//발사 취소
+	void cancelShoot();
 
-	void PredictionPath();
-
-	int32 birdCount = 0;
+	float score = 0;
+	int32 birdCount = 3;
+	int32 redCount = 1;
+	int32 blueCount = 1;
+	int32 yellowCount = 1;
+	int32 blackCount = 1;
+private:
+	bool bShouldPredict = false;
+	bool bWillShoot = true;
+	FVector rightHandPosition;
+	FVector fireVelocity;
+	float power = 1000;
+	float cancelLength = 0;
+	float cancelRange = 10;
 };
