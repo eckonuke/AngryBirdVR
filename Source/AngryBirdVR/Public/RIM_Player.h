@@ -40,6 +40,8 @@ public:
 	//모션 컨트롤러
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UMotionControllerComponent* compLeftCon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWidgetInteractionComponent* compWidgetPointer_left;
 	//메시
  	UPROPERTY(EditAnywhere, BlueprintReadWrite)
  	class UStaticMeshComponent* meshLeftHand; //▶스켈레탈메시
@@ -53,6 +55,9 @@ public:
 	//모션 컨트롤러
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UMotionControllerComponent* compRightCon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWidgetInteractionComponent* compWidgetPointer_right;
+		
 	//메시
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USkeletalMeshComponent* meshRightHand; //▶스켈레탈메시
@@ -89,7 +94,9 @@ public:
 	//MoveComponent 를 Player 에 추가
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class URIM_MoveComponent* compMove;
-
+	//WidgetPointerComponent 를 Player 에 추가. (위젯. 레이저 포인터로 가르켜서 누른다)
+	UPROPERTY(EditAnywhere)
+		class URIM_WidgetPointerComponent* widgetComp;
 	//발사Component 를 Player 에 추가
 	//UPROPERTY(EditAnywhere)
 	//용일님 코드

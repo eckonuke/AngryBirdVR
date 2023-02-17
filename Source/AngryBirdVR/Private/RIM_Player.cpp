@@ -17,6 +17,8 @@
 #include <Kismet/GameplayStatics.h>
 #include <Components/SphereComponent.h>
 #include "PredictionObject.h"
+#include <UMG/Public/Components/WidgetInteractionComponent.h>
+#include "RIM_WidgetPointerComponent.h"
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -44,6 +46,8 @@ ARIM_Player::ARIM_Player()
 	//컨트롤러
 	compLeftCon = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("LeftController")); //플레이어에 컴포넌트 추가
 	compLeftCon->SetupAttachment(RootComponent); //루트컴포넌트 자식으로 세팅
+	compWidgetPointer_left = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Left Widget Pointer"));
+	compWidgetPointer_left->SetupAttachment(compLeftCon);
 	////메시(스켈레탈)
 	//meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
 	//meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
@@ -95,6 +99,8 @@ ARIM_Player::ARIM_Player()
 	//컨트롤러
 	compRightCon = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("RightController")); //플레이어에 컴포넌트 추가. MotionControllerComponent 인클루드
 	compRightCon->SetupAttachment(RootComponent); //루트컴포넌트 자식으로 세팅
+	compWidgetPointer_right= CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Right Widget Pointer"));
+	compWidgetPointer_right->SetupAttachment(compRightCon);
 	//메시
 	meshRightHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RightHand")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드. ▶추후변경(현재 스켈레탈메시)
 	meshRightHand->SetupAttachment(compRightCon); //오른손 컨트롤러 자식으로 세팅
@@ -142,7 +148,7 @@ ARIM_Player::ARIM_Player()
 	//[플레이어에 액터 컴포넌트 추가]
 	//MoveComponent 추가
 	compMove = CreateDefaultSubobject<URIM_MoveComponent>(TEXT("MoveComponent"));
-
+	widgetComp = CreateDefaultSubobject<URIM_WidgetPointerComponent>(TEXT("Widget Component"));
 	//발사Component 추가
 	//용일님 코드
 }
@@ -229,6 +235,7 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::InputSkill);
 		//이동 함수 실행 ---> 오른손 트리거
 		compMove->SetupPlayerInputComponent(EnhancedInputComponent);
+		widgetComp->SetupPlayerInputComponent(EnhancedInputComponent); //RIM_WidgetPointerComponent
 	}
 }
 
