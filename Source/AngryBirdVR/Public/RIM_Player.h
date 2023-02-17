@@ -70,7 +70,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UInputMappingContext* vrMapping;
 
-	//Input Action. 오른손 그립. 새 스킬 사용 ★★★실제 게임에서는 오른손 트리거 사용 ---> 테스트
+	//Input Action. 오른손 그립. 새 스킬들 사용 ★★★실제 게임에서는 오른손 트리거 사용 ---> 테스트
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	class UInputAction* rightGrip;
 
@@ -89,9 +89,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class URIM_MoveComponent* compMove;
 
-	//발사Component 를 Player 에 추가
-	//UPROPERTY(EditAnywhere)
-	//용일님 코드
+	//WidgetPointerComponent 를 Player 에 추가. (위젯. 레이저 포인터로 가르켜서 누른다)
+	UPROPERTY(EditAnywhere)
+	class URIM_WidgetPointerComponent* widgetComp; //RIM_WidgetPointerComponent 컴포넌트. 포인터가 작동하기 위해 필요 ---> 용일님 추가
+	UPROPERTY(EditAnywhere)
+	class UWidgetInteractionComponent* compWidgetPointer_right; //컨트롤러에 붙인 포인터(선)
+	UPROPERTY(EditAnywhere)
+	class UWidgetInteractionComponent* compWidgetPointer_left; //컨트롤러에 붙인 포인터(선)
 
 
  public:
@@ -113,7 +117,7 @@ public:
 
 
 public:
-	//스킬 사용
+	//Input Action. 오른손 그립. 새 스킬들 사용 ★★★실제 게임에서는 오른손 트리거 사용 ---> 테스트
 	void InputSkill();
 
 	//파란새 스킬
@@ -123,4 +127,6 @@ public:
 	void BlackSkill();
 
 	void PredictionPath();
+
+	int32 birdCount = 0;
 };

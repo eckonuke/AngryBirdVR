@@ -15,6 +15,9 @@
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h>
 #include <Components/TextRenderComponent.h>
 #include <Kismet/GameplayStatics.h>
+#include "Components/WidgetInteractionComponent.h"
+#include "RIM_WidgetPointerComponent.h"
+#include "RIM_WidgetInGameScore.h"
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -88,6 +91,9 @@ ARIM_Player::ARIM_Player()
 	//logLeft >SetVerticalAlignment(EVRTA_TextCenter);
 	//모션 소스 선택
 	compLeftCon->MotionSource = "Left"; //★★★???
+	//컨트롤러에 붙인 포인터(선). UWidgetInteractionComponent 추가. 
+	compWidgetPointer_left = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Widget Pointer Left"));
+	compWidgetPointer_left->SetupAttachment(compLeftCon);
 
 	//[오른손]
 	//컨트롤러
@@ -113,6 +119,9 @@ ARIM_Player::ARIM_Player()
 	//logRight > SetVerticalAlignment(EVRTA_TextCenter);
 	//모션 소스 선택
 	compRightCon->MotionSource = "Right"; //★★★???
+	//컨트롤러에 붙인 포인터(선) . UWidgetInteractionComponent 추가
+	compWidgetPointer_right = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Widget Pointer Right")); 
+	compWidgetPointer_right->SetupAttachment(compRightCon);
 
 	//[컨트롤러]
 	//axis 값을 이용해서 캐릭터(컨트롤러)를 회전한다
@@ -120,6 +129,7 @@ ARIM_Player::ARIM_Player()
 
 	//★★★???
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
+
 
 	//파란새 클래스 가져와서 등록. 내가 원하는 때에 스폰하려고 파란새를 변수에 담아 놓음...? ★★★우선 파란새로 진행 ---> 테스트
 	ConstructorHelpers::FClassFinder<ARIM_BirdBlue> tempBlue(TEXT("/Script/Engine.Blueprint'/Game/BluePrints/BP_AngryBlue.BP_AngryBlue_C'")); // 블루프린트 경로. _C'
@@ -134,16 +144,16 @@ ARIM_Player::ARIM_Player()
 	//{
 	//	blackFactory = tempBlack.Class;
 	//}
-
-
+	
+	
 
 	//[플레이어에 액터 컴포넌트 추가]
-	//MoveComponent 추가
-	compMove = CreateDefaultSubobject<URIM_MoveComponent>(TEXT("MoveComponent"));
+	//이동, 텔레포트 관련
+	compMove = CreateDefaultSubobject<URIM_MoveComponent>(TEXT("MoveComponent")); //MoveComponent 추가
+	//위젯 관련
+	widgetComp = CreateDefaultSubobject<URIM_WidgetPointerComponent>(TEXT("Widget Component")); //RIM_WidgetPointerComponent 추가.포인터가 작동하기 위해 필요 ---> 용일님 추가
 
-	//발사Component 추가
-	//용일님 코드
-
+	
 
 }
 
@@ -161,6 +171,11 @@ void ARIM_Player::BeginPlay()
 	//3. 가져온 Subsystem 에 IMC 를 등록한다.(우선순위 0번)
 	subsys->AddMappingContext(vrMapping, 0);
 
+
+	//[위젯]
+	//점수 위젯
+	//uiInGameScoreResult = CreateDefaultSubobject<URIM_WidgetInGameScore>(GetWorld(), scoreWidgetFactory);
+	//uiInGameScoreResult->AddToViewport(); //뷰포트에 붙임
 
 	
 	//일정 시간 지난 후 첫번째 새 노출
@@ -186,19 +201,21 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	if (EnhancedInputComponent != nullptr)
 	{
-		//새 스킬들 사용 ---> 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용
-		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::InputSkill);
-
-		//이동 함수 실행 ---> 오른손 트리거
+		//텔레포트(이동) 함수 실행 ---> 오른손 트리거
 		compMove->SetupPlayerInputComponent(EnhancedInputComponent);
 		
-		//발사 함수 실행 ---> 만약 트리거 이면 조건 코드 추가 필요...?
-		//용일님 코드
+		//위젯 포인터 사용 ---> 오른손/왼손 트리거
+		//compWidgetPointer_right->SetupPlayerInputComponent(EnhancedInputComponent); // ---> 이거 아님
+		//compWidgetPointer_left->SetupPlayerInputComponent(EnhancedInputComponent); // ---> 이거 아님
+		widgetComp->SetupPlayerInputComponent(EnhancedInputComponent); //RIM_WidgetPointerComponent 컴포넌트. 포인터가 작동하기 위해 필요 ---> 용일님 추가
+
+		//새 스킬들 사용 ---> 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::InputSkill);
 
 
 
 		//테스트 ---> 파란새 스킬
-		//EnhancedInputComponent->BindAction(rightA, ETriggerEvent::Started, this, &ARIM_Player::BlueSkill);
+		//EnhancedInputComponent->BindAction(rightA, ETriggerEvent::Started, this, &ARIM_Player::BlueSkill); // ---> 용일님이 주석 처리 함
 		//테스트 ---> 검은새 스킬
 		EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::BlackSkill);
 
@@ -218,7 +235,8 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 // 	//blueBird->meshBlue->SetVisibility(true);
 // }
 
-//스킬 사용
+
+//새 스킬들 사용
 void ARIM_Player::InputSkill()
 {
 // 	FString msg = FString(__FUNCTION__); //확인용 로그
@@ -286,12 +304,12 @@ void ARIM_Player::BlueSkill()
 //검은새 스킬
 void ARIM_Player::BlackSkill()
 {
-	AActor* tempActor = UGameplayStatics::GetActorOfClass(GetWorld(), blackFactory);
-	birdBlack = Cast<ARIM_BirdBlack>(tempActor);
-	if (birdBlack){
+	AActor* tempActor = UGameplayStatics::GetActorOfClass(GetWorld(), blackFactory); // ---> 용일님 추가
+	birdBlack = Cast<ARIM_BirdBlack>(tempActor); // ---> 용일님 추가
+	if (birdBlack){ // ---> 용일님 추가
 		birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
 		birdBlack->Destroy(); //새가 터진다. 없어진다
-	}
+	} // ---> 용일님 추가
 }
 
 
