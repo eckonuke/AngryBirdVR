@@ -14,6 +14,7 @@
 #include "KYI_Glass.h"
 #include <Sound/SoundBase.h>
 #include <Kismet/GameplayStatics.h>
+#include "RIM_Player.h"
 
 // Sets default values
 ARIM_Pig::ARIM_Pig()
@@ -55,6 +56,7 @@ void ARIM_Pig::BeginPlay()
 	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapBird); //새 -----> 적
 	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapObject); //오브젝트(나무, 유리) -----> 적
 	//compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapEnemy) //적 낙하 ★★★일단 오버랩으로 진행. OnComponentHit 추후 확인
+	player = Cast<ARIM_Player>(GetOwner());
 }
 
 // Called every frame
@@ -175,5 +177,6 @@ void ARIM_Pig::ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponen
 void ARIM_Pig::Die()
 {
 	UGameplayStatics::PlaySound2D(GetWorld(), dieSound);
+	player->score += 5000;
 	Destroy();
 }

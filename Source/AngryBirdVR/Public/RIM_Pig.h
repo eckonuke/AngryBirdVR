@@ -61,6 +61,9 @@ public:
 	UPROPERTY()
 	class AKYI_Glass* glass;
 
+	UPROPERTY()
+	class ARIM_Player* player;
+
 public:
 	//»õ
 	UFUNCTION()

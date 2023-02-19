@@ -157,15 +157,15 @@ ARIM_Player::ARIM_Player()
 	if (tempSound.Succeeded()) {
 		slingSound = tempSound.Object;
 	}
-	ConstructorHelpers::FObjectFinder<USoundBase> tempSoundRed(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/SlingShotStretchSound.SlingShotStretchSound'"));
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSoundRed(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/RedBirdFlySound.RedBirdFlySound'"));
 	if (tempSound.Succeeded()) {
 		redSound = tempSoundRed.Object;
 	}
-	ConstructorHelpers::FObjectFinder<USoundBase> tempSoundBlue(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/SlingShotStretchSound.SlingShotStretchSound'"));
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSoundBlue(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/BlueBirdFlySound.BlueBirdFlySound'"));
 	if (tempSound.Succeeded()) {
 		blueSound = tempSoundBlue.Object;
 	}
-	ConstructorHelpers::FObjectFinder<USoundBase> tempSoundYellow(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/SlingShotStretchSound.SlingShotStretchSound'"));
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSoundYellow(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/YellowBirdFlySound.YellowBirdFlySound'"));
 	if (tempSound.Succeeded()) {
 		yellowSound = tempSoundYellow.Object;
 	}
@@ -319,12 +319,6 @@ void ARIM_Player::BlackSkill()
 	}
 }
 
-void ARIM_Player::readyShoot() {
-	bShouldPredict = true;
-	bWillShoot = true;
-	UGameplayStatics::PlaySound2D(GetWorld(), slingSound);
-}
-
 void ARIM_Player::shootBird() {
 	if (!bWillShoot) {
 		return;
@@ -333,21 +327,21 @@ void ARIM_Player::shootBird() {
 	FVector position = compLeftCon->GetComponentLocation();
 	position.Z += 30;
 	if (redCount > 0) {
+		playSound(redSound);
 		birdRed = GetWorld()->SpawnActor<AKYI_AngryRed>(redFactory, position, GetActorRotation());
 		birdRed->sphereComp->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
-		playSound(redSound);
 		redCount--;
 	}
 	else if (yellowCount > 0) {
+		playSound(yellowSound);
 		birdYellow = GetWorld()->SpawnActor<AKYI_AngryChuck>(yellowFactory, position, GetActorRotation());
 		birdYellow->sphereComp->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
-		playSound(yellowSound);
 		yellowCount--;
 	}
 	else if (blueCount > 0) {
+		playSound(blueSound);
 		birdBlue = GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, position, GetActorRotation());
 		birdBlue->compCollision->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
-		playSound(blueSound);
 		blueCount--;
 	}
 	else if (blackCount > 0) {
@@ -356,12 +350,15 @@ void ARIM_Player::shootBird() {
 		blackCount--;
 	}
 }
+
 void ARIM_Player::playSound(USoundBase* sound) {
 	UGameplayStatics::PlaySound2D(GetWorld(), sound);
 }
-
-
-
+void ARIM_Player::readyShoot() {
+	bShouldPredict = true;
+	bWillShoot = true;
+	UGameplayStatics::PlaySound2D(GetWorld(), slingSound);
+}
 void ARIM_Player::cancelShoot() {
 	bWillShoot = false;
 	bShouldPredict = false;
