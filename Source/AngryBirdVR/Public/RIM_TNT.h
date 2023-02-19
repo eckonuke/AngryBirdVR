@@ -51,6 +51,10 @@ public:
 	UPROPERTY()
 	class ARIM_Pig* pig;
 
+	//김용일 터지는 소리 추가
+	UPROPERTY(EditAnywhere)
+	class USoundBase* explosionSound;
+
 	bool redBirdAttack = false;
 	bool yellowBirdAttack = false;
 	bool blueBirdAttack = false;

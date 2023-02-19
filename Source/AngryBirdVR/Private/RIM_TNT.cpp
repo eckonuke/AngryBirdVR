@@ -13,6 +13,8 @@
 #include "KYI_Wood.h"
 #include "KYI_Glass.h"
 #include "RIM_Pig.h"
+#include <Sound/SoundBase.h>
+#include <Kismet/GameplayStatics.h>
 
 
 
@@ -24,7 +26,8 @@ ARIM_TNT::ARIM_TNT()
 
 	compCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	compCollision->SetupAttachment(RootComponent);
-	//compCollision-> //콜리전
+	//콜리전 설정
+	compCollision->SetCollisionProfileName(TEXT("ObjectCollision"));
 
 	meshTNT = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TNT"));
 	meshTNT->SetupAttachment(compCollision);
@@ -35,6 +38,10 @@ ARIM_TNT::ARIM_TNT()
 	}
 	meshTNT->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/TNTExplosionSound.TNTExplosionSound'"));
+	if (tempSound.Succeeded()) {
+		explosionSound = tempSound.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -246,5 +253,6 @@ void ARIM_TNT::ComponentBeginOverlapObject(UPrimitiveComponent* OverlappedCompon
 //폭탄 없어진다
 void ARIM_TNT::Die()
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound);
 	Destroy();
 }

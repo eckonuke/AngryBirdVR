@@ -26,6 +26,8 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 	compCollision->SetCollisionProfileName(TEXT("BlockAll"));
 	compCollision->SetSphereRadius(10); //▶충돌체 크기. 추후 수정
 	compCollision->SetSimulatePhysics(true);
+	//콜리전 설정
+	compCollision->SetCollisionProfileName(TEXT("BirdCollision"));
 
 	//외관
 	meshBlack = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlackBird"));

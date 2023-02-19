@@ -20,6 +20,7 @@ ARIM_BirdBlue::ARIM_BirdBlue()
 	compCollision->SetCollisionProfileName(TEXT("BlockAll"));
 	compCollision->SetSphereRadius(10); //▶충돌체 크기. 추후 수정
 	compCollision->SetSimulatePhysics(true);
+	compCollision->SetCollisionProfileName(TEXT("BirdCollision"));
 
 	//외관
 	meshBlue = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlueBird"));

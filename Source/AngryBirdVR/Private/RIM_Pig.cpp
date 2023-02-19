@@ -12,6 +12,8 @@
 #include <GameFramework/Character.h>
 #include "KYI_Wood.h"
 #include "KYI_Glass.h"
+#include <Sound/SoundBase.h>
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 ARIM_Pig::ARIM_Pig()
@@ -23,7 +25,8 @@ ARIM_Pig::ARIM_Pig()
 	compCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 	compCollision->SetupAttachment(RootComponent);
 	compCollision->SetSphereRadius(80);
-	//compCollision-> //콜리전
+	//콜리전 설정
+	compCollision->SetCollisionProfileName(TEXT("ObjectCollision"));
 
 	//메시
 	compMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Enemy"));
@@ -37,7 +40,11 @@ ARIM_Pig::ARIM_Pig()
 	compMesh->SetRelativeLocation(FVector(0, 0, -50));
 	compMesh->SetWorldRotation(FRotator(0, 0, 90));
 
-
+	//김용일 돼지 죽는소리 추가
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/PigDestroySound.PigDestroySound'"));
+	if (tempSound.Succeeded()) {
+		dieSound = tempSound.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -167,5 +174,6 @@ void ARIM_Pig::ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponen
 //죽음
 void ARIM_Pig::Die()
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), dieSound);
 	Destroy();
 }
