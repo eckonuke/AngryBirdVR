@@ -41,7 +41,10 @@ ARIM_Pig::ARIM_Pig()
 	compMesh->SetRelativeLocation(FVector(0, 0, -45));
 	compMesh->SetWorldRotation(FRotator(0, 0, 90));
 
-
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/PigDestroySound.PigDestroySound'"));
+	if (tempSound.Succeeded()) {
+		dieSound = tempSound.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -172,6 +175,6 @@ void ARIM_Pig::ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponen
 void ARIM_Pig::Die()
 {
 	//player->score += 5000;
-	UGameplayStatics::PlaySound2D(GetWorld(), dieSound, 5);
+	UGameplayStatics::PlaySound2D(GetWorld(), dieSound, 20);
 	Destroy();
 }
