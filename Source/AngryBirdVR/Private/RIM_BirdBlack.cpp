@@ -14,6 +14,7 @@
 #include "KYI_Glass.h"
 #include "RIM_Pig.h"
 #include <Components/SkeletalMeshComponent.h>
+#include <Components/BoxComponent.h>
 
 // Sets default values
 ARIM_BirdBlack::ARIM_BirdBlack()
@@ -54,7 +55,7 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 void ARIM_BirdBlack::BeginPlay()
 {
 	Super::BeginPlay();
-	SetLifeSpan(5);
+	SetLifeSpan(4);
 	//일정 시간 지난 후 새 파괴
 	//FTimerHandle deathTimer;
 	//GetWorld()->GetTimerManager().SetTimer(deathTimer, this, &ARIM_BirdBlue::Death, delayDeathTime, false); //타이머

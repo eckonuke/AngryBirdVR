@@ -50,7 +50,7 @@ void ARIM_BirdBlue::BeginPlay()
 {
 	Super::BeginPlay();
 	//일정 시간 지난 후 새 파괴
-	SetLifeSpan(5);
+	SetLifeSpan(4);
 
 	//FTimerHandle deathTimer;
 	//GetWorld()->GetTimerManager().SetTimer(deathTimer, this, &ARIM_BirdBlue::Death, delayDeathTime, false); //타이머

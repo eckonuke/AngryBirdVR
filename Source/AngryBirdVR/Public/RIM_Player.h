@@ -99,7 +99,18 @@ public:
 	//WidgetPointerComponent 를 Player 에 추가. (위젯! 레이저 포인터로 가르켜서 누른다. 레이저 포인터 아님)
 	UPROPERTY(EditAnywhere)
 	class URIM_WidgetPointerComponent* widgetComp; //RIM_WidgetPointerComponent 컴포넌트. 포인터가 작동하기 위해 필요 ---> 용일님 추가
-
+	//발사Component 를 Player 에 추가
+	//UPROPERTY(EditAnywhere)
+	//용일님 코드
+	//소리 추가
+	UPROPERTY(EditAnywhere)
+	class USoundBase* redSound;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* blueSound;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* yellowSound;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* slingSound;
 
  public:
 	//레드 ---> 용일님 추가
@@ -146,6 +157,8 @@ public:
 	void shootBird();
 	//발사 취소 ---> 용일님 추가
 	void cancelShoot();
+	//소리 재생
+	void playSound(class USoundBase* sound);
 
 	//아래 코드 용일님 추가
 	float score = 0;
@@ -161,8 +174,4 @@ private:
 	bool bWillShoot = true;
 	FVector rightHandPosition;
 	FVector fireVelocity;
-	float power = 1000;
-	float cancelLength = 0;
-	float cancelRange = 10;
-
 };

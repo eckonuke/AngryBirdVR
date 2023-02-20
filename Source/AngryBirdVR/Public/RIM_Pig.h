@@ -30,6 +30,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* compMesh;
 
+	UPROPERTY(EditAnywhere)
+	class USoundBase* dieSound;
+
 	bool redBirdAttack = false;
 	bool yellowBirdAttack = false;
 	bool blueBirdAttack = false;
@@ -56,6 +59,9 @@ public:
 
 	UPROPERTY()
 	class AKYI_Glass* glass;
+
+	UPROPERTY()
+	class ARIM_Player* player;
 
 public:
 	//»õ
