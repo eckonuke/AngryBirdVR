@@ -13,6 +13,7 @@
 #include "KYI_Wood.h"
 #include "KYI_Glass.h"
 #include "RIM_Pig.h"
+#include <Components/BoxComponent.h>
 
 // Sets default values
 ARIM_BirdBlack::ARIM_BirdBlack()

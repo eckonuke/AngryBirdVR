@@ -26,6 +26,7 @@ ARIM_TNT::ARIM_TNT()
 	compCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	compCollision->SetupAttachment(RootComponent);
 	//compCollision-> //ÄÝ¸®Àü
+	compCollision->SetBoxExtent(FVector(35));
 
 	meshTNT = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TNT"));
 	meshTNT->SetupAttachment(compCollision);

@@ -25,7 +25,7 @@ ARIM_Pig::ARIM_Pig()
 	//콜리전
 	compCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 	compCollision->SetupAttachment(RootComponent);
-	compCollision->SetSphereRadius(80);
+	compCollision->SetSphereRadius(65);
 	SetRootComponent(compCollision);
 	//compCollision-> //콜리전
 
@@ -38,7 +38,7 @@ ARIM_Pig::ARIM_Pig()
 	{
 		compMesh->SetStaticMesh(tempMesh.Object);
 	}
-	compMesh->SetRelativeLocation(FVector(0, 0, -50));
+	compMesh->SetRelativeLocation(FVector(0, 0, -45));
 	compMesh->SetWorldRotation(FRotator(0, 0, 90));
 
 
@@ -48,7 +48,7 @@ ARIM_Pig::ARIM_Pig()
 void ARIM_Pig::BeginPlay()
 {
 	Super::BeginPlay();
-	player = Cast<ARIM_Player>(GetOwner());
+	//player = Cast<ARIM_Player>(GetOwner());
 	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapBird); //새 -----> 적
 	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapObject); //오브젝트(나무, 유리) -----> 적
 	//compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapEnemy) //적 낙하 ★★★일단 오버랩으로 진행. OnComponentHit 추후 확인
@@ -171,7 +171,7 @@ void ARIM_Pig::ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponen
 //죽음
 void ARIM_Pig::Die()
 {
-	player->score += 5000;
+	//player->score += 5000;
 	UGameplayStatics::PlaySound2D(GetWorld(), dieSound, 5);
 	Destroy();
 }

@@ -158,7 +158,7 @@ public:
 	//소리 재생
 	void playSound(class USoundBase* sound);
 
-	float score = 0;
+	//float score = 0;
 	int32 birdCount = 3;
 	int32 redCount = 1;
 	int32 blueCount = 1;
@@ -169,7 +169,4 @@ private:
 	bool bWillShoot = true;
 	FVector rightHandPosition;
 	FVector fireVelocity;
-	float power = 1000;
-	float cancelLength = 0;
-	float cancelRange = 10;
 };
