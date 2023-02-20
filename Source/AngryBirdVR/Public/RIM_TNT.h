@@ -51,6 +51,9 @@ public:
 	UPROPERTY()
 	class ARIM_Pig* pig;
 
+	UPROPERTY(EditAnywhere)
+	class USoundBase* explosionSound;
+
 	bool redBirdAttack = false;
 	bool yellowBirdAttack = false;
 	bool blueBirdAttack = false;

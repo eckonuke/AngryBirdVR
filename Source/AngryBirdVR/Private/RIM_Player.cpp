@@ -20,6 +20,7 @@
 #include <UMG/Public/Components/WidgetInteractionComponent.h>
 #include "RIM_WidgetPointerComponent.h"
 #include "AngryBirdVR_GameModeBase.h"
+#include <Sound/SoundBase.h>
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -100,7 +101,7 @@ ARIM_Player::ARIM_Player()
 	//컨트롤러
 	compRightCon = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("RightController")); //플레이어에 컴포넌트 추가. MotionControllerComponent 인클루드
 	compRightCon->SetupAttachment(RootComponent); //루트컴포넌트 자식으로 세팅
-	compWidgetPointer_right= CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Right Widget Pointer"));
+	compWidgetPointer_right = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Right Widget Pointer"));
 	compWidgetPointer_right->SetupAttachment(compRightCon);
 	//메시
 	meshRightHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RightHand")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드. ▶추후변경(현재 스켈레탈메시)
@@ -144,14 +145,28 @@ ARIM_Player::ARIM_Player()
 	//	blackFactory = tempBlack.Class;
 	//}
 
-
-
 	//[플레이어에 액터 컴포넌트 추가]
 	//MoveComponent 추가
 	compMove = CreateDefaultSubobject<URIM_MoveComponent>(TEXT("MoveComponent"));
 	widgetComp = CreateDefaultSubobject<URIM_WidgetPointerComponent>(TEXT("Widget Component"));
 	//발사Component 추가
 	//용일님 코드
+	ConstructorHelpers::FObjectFinder<USoundBase> tempRedSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/RedBirdFlySound.RedBirdFlySound'"));
+	if (tempRedSound.Succeeded()) {
+		redSound = tempRedSound.Object;
+	}
+	ConstructorHelpers::FObjectFinder<USoundBase> tempBlueSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/BlueBirdFlySound.BlueBirdFlySound'"));
+	if (tempBlueSound.Succeeded()) {
+		blueSound = tempBlueSound.Object;
+	}
+	ConstructorHelpers::FObjectFinder<USoundBase> tempYellowSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/YellowBirdFlySound.YellowBirdFlySound'"));
+	if (tempYellowSound.Succeeded()) {
+		yellowSound = tempYellowSound.Object;
+	}
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSlingSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/SlingShotStretchSound.SlingShotStretchSound'"));
+	if (tempSlingSound.Succeeded()) {
+		slingSound = tempSlingSound.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -308,6 +323,7 @@ void ARIM_Player::BlackSkill()
 void ARIM_Player::readyShoot() {
 	bShouldPredict = true;
 	bWillShoot = true;
+	playSound(slingSound);
 }
 
 void ARIM_Player::shootBird() {
@@ -320,16 +336,19 @@ void ARIM_Player::shootBird() {
 	if (redCount > 0) {
 		birdRed = GetWorld()->SpawnActor<AKYI_AngryRed>(redFactory, position, GetActorRotation());
 		birdRed->sphereComp->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
+		playSound(redSound);
 		redCount--;
 	}
 	else if (yellowCount > 0) {
 		birdYellow = GetWorld()->SpawnActor<AKYI_AngryChuck>(yellowFactory, position, GetActorRotation());
 		birdYellow->sphereComp->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
+		playSound(yellowSound);
 		yellowCount--;
 	}
 	else if (blueCount > 0) {
 		birdBlue = GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, position, GetActorRotation());
 		birdBlue->compCollision->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
+		playSound(blueSound);
 		blueCount--;
 	}
 	else if (blackCount > 0) {
@@ -339,7 +358,13 @@ void ARIM_Player::shootBird() {
 	}
 }
 
+void ARIM_Player::playSound(class USoundBase* sound) {
+	UGameplayStatics::PlaySound2D(GetWorld(), sound, 5);
+}
+
+
 void ARIM_Player::cancelShoot() {
 	bWillShoot = false;
 	bShouldPredict = false;
 }
+

@@ -32,7 +32,7 @@ AKYI_AngryChuck::AKYI_AngryChuck()
 void AKYI_AngryChuck::BeginPlay()
 {
 	Super::BeginPlay();
-	SetLifeSpan(5);
+	SetLifeSpan(4);
 	player = Cast<ARIM_Player>(GetOwner());
 }
 

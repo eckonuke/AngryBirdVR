@@ -37,7 +37,7 @@ AKYI_AngryRed::AKYI_AngryRed()
 void AKYI_AngryRed::BeginPlay()
 {
 	Super::BeginPlay();
-	SetLifeSpan(5);
+	SetLifeSpan(4);
 }
 
 // Called every frame

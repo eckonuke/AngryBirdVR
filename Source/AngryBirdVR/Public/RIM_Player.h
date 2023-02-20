@@ -100,6 +100,15 @@ public:
 	//발사Component 를 Player 에 추가
 	//UPROPERTY(EditAnywhere)
 	//용일님 코드
+	//소리 추가
+	UPROPERTY(EditAnywhere)
+	class USoundBase* redSound;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* blueSound;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* yellowSound;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* slingSound;
 
 
  public:
@@ -146,6 +155,8 @@ public:
 	void shootBird();
 	//발사 취소
 	void cancelShoot();
+	//소리 재생
+	void playSound(class USoundBase* sound);
 
 	float score = 0;
 	int32 birdCount = 3;
