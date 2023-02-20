@@ -6,6 +6,7 @@
 #include <Components/StaticMeshComponent.h>
 #include <GameFramework/ProjectileMovementComponent.h>
 #include "RIM_Player.h"
+#include <Components/SkeletalMeshComponent.h>
 
 
 // Sets default values
@@ -22,13 +23,13 @@ ARIM_BirdBlue::ARIM_BirdBlue()
 	compCollision->SetSimulatePhysics(true);
 
 	//외관
-	meshBlue = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlueBird"));
+	meshBlue = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BlueBird"));
 	meshBlue->SetupAttachment(compCollision);
-	ConstructorHelpers::FObjectFinder<UStaticMesh> tempBird(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'")); //▶추후 수정
-	if (tempBird.Succeeded())
-	{
-		meshBlue->SetStaticMesh(tempBird.Object);
-	}
+// 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempBird(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'")); //▶추후 수정
+// 	if (tempBird.Succeeded())
+// 	{
+// 		meshBlue->USkeletalMesh(tempBird.Object);
+// 	}
 	meshBlue->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//meshBlue->SetRelativeLocation(FVector(0, 0, 0)); //▶추후 수정
 	meshBlue->SetRelativeScale3D(FVector(0.08f)); //▶추후 수정

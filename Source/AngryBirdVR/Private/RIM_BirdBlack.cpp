@@ -13,6 +13,7 @@
 #include "KYI_Wood.h"
 #include "KYI_Glass.h"
 #include "RIM_Pig.h"
+#include <Components/SkeletalMeshComponent.h>
 
 // Sets default values
 ARIM_BirdBlack::ARIM_BirdBlack()
@@ -28,13 +29,13 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 	compCollision->SetSimulatePhysics(true);
 
 	//외관
-	meshBlack = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlackBird"));
+	meshBlack = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BlackBird"));
 	meshBlack->SetupAttachment(compCollision);
-	ConstructorHelpers::FObjectFinder<UStaticMesh> tempBird(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'")); //▶추후 수정
-	if (tempBird.Succeeded())
-	{
-		meshBlack->SetStaticMesh(tempBird.Object);
-	}
+// 	ConstructorHelpers::FObjectFinder<UStaticMesh> tempBird(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'")); //▶추후 수정
+// 	if (tempBird.Succeeded())
+// 	{
+// 		meshBlack->SetStaticMesh(tempBird.Object);
+// 	}
 	meshBlack->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//meshBlue->SetRelativeLocation(FVector(0, 0, 0)); //▶추후 수정
 	meshBlack->SetRelativeScale3D(FVector(0.08f)); //▶추후 수정

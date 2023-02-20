@@ -28,7 +28,7 @@ public:
 	class USphereComponent* compCollision;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UStaticMeshComponent* meshBlack;
+	class USkeletalMeshComponent* meshBlack;
 
 	//새(총알) 발사체의 이동. 발사체 형태의 물리 기능을 제고하는 컴포넌트
 	UPROPERTY(EditAnywhere)
