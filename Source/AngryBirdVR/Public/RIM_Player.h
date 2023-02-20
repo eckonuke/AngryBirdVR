@@ -111,6 +111,8 @@ public:
 	class USoundBase* yellowSound;
 	UPROPERTY(EditAnywhere)
 	class USoundBase* slingSound;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* exploSound;
 
  public:
 	//레드 ---> 용일님 추가

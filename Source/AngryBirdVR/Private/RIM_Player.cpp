@@ -96,9 +96,6 @@ ARIM_Player::ARIM_Player()
 	//logLeft >SetVerticalAlignment(EVRTA_TextCenter);
 	//모션 소스 선택
 	compLeftCon->MotionSource = "Left"; //★★★???
-	//컨트롤러에 붙인 포인터(선). UWidgetInteractionComponent 추가. 
-	compWidgetPointer_left = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Widget Pointer Left"));
-	compWidgetPointer_left->SetupAttachment(compLeftCon);
 
 	//[오른손]
 	//컨트롤러
@@ -126,9 +123,6 @@ ARIM_Player::ARIM_Player()
 	//logRight > SetVerticalAlignment(EVRTA_TextCenter);
 	//모션 소스 선택
 	compRightCon->MotionSource = "Right"; //★★★???
-	//컨트롤러에 붙인 포인터(선). UWidgetInteractionComponent 추가. 
-	compWidgetPointer_right = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Widget Pointer Right"));
-	compWidgetPointer_right->SetupAttachment(compLeftCon);
 
 	//[컨트롤러]
 	//axis 값을 이용해서 캐릭터(컨트롤러)를 회전한다
@@ -170,6 +164,10 @@ ARIM_Player::ARIM_Player()
 	ConstructorHelpers::FObjectFinder<USoundBase> tempYellowSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/YellowBirdFlySound.YellowBirdFlySound'"));
 	if (tempYellowSound.Succeeded()) {
 		yellowSound = tempYellowSound.Object;
+	}
+	ConstructorHelpers::FObjectFinder<USoundBase> tempExploSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/TNTExplosionSound.TNTExplosionSound'"));
+	if (tempExploSound.Succeeded()) {
+		exploSound = tempExploSound.Object;
 	}
 	ConstructorHelpers::FObjectFinder<USoundBase> tempSlingSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/SlingShotStretchSound.SlingShotStretchSound'"));
 	if (tempSlingSound.Succeeded()) {
@@ -325,6 +323,7 @@ void ARIM_Player::BlackSkill()
 	// 아래 코드 중 if 조건 용일님 추가
 	if (birdBlack) { 
 		birdBlack->ExplosionDamage(); //새 폭발 범위에 따른 피해. 파괴 또는 충격
+		playSound(exploSound);
 		birdBlack->Destroy(); //새가 터진다. 없어진다
 	}
 }
