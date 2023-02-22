@@ -153,8 +153,6 @@ void ARIM_Pig::ComponentHitBird(UPrimitiveComponent* HitComponent, AActor* Other
 	{
 		AKYI_Wood* woodOverlap = Cast<AKYI_Wood>(OtherActor);
 		woodAttack = true;
-
-		UE_LOG(LogTemp, Warning, TEXT("%f"), NormalImpulse.Length());
 	}
 	else if (Hit.GetActor()->GetName().Contains(TEXT("Glass"))) //오브젝트 "유리"에 닿으면
 	{
