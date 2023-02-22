@@ -71,7 +71,7 @@ public:
 
 	//파워
 	UPROPERTY(EditAnywhere)
-	float power = 5000; //▶필요 시 조정
+	float power = 10000; //▶필요 시 조정
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class ARIM_MoveLocation* position;
