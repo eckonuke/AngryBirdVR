@@ -96,36 +96,37 @@ void ARIM_TNT::ExplosionDamage()
 		//★★★???
 		for (FOverlapResult& hit : hitInfos) // [i] = FOverlapResult& hit
 		{
-			FString name = hit.GetActor()->GetName();
-			if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
-				double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
-				UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
-				if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
-				{
-					if (name.Contains("Pig")) {
-						player->score += 5000;
+			if (hit.GetActor() != nullptr) {
+				FString name = hit.GetActor()->GetName();
+				if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
+					double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
+					UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
+					if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
+					{
+						if (name.Contains("Pig")) {
+							player->score += 5000;
+						}
+						else if (name.Contains("Wood") || name.Contains("Glass")) {
+							player->score += 500;
+						}
+						hit.GetActor()->Destroy();
 					}
-					else if (name.Contains("Wood") || name.Contains("Glass")) {
-						player->score += 500;
+					else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
+					{
+						glass = Cast<AKYI_Glass>(hit.GetActor());
+						wood = Cast<AKYI_Wood>(hit.GetActor());
+						pig = Cast<ARIM_Pig>(hit.GetActor());
+						if (glass) {
+							glass->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+						}
+						else if (wood) {
+							wood->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+						}
+						else if (pig) {
+							pig->compCollision->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+						}
 					}
-					hit.GetActor()->Destroy();
 				}
-				else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
-				{
-					glass = Cast<AKYI_Glass>(hit.GetActor());
-					wood = Cast<AKYI_Wood>(hit.GetActor());
-					pig = Cast<ARIM_Pig>(hit.GetActor());
-					if (glass) {
-						glass->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
-					}
-					else if (wood) {
-						wood->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
-					}
-					else if (pig) {
-						pig->compCollision->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
-					}
-				}
-
 			}
 		}
 	}
