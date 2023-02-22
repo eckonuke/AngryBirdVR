@@ -31,16 +31,7 @@ public:
 	class USkeletalMeshComponent* meshTNT;
 
 	UPROPERTY()
-	class AKYI_AngryRed* red;
-
-	UPROPERTY()
-	class AKYI_AngryChuck* yellow;
-
-	UPROPERTY()
-	class ARIM_BirdBlue* blue;
-
-	UPROPERTY()
-	class ARIM_BirdBlack* black;
+	class ARIM_Player* player;
 
 	UPROPERTY()
 	class AKYI_Wood* wood;
@@ -67,10 +58,6 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float blastRangeDie = 300.0f;
-
-	UPROPERTY(EditAnywhere)
-	float ImpulseRange = 1500.0f;
-
 
 public:
 	//»õ

@@ -14,6 +14,7 @@
 #include "KYI_Glass.h"
 #include "RIM_Pig.h"
 #include <Kismet/GameplayStatics.h>
+#include "RIM_Player.h"
 
 
 
@@ -47,18 +48,14 @@ ARIM_TNT::ARIM_TNT()
 void ARIM_TNT::BeginPlay()
 {
 	Super::BeginPlay();
-	//compCollision->OnComponentHit.AddDynamic(this, &ARIM_TNT::ComponentHitBird); //새 -----> 폭탄
 	compCollision->OnComponentHit.AddDynamic(this, &ARIM_TNT::ComponentHitObject); //오브젝트(나무, 유리, 돼지) -----> 폭탄
-
-
-
+	player = Cast<ARIM_Player>(GetWorld()->GetFirstPlayerController()->GetPawn());
 }
 
 // Called every frame
 void ARIM_TNT::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//Shoot();
 }
 
 
@@ -105,6 +102,12 @@ void ARIM_TNT::ExplosionDamage()
 				UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
 				if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
 				{
+					if (name.Contains("Pig")) {
+						player->score += 5000;
+					}
+					else if (name.Contains("Wood") || name.Contains("Glass")) {
+						player->score += 500;
+					}
 					hit.GetActor()->Destroy();
 				}
 				else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
@@ -127,77 +130,6 @@ void ARIM_TNT::ExplosionDamage()
 		}
 	}
 }
-
-
-////조건에 따라 폭탄이 터진다
-//void ARIM_TNT::Shoot()
-//{
-//	if (redBirdAttack == true || yellowBirdAttack == true || blueBirdAttack == true || blackBierdAttack == true) //새가 폭탄에게 닿으면
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("Bird Attack -----> TNT Destroy !!!!!!!!!!"));
-//		ExplosionDamage();
-//		Die(); //폭탄이 터진다. 없어진다
-//	}
-//	else if (woodAttack == true) //나무가 폭탄에게 닿았을 때
-//	{
-//		//if () //나무 collision 의 충격? 속도? 가 OOO 보다 크면
-//		//{
-//		UE_LOG(LogTemp, Warning, TEXT("Wood Attack -----> TNT Destroy !!!!!!!!!!"));
-//		ExplosionDamage();
-//		Die(); //폭탄이 터진다. 없어진다
-//		//}
-//	}
-//	else if (glassAttack == true) //유리가 폭탄에게 닿았을 때
-//	{
-//		//if () //유리(나무보다 약함) collision 의 충격? 속도? 가 OOO 보다 크면
-//		//{
-//		UE_LOG(LogTemp, Warning, TEXT("Glass Attack -----> TNT Destroy !!!!!!!!!!"));
-//		ExplosionDamage();
-//		Die(); //폭탄이 터진다. 없어진다
-//		//}
-//	}
-//	else if (pigAttack == true) //돼지가 폭탄에게 닿았을 때
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("Pig Attack -----> TNT Destroy !!!!!!!!!!"));
-//		ExplosionDamage();
-//		Die(); //폭탄이 터진다. 없어진다
-//	}
-//}
-
-
-////새 -----> 폭탄
-//void ARIM_TNT::ComponentHitBird(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-//{
-//	if (Hit.GetActor()->GetName().Contains(TEXT("red"))) //빨간 새가 폭탄이 닿으면
-//	{
-//		AKYI_AngryRed* redOverlap = Cast<AKYI_AngryRed>(OtherActor);
-//		redBirdAttack = true;
-//
-//		UE_LOG(LogTemp, Warning, TEXT("Red Bird ---> Overlap ---> TNT !!!!!!!!!!"));
-//	}
-//	else if (Hit.GetActor()->GetName().Contains(TEXT("yellow"))) //노란 새가 폭탄이 닿으면
-//	{
-//		AKYI_AngryChuck* yellowOverlap = Cast<AKYI_AngryChuck>(OtherActor);
-//		yellowBirdAttack = true;
-//
-//		UE_LOG(LogTemp, Warning, TEXT("Yellow Bird ---> Overlap ---> TNT !!!!!!!!!!"));
-//	}
-//	else if (Hit.GetActor()->GetName().Contains(TEXT("blue"))) //파란 새가 폭탄이 닿으면
-//	{
-//		ARIM_BirdBlue* blueOverlap = Cast<ARIM_BirdBlue>(OtherActor);
-//		blueBirdAttack = true;
-//
-//		UE_LOG(LogTemp, Warning, TEXT("Blue Bird ---> Overlap ---> TNT !!!!!!!!!!"));
-//	}
-//	else if (Hit.GetActor()->GetName().Contains(TEXT("black"))) //검은 새가 폭탄이 닿으면
-//	{
-//		ARIM_BirdBlack* blackOverlap = Cast<ARIM_BirdBlack>(OtherActor);
-//		blackBierdAttack = true;
-//
-//		UE_LOG(LogTemp, Warning, TEXT("Black Bird ---> Overlap ---> TNT !!!!!!!!!!"));
-//	}
-//}
-
 
 //오브젝트 -----> 폭탄
 void ARIM_TNT::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

@@ -59,6 +59,7 @@ void ARIM_Pig::BeginPlay()
 	compCollision->OnComponentHit.AddDynamic(this, &ARIM_Pig::ComponentHitBird); //새 -----> 적
 	compCollision->OnComponentHit.AddDynamic(this, &ARIM_Pig::ComponentHitObject); //오브젝트(나무, 유리) -----> 적
 	//compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapEnemy) //적 낙하 ★★★일단 오버랩으로 진행. OnComponentHit 추후 확인
+	player = Cast<ARIM_Player>(GetWorld()->GetFirstPlayerController()->GetPawn());
 }
 
 // Called every frame
@@ -178,5 +179,6 @@ void ARIM_Pig::Die()
 {
 	//player->score += 5000;
 	UGameplayStatics::PlaySound2D(GetWorld(), dieSound, 20);
+	player->score += 5000;
 	Destroy();
 }
