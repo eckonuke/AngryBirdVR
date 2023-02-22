@@ -27,13 +27,16 @@ void AAngryBirdVR_GameModeBase::Tick(float DeltaTime) //추가
 
 	currentTime += DeltaTime;
 	if (player) {
-		if (player->birdCount == 0 || EnemyAllDie == true) //새가 0개 이거나 적이 다 죽으면
+		if (EnemyAllDie == true) //새가 0개 이거나 적이 다 죽으면
 		{
 			if (currentTime < 2) //2초 지나고
 			{
-				//점수 위젯을 보여준다
+				//점수 위젯을 보여준다 게임 승리 화면 (점수와 별 추가)
 				GetWorld()->SpawnActor<ARIM_WidgetInGameScoreActor>(ARIM_WidgetInGameScoreActor::StaticClass(), player->GetActorLocation() + player->GetActorForwardVector() * 200, FRotator(0.0f, 180.0f, 0.0f)); //★★★★★★
 			}
+		}
+		else if (player->birdCount == 0) {
+			//실패한 화면을 보여준다
 		}
 	}
 }

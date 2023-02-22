@@ -31,16 +31,7 @@ public:
 	class USkeletalMeshComponent* meshTNT;
 
 	UPROPERTY()
-	class AKYI_AngryRed* red;
-
-	UPROPERTY()
-	class AKYI_AngryChuck* yellow;
-
-	UPROPERTY()
-	class ARIM_BirdBlue* blue;
-
-	UPROPERTY()
-	class ARIM_BirdBlack* black;
+	class ARIM_Player* player;
 
 	UPROPERTY()
 	class AKYI_Wood* wood;
@@ -66,24 +57,20 @@ public:
 	float blastRange = 1000.0f;
 
 	UPROPERTY(EditAnywhere)
-	float blastRangeDie = 100.0f;
-
-	UPROPERTY(EditAnywhere)
-	float ImpulseRange = 1500.0f;
-
+	float blastRangeDie = 300.0f;
 
 public:
 	//새
-	UFUNCTION()
-	void ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	//UFUNCTION()
+	//void ComponentHitBird(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	//오브젝트
 	UFUNCTION()
-	void ComponentBeginOverlapObject(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	//폭탄에 범위에 따른 피해. 파괴 또는 충격
-	UFUNCTION()
-	void Shoot();
+	////폭탄에 범위에 따른 피해. 파괴 또는 충격
+	//UFUNCTION()
+	//void Shoot();
 
 	//폭탄에 범위에 따른 피해. 파괴 또는 충격
 	UFUNCTION()

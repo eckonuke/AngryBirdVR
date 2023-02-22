@@ -87,8 +87,12 @@ public:
 	//검은새 스킬 ---> 테스트
 	UPROPERTY(EditAnywhere)
 	class UInputAction* rightB;
+	//발사 취소버튼
 	UPROPERTY(EditAnywhere)
 	class UInputAction* leftX;
+	//플레이어 회전 키
+	UPROPERTY(EditAnywhere)
+		class UInputAction* rightThumbstick;
 
 public:
 	//[플레이어에 액터컴포넌트 추가]
@@ -144,7 +148,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class APredictionObject> pathFactory;
 
+	
+
 public:
+	//플레이어 회전
+	void RotateAxis(const struct FInputActionValue& value);
 	//스킬 사용
 	void InputSkill();
 	//파란새 스킬
@@ -164,7 +172,7 @@ public:
 
 	//아래 코드 용일님 추가
 	float score = 0;
-	int32 birdCount = 3;
+	int32 birdCount = 0;
 	int32 redCount = 1;
 	int32 blueCount = 1;
 	int32 yellowCount = 1;

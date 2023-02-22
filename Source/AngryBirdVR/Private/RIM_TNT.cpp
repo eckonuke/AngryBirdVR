@@ -14,6 +14,7 @@
 #include "KYI_Glass.h"
 #include "RIM_Pig.h"
 #include <Kismet/GameplayStatics.h>
+#include "RIM_Player.h"
 
 
 
@@ -47,23 +48,14 @@ ARIM_TNT::ARIM_TNT()
 void ARIM_TNT::BeginPlay()
 {
 	Super::BeginPlay();
-
-	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_TNT::ComponentBeginOverlapBird); //새 -----> 폭탄
-	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_TNT::ComponentBeginOverlapObject); //오브젝트(나무, 유리, 돼지) -----> 폭탄
-
-
-
+	compCollision->OnComponentHit.AddDynamic(this, &ARIM_TNT::ComponentHitObject); //오브젝트(나무, 유리, 돼지) -----> 폭탄
+	player = Cast<ARIM_Player>(GetWorld()->GetFirstPlayerController()->GetPawn());
 }
 
 // Called every frame
 void ARIM_TNT::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	Shoot();
-	
-
-
 }
 
 
@@ -84,18 +76,16 @@ void ARIM_TNT::ExplosionDamage()
 	TArray<FOverlapResult> hitInfos;
 
 	//TNT 위치 ★★★왜 액터 로케이션 안 사용?
-	FVector center = meshTNT->GetComponentLocation(); 
+	FVector center = GetActorLocation(); 
 
 	//TNT 폭발 범위(blastRange)
 	FCollisionShape blastCollision = FCollisionShape::MakeSphere(blastRange);
-
-	//★★★???
 	FCollisionObjectQueryParams objectQuerry;
-	//★★★???
-	FCollisionQueryParams params; 
+	objectQuerry.AddObjectTypesToQuery(ECC_WorldDynamic);
+	objectQuerry.AddObjectTypesToQuery(ECC_Destructible);
+	FCollisionQueryParams params;
 	params.AddIgnoredActor(this);
 	//★★★???
-	objectQuerry.AddObjectTypesToQuery(ECC_WorldDynamic);
 
 	//폭발 범위 그리기
 	DrawDebugSphere(GetWorld(), center, blastCollision.GetSphereRadius(), 50, FColor::Cyan, true);
@@ -106,152 +96,55 @@ void ARIM_TNT::ExplosionDamage()
 		//★★★???
 		for (FOverlapResult& hit : hitInfos) // [i] = FOverlapResult& hit
 		{
-			hit.GetActor()->GetActorLocation();
-			ARIM_Pig* pigTNT = Cast<ARIM_Pig>(hit.GetActor());
-			AKYI_Wood* woodTNT = Cast<AKYI_Wood>(hit.GetActor());
-			AKYI_Glass* glassTNT = Cast<AKYI_Glass>(hit.GetActor());
+			FString name = hit.GetActor()->GetName();
+			if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
+				double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
+				UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
+				if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
+				{
+					if (name.Contains("Pig")) {
+						player->score += 5000;
+					}
+					else if (name.Contains("Wood") || name.Contains("Glass")) {
+						player->score += 500;
+					}
+					hit.GetActor()->Destroy();
+				}
+				else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
+				{
+					glass = Cast<AKYI_Glass>(hit.GetActor());
+					wood = Cast<AKYI_Wood>(hit.GetActor());
+					pig = Cast<ARIM_Pig>(hit.GetActor());
+					if (glass) {
+						glass->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+					}
+					else if (wood) {
+						wood->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+					}
+					else if (pig) {
+						pig->compCollision->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+					}
+				}
 
-			if (500 > 100) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
-			{
-				if (pigTNT != nullptr) //돼지
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Pig ---> TNT ---> Pig Destory !!!!!!!!!!"));
-					pigTNT->Destroy();
-				}
-				else if (woodTNT != nullptr) //나무
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Wood ---> TNT ---> Wood Destory !!!!!!!!!!"));
-					Destroy();
-				}
-				else if (glassTNT != nullptr) //유리
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Glass ---> TNT ---> Glass Destory !!!!!!!!!!"));
-					Destroy();
-				}
-			}
-			else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
-			{
-				if (pigTNT != nullptr) //돼지
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Pig ---> TNT ---> Pig Impulse !!!!!!!!!!"));
-					pigTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
-				}
-// 				else if (woodTNT != nullptr) //나무
-// 				{
-// 					UE_LOG(LogTemp, Warning, TEXT("Wood ---> TNT ---> Wood Impulse !!!!!!!!!!"));
-// 					woodTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
-// 				}
-// 				else if (glassTNT != nullptr) //유리
-// 				{
-// 					UE_LOG(LogTemp, Warning, TEXT("Glass ---> TNT ---> Glass Impulse !!!!!!!!!!"));
-// 					glassTNT->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, ImpulseRange, ERadialImpulseFalloff::RIF_Constant, true);
-// 				}
 			}
 		}
 	}
 }
 
-
-//조건에 따라 폭탄이 터진다
-void ARIM_TNT::Shoot()
-{
-	if (redBirdAttack == true || yellowBirdAttack == true || blueBirdAttack == true || blackBierdAttack == true) //새가 폭탄에게 닿으면
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Bird Attack -----> TNT Destroy !!!!!!!!!!"));
-		ExplosionDamage();
-		Die(); //폭탄이 터진다. 없어진다
-	}
-	else if (woodAttack == true) //나무가 폭탄에게 닿았을 때
-	{
-		//if () //나무 collision 의 충격? 속도? 가 OOO 보다 크면
-		//{
-		UE_LOG(LogTemp, Warning, TEXT("Wood Attack -----> TNT Destroy !!!!!!!!!!"));
-		ExplosionDamage();
-		Die(); //폭탄이 터진다. 없어진다
-		//}
-	}
-	else if (glassAttack == true) //유리가 폭탄에게 닿았을 때
-	{
-		//if () //유리(나무보다 약함) collision 의 충격? 속도? 가 OOO 보다 크면
-		//{
-		UE_LOG(LogTemp, Warning, TEXT("Glass Attack -----> TNT Destroy !!!!!!!!!!"));
-		ExplosionDamage();
-		Die(); //폭탄이 터진다. 없어진다
-		//}
-	}
-	else if (pigAttack == true) //돼지가 폭탄에게 닿았을 때
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Pig Attack -----> TNT Destroy !!!!!!!!!!"));
-		ExplosionDamage();
-		Die(); //폭탄이 터진다. 없어진다
-	}
-}
-
-
-//새 -----> 폭탄
-void ARIM_TNT::ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor->GetName().Contains(TEXT("red"))) //빨간 새가 폭탄이 닿으면
-	{
-		AKYI_AngryRed* redOverlap = Cast<AKYI_AngryRed>(OtherActor);
-		redBirdAttack = true;
-
-		UE_LOG(LogTemp, Warning, TEXT("Red Bird ---> Overlap ---> TNT !!!!!!!!!!"));
-	}
-	else if (OtherActor->GetName().Contains(TEXT("yellow"))) //노란 새가 폭탄이 닿으면
-	{
-		AKYI_AngryChuck* yellowOverlap = Cast<AKYI_AngryChuck>(OtherActor);
-		yellowBirdAttack = true;
-
-		UE_LOG(LogTemp, Warning, TEXT("Yellow Bird ---> Overlap ---> TNT !!!!!!!!!!"));
-	}
-	else if (OtherActor->GetName().Contains(TEXT("blue"))) //파란 새가 폭탄이 닿으면
-	{
-		ARIM_BirdBlue* blueOverlap = Cast<ARIM_BirdBlue>(OtherActor);
-		blueBirdAttack = true;
-
-		UE_LOG(LogTemp, Warning, TEXT("Blue Bird ---> Overlap ---> TNT !!!!!!!!!!"));
-	}
-	else if (OtherActor->GetName().Contains(TEXT("black"))) //검은 새가 폭탄이 닿으면
-	{
-		ARIM_BirdBlack* blackOverlap = Cast<ARIM_BirdBlack>(OtherActor);
-		blackBierdAttack = true;
-
-		UE_LOG(LogTemp, Warning, TEXT("Black Bird ---> Overlap ---> TNT !!!!!!!!!!"));
-	}
-}
-
-
 //오브젝트 -----> 폭탄
-void ARIM_TNT::ComponentBeginOverlapObject(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ARIM_TNT::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor->GetName().Contains(TEXT("Wood"))) //오브젝트 "나무"에 닿으면
-	{
-		AKYI_Wood* woodOverlap = Cast<AKYI_Wood>(OtherActor);
-		woodAttack = true;
-
-		UE_LOG(LogTemp, Warning, TEXT("Wood ---> Overlap ---> TNT !!!!!!!!!!"));
-	}
-	else if (OtherActor->GetName().Contains(TEXT("Glass"))) //오브젝트 "유리"에 닿으면
-	{
-		AKYI_Glass* glassOverlap = Cast<AKYI_Glass>(OtherActor);
-		glassAttack = true;
-
-		UE_LOG(LogTemp, Warning, TEXT("Glass ---> Overlap ---> TNT !!!!!!!!!!"));
-	}
-	else if (OtherActor->GetName().Contains(TEXT("Pig"))) //오브젝트 "적"에 닿으면
-	{
-		ARIM_Pig* pigOverlap = Cast<ARIM_Pig>(OtherActor);
-		pigAttack = true;
-
-		UE_LOG(LogTemp, Warning, TEXT("Pig ---> Overlap ---> TNT !!!!!!!!!!"));
+	FString name = Hit.GetActor()->GetName();
+	if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
+		UE_LOG(LogTemp, Warning, TEXT("Hit by %s"), *OtherActor->GetName());
+		ExplosionDamage();
+		Die();
 	}
 }
 
 
 //폭탄 없어진다
-void ARIM_TNT::Die()
-{
+void ARIM_TNT::Die() {
 	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound, 5);
-	Destroy();
+	this->Destroy();
 }

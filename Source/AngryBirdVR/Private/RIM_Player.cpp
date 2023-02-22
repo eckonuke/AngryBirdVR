@@ -21,6 +21,7 @@
 #include "RIM_WidgetPointerComponent.h"
 #include "AngryBirdVR_GameModeBase.h"
 #include <Sound/SoundBase.h>
+#include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputActionValue.h>
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -28,21 +29,11 @@ ARIM_Player::ARIM_Player()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//[플레이어]
-	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision); //본체 충돌 컴포넌트. 노콜리전. CapsuleComponent 인클루드 ★★★확인 필요. 필요 없을 거 같은데 혹시 몰라서 작성
-
 	//[카메라]
 	//카메라
 	compCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera")); //플레이어에 컴포넌트 추가. CameraComponent 인클루드
 	compCamera->SetupAttachment(RootComponent); //루트컴포넌트 자식으로 세팅
 	compCamera->SetRelativeLocation(FVector(-20, 0, 0)); //▶필요 시 추후 변경
-	//메시
-// 	ConstructorHelpers::FObjectFinder<UStaticMesh> tempCamera(TEXT("/Script/Engine.StaticMesh'/Engine/EditorMeshes/MatineeCam_SM.MatineeCam_SM'"));
-// 	if (tempCamera.Succeeded())
-// 	{
-// 		meshCamera->SetStaticMesh(tempCamera.Object);
-// 	}
-// 	meshCamera->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
 
 	//[왼손]
 	//컨트롤러
@@ -50,30 +41,6 @@ ARIM_Player::ARIM_Player()
 	compLeftCon->SetupAttachment(RootComponent); //루트컴포넌트 자식으로 세팅
 	compWidgetPointer_left = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Left Widget Pointer"));
 	compWidgetPointer_left->SetupAttachment(compLeftCon);
-	//메시(스켈레탈)
-// 	meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
-// 	meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
-// 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempLeftHand(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/MannequinsXR/Meshes/SKM_MannyXR_left.SKM_MannyXR_left'")); //▶엔진 기본 에셋 사용. 추후 변경
-// 	if (tempLeftHand.Succeeded())
-// 	{
-// 		meshLeftHand->SetSkeletalMesh(tempLeftHand.Object);
-// 	}
-// 	meshLeftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
-// 	meshLeftHand->SetRelativeLocation(FVector(0, -20, 0)); //▶필요 시 추후 변경 
-// 	meshLeftHand->SetRelativeRotation(FRotator(-25.0f, 180.0f, 90.0f)); //▶필요 시 추후 변경 
-
-	//메시(테스트총)
-// 	meshLeftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SlingShot")); //플레이어에 메시 컴포넌트 추가. SkeletalMeshComponent 인클루드
-// 	meshLeftHand->SetupAttachment(compLeftCon); //왼손 컨트롤러 자식으로 세팅
-// 	ConstructorHelpers::FObjectFinder<USkeletalMesh> tempLeftHand(TEXT("/Script/Engine.SkeletalMesh'/Game/FPWeapon/Mesh/SK_FPGun.SK_FPGun'")); //▶엔진 기본 에셋 사용. 추후 변경
-// 	if (tempLeftHand.Succeeded())
-// 	{
-// 		meshLeftHand->SetSkeletalMesh(tempLeftHand.Object);
-// 	}
-// 	meshLeftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
-// 	meshLeftHand->SetRelativeLocation(FVector(0, -20, 0)); //▶필요 시 추후 변경 
-// 	meshLeftHand->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f)); //▶필요 시 추후 변경 
-// 	meshLeftHand->SetRelativeScale3D(FVector(0.5f)); //▶필요 시 추후 변경 
 
 	//메시(스테틱)
 	meshLeftHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftHand")); //플레이어에 메시 컴포넌트 추가. StaticMeshComponent 인클루드
@@ -88,12 +55,11 @@ ARIM_Player::ARIM_Player()
 	meshLeftHand->SetRelativeRotation(FRotator(0.0f, 90.0f, -90.0f)); //▶필요 시 추후 변경
 	meshLeftHand->SetRelativeScale3D(FVector(0.3f)); //▶필요 시 추후 변경
 	//로그(확인용)
-	logLeft = CreateDefaultSubobject<UTextRenderComponent>(TEXT("LeftLogText"));
-	logLeft->SetupAttachment(compLeftCon);
-	logLeft->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f)); //텍스트 180 수정
-	logLeft->SetTextRenderColor(FColor::Yellow);
-	logLeft->SetHorizontalAlignment(EHTA_Center);
-	//logLeft >SetVerticalAlignment(EVRTA_TextCenter);
+	//logLeft = CreateDefaultSubobject<UTextRenderComponent>(TEXT("LeftLogText"));
+	//logLeft->SetupAttachment(compLeftCon);
+	//logLeft->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f)); //텍스트 180 수정
+	//logLeft->SetTextRenderColor(FColor::Yellow);
+	//logLeft->SetHorizontalAlignment(EHTA_Center);
 	//모션 소스 선택
 	compLeftCon->MotionSource = "Left"; //★★★???
 
@@ -112,14 +78,13 @@ ARIM_Player::ARIM_Player()
 		meshRightHand->SetSkeletalMesh(tempRihgtHand.Object);
 	}
 	meshRightHand->SetCollisionEnabled(ECollisionEnabled::NoCollision); //메시 노콜리전
-	//meshLeftHand->SetRelativeLocation(FVector(0, 20, 0)); //▶필요 시 추후 변경
 	meshRightHand->SetRelativeRotation(FRotator(25.0f, 0.0f, 90.0f)); //▶필요 시 추후 변경
 	//로그(확인용)
-	logRight = CreateDefaultSubobject<UTextRenderComponent>(TEXT("RightLogText"));
-	logRight->SetupAttachment(compRightCon);
-	logRight->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f)); //텍스트 180 수정
-	logRight->SetTextRenderColor(FColor::Yellow);
-	logRight->SetHorizontalAlignment(EHTA_Center);
+	//logRight = CreateDefaultSubobject<UTextRenderComponent>(TEXT("RightLogText"));
+	//logRight->SetupAttachment(compRightCon);
+	//logRight->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f)); //텍스트 180 수정
+	//logRight->SetTextRenderColor(FColor::Yellow);
+	//logRight->SetHorizontalAlignment(EHTA_Center);
 	//logRight > SetVerticalAlignment(EVRTA_TextCenter);
 	//모션 소스 선택
 	compRightCon->MotionSource = "Right"; //★★★???
@@ -189,7 +154,7 @@ void ARIM_Player::BeginPlay()
 	//3. 가져온 Subsystem 에 IMC 를 등록한다.(우선순위 0번)
 	subsys->AddMappingContext(vrMapping, 0);
 
-	birdCount = 3; // ---> 용일님 추가
+	birdCount = redCount + yellowCount + blueCount + blackCount; // ---> 용일님 추가
 
 	//아래 코드 용일님 추가
 	//게임모드 케스팅 
@@ -205,13 +170,6 @@ void ARIM_Player::Tick(float DeltaTime)
 	if (bShouldPredict) {
 		rightHandPosition = compRightCon->GetComponentLocation();
 		fireVelocity = (compLeftCon->GetComponentLocation() - rightHandPosition) * 50;
-		//FHitResult hitInfo;
-		//TArray<FVector> pathPosition;
-		//FVector lastTrace;
-		//TArray<AActor*> params;
-		//params.Add(this);
-		//UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), hitInfo, pathPosition, lastTrace, compLeftCon->GetComponentLocation(),
-		//	fireVelocity, false, 5.0f, ECC_WorldDynamic, false, params, EDrawDebugTrace::None, 1.0f, 15.0f, 1.0f, 0.0f);
 		FPredictProjectilePathParams params;
 		params.StartLocation = compLeftCon->GetComponentLocation();
 		params.LaunchVelocity = fireVelocity;
@@ -255,7 +213,7 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		//테스트 ---> 검은새 스킬
 		//EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::BlackSkill); // ---> 용일님 수정
 		EnhancedInputComponent->BindAction(rightB, ETriggerEvent::Started, this, &ARIM_Player::InputSkill); // ---> 용일님 수정. 위에 코드를 수정
-		
+		EnhancedInputComponent->BindAction(rightThumbstick, ETriggerEvent::Triggered, this, &ARIM_Player::RotateAxis);
 
 		//이동 함수 실행 ---> 오른손 트리거
 		compMove->SetupPlayerInputComponent(EnhancedInputComponent);
@@ -269,6 +227,14 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	}
 }
 
+void ARIM_Player::RotateAxis(const FInputActionValue& value)
+{
+	FVector2D axis = value.Get<FVector2D>();
+
+	// axis 값을 이용해서 캐릭터(콘트롤러)를 회전한다.
+	AddControllerPitchInput(axis.Y * -1.0f);
+	AddControllerYawInput(axis.X);
+}
 
 //스킬 사용 ---> 용일님 전체 수정
 void ARIM_Player::InputSkill()
@@ -347,24 +313,24 @@ void ARIM_Player::shootBird() {
 		birdRed = GetWorld()->SpawnActor<AKYI_AngryRed>(redFactory, position, GetActorRotation());
 		birdRed->sphereComp->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
 		playSound(redSound);
-		redCount = redCount- 1;
+		redCount--;
 	}
 	else if (yellowCount > 0) {
 		birdYellow = GetWorld()->SpawnActor<AKYI_AngryChuck>(yellowFactory, position, GetActorRotation());
 		birdYellow->sphereComp->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
 		playSound(yellowSound);
-		yellowCount = yellowCount - 1;
+		yellowCount--;
 	}
 	else if (blueCount > 0) {
 		birdBlue = GetWorld()->SpawnActor<ARIM_BirdBlue>(blueFactory, position, GetActorRotation());
 		birdBlue->compCollision->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
 		playSound(blueSound);
-		blueCount = blueCount - 1;
+		blueCount--;
 	}
 	else if (blackCount > 0) {
 		birdBlack = GetWorld()->SpawnActor<ARIM_BirdBlack>(blackFactory, position, GetActorRotation());
 		birdBlack->compCollision->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
-		blackCount = blackCount - 1;
+		blackCount--;
 	}
 }
 

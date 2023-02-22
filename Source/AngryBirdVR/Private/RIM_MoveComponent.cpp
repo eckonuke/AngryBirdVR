@@ -132,17 +132,16 @@ void URIM_MoveComponent::Teleport()
 //오른손 트리거 ---> 이동. 라인이 보인다.
 void URIM_MoveComponent::rightTriggerShowLine()
 {
-	FString msg = FString(__FUNCTION__); //확인용 로그
-	player->logRight->SetText(FText::FromString(msg)); //확인용 로그
-
+	//FString msg = FString(__FUNCTION__); //확인용 로그
+	//player->logRight->SetText(FText::FromString(msg)); //확인용 로그
 	bIsShowLine = true;
 }
 
 //오른손 트리거 ---> 이동. 라인이 안 보이면서 텔레포트 한다.
 void URIM_MoveComponent::rightTriggerHideLine()
 {
-	FString msg = FString(__FUNCTION__); //확인용 로그
-	player->logRight->SetText(FText::FromString(msg)); //확인용 로그
+	//FString msg = FString(__FUNCTION__); //확인용 로그
+	//player->logRight->SetText(FText::FromString(msg)); //확인용 로그
 
 	bIsShowLine = false; //라인 안 보인다
 	if (position != nullptr) {

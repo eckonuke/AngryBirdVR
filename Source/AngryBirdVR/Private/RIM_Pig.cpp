@@ -28,6 +28,10 @@ ARIM_Pig::ARIM_Pig()
 	compCollision->SetSphereRadius(65);
 	SetRootComponent(compCollision);
 	//compCollision-> //콜리전
+	compCollision->SetSimulatePhysics(true);
+	compCollision->SetNotifyRigidBodyCollision(true);
+	compCollision->BodyInstance.SetCollisionProfileName("BlockAllDynamic");
+
 
 	//메시
 	compMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Enemy"));
@@ -41,7 +45,10 @@ ARIM_Pig::ARIM_Pig()
 	compMesh->SetRelativeLocation(FVector(0, 0, -45));
 	compMesh->SetWorldRotation(FRotator(0, 0, 90));
 
-
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/PigDestroySound.PigDestroySound'"));
+	if (tempSound.Succeeded()) {
+		dieSound = tempSound.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -49,9 +56,10 @@ void ARIM_Pig::BeginPlay()
 {
 	Super::BeginPlay();
 	//player = Cast<ARIM_Player>(GetOwner());
-	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapBird); //새 -----> 적
-	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapObject); //오브젝트(나무, 유리) -----> 적
+	compCollision->OnComponentHit.AddDynamic(this, &ARIM_Pig::ComponentHitBird); //새 -----> 적
+	compCollision->OnComponentHit.AddDynamic(this, &ARIM_Pig::ComponentHitObject); //오브젝트(나무, 유리) -----> 적
 	//compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapEnemy) //적 낙하 ★★★일단 오버랩으로 진행. OnComponentHit 추후 확인
+	player = Cast<ARIM_Player>(GetWorld()->GetFirstPlayerController()->GetPawn());
 }
 
 // Called every frame
@@ -106,30 +114,30 @@ void ARIM_Pig::Damaged()
 
 
 //새 -----> 적
-void ARIM_Pig::ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ARIM_Pig::ComponentHitBird(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor->GetName().Contains(TEXT("red"))) //빨간 새가 적과 닿으면
+	if (Hit.GetActor()->GetName().Contains(TEXT("red"))) //빨간 새가 적과 닿으면
  	{
 		AKYI_AngryRed* redOverlap = Cast<AKYI_AngryRed>(OtherActor);
 		redBirdAttack = true;
 
 		UE_LOG(LogTemp, Warning, TEXT("Red Bird ---> Overlap ---> Enemy !!!!!!!!!!"));
 	}
-	else if (OtherActor->GetName().Contains(TEXT("yellow"))) //노란 새가 적과 닿으면
+	else if (Hit.GetActor()->GetName().Contains(TEXT("yellow"))) //노란 새가 적과 닿으면
 	{
 		AKYI_AngryChuck* yellowOverlap = Cast<AKYI_AngryChuck>(OtherActor);
 		yellowBirdAttack = true;
 
 		UE_LOG(LogTemp, Warning, TEXT("Yellow Bird ---> Overlap ---> Enemy !!!!!!!!!!"));
 	}
-	else if (OtherActor->GetName().Contains(TEXT("blue"))) //파란 새가 적과 닿으면
+	else if (Hit.GetActor()->GetName().Contains(TEXT("blue"))) //파란 새가 적과 닿으면
 	{
 		ARIM_BirdBlue* blueOverlap = Cast<ARIM_BirdBlue>(OtherActor);
 		blueBirdAttack = true;
 
 		UE_LOG(LogTemp, Warning, TEXT("Blue Bird ---> Overlap ---> Enemy !!!!!!!!!!"));
 	}
-	else if (OtherActor->GetName().Contains(TEXT("black"))) //검은 새가 적과 닿으면
+	else if (Hit.GetActor()->GetName().Contains(TEXT("black"))) //검은 새가 적과 닿으면
 	{
 		ARIM_BirdBlack* blackOverlap = Cast<ARIM_BirdBlack>(OtherActor);
 		blackBierdAttack = true;
@@ -140,16 +148,14 @@ void ARIM_Pig::ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponen
 
 
 //오브젝트 -----> 적
- void ARIM_Pig::ComponentBeginOverlapObject(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor->GetName().Contains(TEXT("Wood"))) //오브젝트 "나무"에 닿으면
+ void ARIM_Pig::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{	
+	if (Hit.GetActor()->GetName().Contains(TEXT("Wood"))) //오브젝트 "나무"에 닿으면
 	{
 		AKYI_Wood* woodOverlap = Cast<AKYI_Wood>(OtherActor);
 		woodAttack = true;
-
-		UE_LOG(LogTemp, Warning, TEXT("Wood ---> Overlap ---> Enemy !!!!!!!!!!"));
 	}
-	else if (OtherActor->GetName().Contains(TEXT("Glass"))) //오브젝트 "유리"에 닿으면
+	else if (Hit.GetActor()->GetName().Contains(TEXT("Glass"))) //오브젝트 "유리"에 닿으면
 	{
 		AKYI_Glass* glassOverlap = Cast<AKYI_Glass>(OtherActor);
 		glassAttack = true;
@@ -172,6 +178,7 @@ void ARIM_Pig::ComponentBeginOverlapBird(UPrimitiveComponent* OverlappedComponen
 void ARIM_Pig::Die()
 {
 	//player->score += 5000;
-	UGameplayStatics::PlaySound2D(GetWorld(), dieSound, 5);
+	UGameplayStatics::PlaySound2D(GetWorld(), dieSound, 20);
+	player->score += 5000;
 	Destroy();
 }
