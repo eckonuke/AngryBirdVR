@@ -143,7 +143,6 @@ void ARIM_BirdBlack::ExplosionDamage()
 						tnt->ExplosionDamage();
 					}
 				}
-
 			}
 		}
 	}
