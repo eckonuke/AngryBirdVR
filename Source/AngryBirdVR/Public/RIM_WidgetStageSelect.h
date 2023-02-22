@@ -34,12 +34,6 @@ public:
 	class UButton* btn_Stage03;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Stage04;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Stage05;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_Back;
 
 
@@ -60,14 +54,6 @@ public:
 	//btn_Stage03 연결
 	UFUNCTION()
 	void Bind_btn_PlayStage03();
-
-	//btn_Stage04 연결
-	UFUNCTION()
-	void Bind_btn_PlayStage04();
-
-	//btn_Stage05 연결
-	UFUNCTION()
-	void Bind_btn_PlayStage05();
 
 	//btn_GoBack 연결
 	UFUNCTION()

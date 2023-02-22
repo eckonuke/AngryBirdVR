@@ -77,18 +77,7 @@ void ARIM_WidgetInGameScoreActor::GoRestart()
 		//스테이지3 을 연다
 		UGameplayStatics::OpenLevel(GetWorld(), "Stage1_3");
 	}
-	//현재 스테이지4 이면
-	else if (levelName.Contains("Stage1_4"))
-	{
-		//스테이지4 를 연다
-		UGameplayStatics::OpenLevel(GetWorld(), "Stage1_4");
-	}
-	//현재 스테이지5 이면
-	else if (levelName.Contains("Stage1_5"))
-	{
-		//스테이지5 를 연다
-		UGameplayStatics::OpenLevel(GetWorld(), "Stage1_5");
-	}
+
 	
 }
 
@@ -111,19 +100,8 @@ void ARIM_WidgetInGameScoreActor::GoNext()
 	}
 	else if (levelName.Contains("Stage1_3")) //현재 스테이지3 이면
 	{
-		//스테이지4 으로 이동. Stage1_4 레벨 오픈
-		UGameplayStatics::OpenLevel(GetWorld(), "Stage1_4");
-	}
-	else if (levelName.Contains("Stage1_4")) //현재 스테이지4 이면
-	{
-		//스테이지5 으로 이동. Stage1_5 레벨 오픈
-		UGameplayStatics::OpenLevel(GetWorld(), "Stage1_5");
-	}
-	else if (levelName.Contains("Stage1_5")) //현재 스테이지5 이면
-	{
-		//★★★★★★★★★ 추가 필요
-		//마지막 스테이지 입니다. 위젯 노출 or 버튼 아예 비활성화
-
+// 		//★★★★★★★★★ 추가 필요
+// 		//마지막 스테이지 입니다. 위젯 노출 or 버튼 아예 비활성화
 	}
 
 

@@ -13,6 +13,7 @@ void URIM_WidgetInGameScore::NativeConstruct()
 	btn_Menu->OnPressed.AddDynamic(this, &URIM_WidgetInGameScore::Bind_btn_GoMenu);
 	btn_Restart->OnPressed.AddDynamic(this, &URIM_WidgetInGameScore::Bind_btn_GoRestart);
 	btn_Next->OnPressed.AddDynamic(this, &URIM_WidgetInGameScore::Bind_btn_GoNext);
+	
 
 	
 }
@@ -36,4 +37,36 @@ void URIM_WidgetInGameScore::Bind_btn_GoRestart()
 void URIM_WidgetInGameScore::Bind_btn_GoNext()
 {
 	widgetInGameScoreActor->GoNext();
+}
+
+
+//[º°]
+void URIM_WidgetInGameScore::Bind_Star1()
+{
+	
+}
+
+void URIM_WidgetInGameScore::Bind_Star2()
+{
+
+}
+
+void URIM_WidgetInGameScore::Bind_Star3()
+{
+
+}
+
+void URIM_WidgetInGameScore::Bind_Star_Yellow1()
+{
+
+}
+
+void URIM_WidgetInGameScore::Bind_Star_Yellow2()
+{
+
+}
+
+void URIM_WidgetInGameScore::Bind_Star_Yellow3()
+{
+
 }

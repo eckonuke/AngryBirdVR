@@ -40,7 +40,7 @@ public:
 	//WidgetInGameScore 에서 btn_Next 클릭 했을 때 실행 될 함수
 	void GoNext();
 
-
-
+	//[별 이미지 노출]
+	void starScore();
 
 };

@@ -40,12 +40,6 @@ public:
 	//WidgetStageSelect 에서 btn_Stage03 클릭 했을 때 실행 될 함수
 	void PlayStage03();
 
-	//WidgetStageSelect 에서 btn_Stage04 클릭 했을 때 실행 될 함수
-	void PlayStage04();
-
-	//WidgetStageSelect 에서 btn_Stage05 클릭 했을 때 실행 될 함수
-	void PlayStage05();
-
 	//WidgetStageSelect 에서 btn_GoBack 클릭 했을 때 실행 될 함수
 	void GoBack();
 

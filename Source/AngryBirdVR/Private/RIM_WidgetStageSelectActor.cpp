@@ -68,21 +68,6 @@ void ARIM_WidgetStageSelectActor::PlayStage03()
 
 }
 
-//WidgetStageSelect 에서 btn_Stage04 클릭 했을 때 실행 될 함수
-void ARIM_WidgetStageSelectActor::PlayStage04()
-{
-	//스테이지4 으로 이동. Stage1_4 레벨 오픈
-	UGameplayStatics::OpenLevel(GetWorld(), "Stage1_4");
-
-}
-
-//WidgetStageSelect 에서 btn_Stage05 클릭 했을 때 실행 될 함수
-void ARIM_WidgetStageSelectActor::PlayStage05()
-{
-	//스테이지5 으로 이동. Stage1_5 레벨 오픈
-	UGameplayStatics::OpenLevel(GetWorld(), "Stage1_5");
-
-}
 
 //WidgetStageSelect 에서 btn_GoBack 클릭 했을 때 실행 될 함수
 void ARIM_WidgetStageSelectActor::GoBack()
