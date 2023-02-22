@@ -15,6 +15,8 @@
 #include "RIM_Pig.h"
 #include <Kismet/GameplayStatics.h>
 #include "RIM_Player.h"
+#include <Particles/ParticleSystemComponent.h>
+#include <Sound/SoundBase.h>
 
 
 
@@ -42,6 +44,27 @@ ARIM_TNT::ARIM_TNT()
 	if (tempSound.Succeeded()) {
 		explosionSound = tempSound.Object;
 	}
+
+	//¿Ã∆Â∆Æ
+	effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Effect"));
+	effect->SetupAttachment(compCollision);
+	ConstructorHelpers::FObjectFinder<UParticleSystem> tempEffect(TEXT("/Script/Engine.ParticleSystem'/Game/Realistic_Starter_VFX_Pack_Vol2/Particles/Explosion/P_Explosion_Big_A.P_Explosion_Big_A'"));
+	if (tempEffect.Succeeded())
+	{
+		effect->SetTemplate(tempEffect.Object);
+		effect->bAutoActivate = false;
+	}
+
+	//ªÁøÓµÂ
+// 	sound = CreateDefaultSubobject<USoundBase>(TEXT("Sound"));
+// 	sound->SetupAttachment(compCollision);
+// 	ConstructorHelpers::FObjectFinder<???> tempSound(TEXT(""));
+// 	if (tempSound.Succeeded())
+// 	{
+// 		sound->SetTemplate(tempSound.Object);
+// 		effect->bAutoActivate = false;
+// 	}
+
 }
 
 // Called when the game starts or when spawned
@@ -96,6 +119,13 @@ void ARIM_TNT::ExplosionDamage()
 		//°⁄°⁄°⁄???
 		for (FOverlapResult& hit : hitInfos) // [i] = FOverlapResult& hit
 		{
+			//¿Ã∆Â∆Æ
+			effect->Activate(true);
+			//SetHiddenInGame(false);
+			SetActorEnableCollision(false);
+			effect->OnSystemFinished.AddDynamic(this, &ARIM_TNT::OnEffectFinished);
+
+
 			if (hit.GetActor() != nullptr) {
 				FString name = hit.GetActor()->GetName();
 				if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
@@ -132,6 +162,7 @@ void ARIM_TNT::ExplosionDamage()
 	}
 }
 
+
 //ø¿∫Í¡ß∆Æ -----> ∆¯≈∫
 void ARIM_TNT::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -149,3 +180,11 @@ void ARIM_TNT::Die() {
 	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound, 5);
 	this->Destroy();
 }
+
+
+//¿Ã∆Â∆Æ ¡æ∑·
+void ARIM_TNT::OnEffectFinished(class UParticleSystemComponent* PSystem)
+{
+	Destroy();
+}
+

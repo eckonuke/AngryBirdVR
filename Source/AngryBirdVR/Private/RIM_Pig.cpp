@@ -15,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include <Sound/SoundBase.h>
 #include "RIM_Player.h"
+#include <Particles/ParticleSystemComponent.h>
 
 // Sets default values
 ARIM_Pig::ARIM_Pig()
@@ -49,6 +50,19 @@ ARIM_Pig::ARIM_Pig()
 	if (tempSound.Succeeded()) {
 		dieSound = tempSound.Object;
 	}
+
+
+	//¿Ã∆Â∆Æ
+	effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Effect"));
+	effect->SetupAttachment(compCollision);
+	ConstructorHelpers::FObjectFinder<UParticleSystem> tempEffect(TEXT("/Script/Engine.ParticleSystem'/Game/Realistic_Starter_VFX_Pack_Vol2/Particles/Smoke/P_Steam_A.P_Steam_A'"));
+	if (tempEffect.Succeeded())
+	{
+		effect->SetTemplate(tempEffect.Object);
+		effect->bAutoActivate = false;
+	}
+
+
 }
 
 // Called when the game starts or when spawned
@@ -82,6 +96,13 @@ void ARIM_Pig::Tick(float DeltaTime)
 //¡∂∞«ø° µ˚∏• ¡◊¿Ω
 void ARIM_Pig::Damaged()
 {
+	//¿Ã∆Â∆Æ
+	effect->Activate(true);
+	//Box->SetHiddenInGame(false);
+	SetActorEnableCollision(false);
+	effect->OnSystemFinished.AddDynamic(this, &ARIM_Pig::OnEffectFinished);
+
+
 	if (redBirdAttack == true || yellowBirdAttack == true || blueBirdAttack == true || blackBierdAttack == true) //ªı∞° ¿˚ø°∞‘ ¥Í¿∏∏È
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Bird Attack -----> Enemy Destroy !!!!!!!!!!"));
@@ -180,5 +201,12 @@ void ARIM_Pig::Die()
 	//player->score += 5000;
 	UGameplayStatics::PlaySound2D(GetWorld(), dieSound, 20);
 	player->score += 5000;
+	Destroy();
+}
+
+
+//¿Ã∆Â∆Æ ¡æ∑·
+void ARIM_Pig::OnEffectFinished(class UParticleSystemComponent* PSystem)
+{
 	Destroy();
 }

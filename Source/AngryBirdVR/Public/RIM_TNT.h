@@ -80,5 +80,12 @@ public:
 	UFUNCTION()
 	void Die();
 
+public:
+	//¿Ã∆Â∆Æ
+	UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* effect;
+	UFUNCTION()
+	void OnEffectFinished(class UParticleSystemComponent* PSystem);
+
 
 };
