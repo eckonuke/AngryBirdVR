@@ -41,6 +41,9 @@ public:
 	void GoNext();
 
 	//[별 이미지 노출]
-	void starScore();
+	void yellowStar1();
+	void yellowStar2();
+	void yellowStar3();
+
 
 };

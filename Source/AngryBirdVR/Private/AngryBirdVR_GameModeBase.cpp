@@ -6,6 +6,7 @@
 #include "RIM_WidgetInGameScoreActor.h"
 #include "RIM_Player.h"
 #include "RIM_Pig.h"
+#include "RIM_WidgetInGameFailActor.h"
 
 AAngryBirdVR_GameModeBase::AAngryBirdVR_GameModeBase() //추가
 {
@@ -18,7 +19,8 @@ AAngryBirdVR_GameModeBase::AAngryBirdVR_GameModeBase() //추가
 void AAngryBirdVR_GameModeBase::BeginPlay() //추가
 {
 	Super::BeginPlay();
-	//플레이어
+	
+
 }
 
 void AAngryBirdVR_GameModeBase::Tick(float DeltaTime) //추가
@@ -27,7 +29,7 @@ void AAngryBirdVR_GameModeBase::Tick(float DeltaTime) //추가
 
 	currentTime += DeltaTime;
 	if (player) {
-		if (EnemyAllDie == true) //새가 0개 이거나 적이 다 죽으면
+		if (EnemyAllDie == true) //적이 다 죽으면
 		{
 			if (currentTime < 2) //2초 지나고
 			{
@@ -35,8 +37,14 @@ void AAngryBirdVR_GameModeBase::Tick(float DeltaTime) //추가
 				GetWorld()->SpawnActor<ARIM_WidgetInGameScoreActor>(ARIM_WidgetInGameScoreActor::StaticClass(), player->GetActorLocation() + player->GetActorForwardVector() * 200, FRotator(0.0f, 180.0f, 0.0f)); //★★★★★★
 			}
 		}
+		//새가 0개 이고 적이 살아있다면
 		else if (player->birdCount == 0) {
-			//실패한 화면을 보여준다
+			if (currentTime < 2) //2초 지나고
+			{
+				//실패한 화면을 보여준다
+				GetWorld()->SpawnActor<ARIM_WidgetInGameFailActor>(ARIM_WidgetInGameFailActor::StaticClass(), player->GetActorLocation() + player->GetActorForwardVector() * 200, FRotator(0.0f, 180.0f, 0.0f));
+			}
+			
 		}
 	}
 }

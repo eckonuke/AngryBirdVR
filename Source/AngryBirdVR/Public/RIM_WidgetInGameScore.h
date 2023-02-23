@@ -34,14 +34,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_Next;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UImage* img_Star1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UImage* img_Star2;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UImage* img_Star3;
+	//별
+// 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+// 	class UImage* img_Star1;
+// 
+// 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+// 	class UImage* img_Star2;
+// 
+// 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+// 	class UImage* img_Star3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UImage* img_Star_Yellow1;
@@ -71,15 +72,16 @@ public:
 	UFUNCTION()
 	void Bind_btn_GoNext();
 
+public:
 	//[별 연결]
-	UFUNCTION()
-	void Bind_Star1();
-
-	UFUNCTION()
-	void Bind_Star2();
-
-	UFUNCTION()
-	void Bind_Star3();
+// 	UFUNCTION()
+// 	void Bind_Star1();
+// 
+// 	UFUNCTION()
+// 	void Bind_Star2();
+// 
+// 	UFUNCTION()
+// 	void Bind_Star3();
 
 	UFUNCTION()
 	void Bind_Star_Yellow1();
