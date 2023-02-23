@@ -28,6 +28,8 @@ public:
 		class USphereComponent* sphereComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UProjectileMovementComponent* movement;
+	UFUNCTION()
+	void ComponentHitObject(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
 
 	void BirdYellowSkill();
 

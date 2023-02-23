@@ -33,7 +33,11 @@ public:
 	//새(총알) 발사체의 이동. 발사체 형태의 물리 기능을 제고하는 컴포넌트
 	UPROPERTY(EditAnywhere)
 		class UProjectileMovementComponent* compMovement;
-
+	//이펙트
+	UPROPERTY(EditAnywhere)
+		class UParticleSystem* explodeEffect;
+	UPROPERTY(EditAnywhere)
+		class USoundBase* explosionSound;
 public:
 	//일정 시간 지난 후 새 파괴
 	UPROPERTY(EditAnywhere)
@@ -68,8 +72,6 @@ public:
 	//폭탄에 범위에 따른 피해. 파괴 또는 충격
 	UFUNCTION()
 		void ExplosionDamage();
-
-
-
-
+	UFUNCTION()
+		void ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

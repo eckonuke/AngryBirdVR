@@ -37,7 +37,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UProjectileMovementComponent* compMovement;
 
-
+	UFUNCTION()
+	void ComponentHitObject(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
 public:
 	//일정 시간 지난 후 새 파괴
 	UPROPERTY(EditAnywhere)

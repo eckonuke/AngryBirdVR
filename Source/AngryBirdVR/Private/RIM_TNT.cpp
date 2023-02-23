@@ -17,6 +17,7 @@
 #include "RIM_Player.h"
 #include <Particles/ParticleSystemComponent.h>
 #include <Sound/SoundBase.h>
+#include <Particles/ParticleSystem.h>
 
 
 // Sets default values
@@ -45,13 +46,9 @@ ARIM_TNT::ARIM_TNT()
 	}
 
 	//이펙트
-	effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Effect"));
-	effect->SetupAttachment(compCollision);
 	ConstructorHelpers::FObjectFinder<UParticleSystem> tempEffect(TEXT("/Script/Engine.ParticleSystem'/Game/Realistic_Starter_VFX_Pack_Vol2/Particles/Explosion/P_Explosion_Big_A.P_Explosion_Big_A'"));
-	if (tempEffect.Succeeded())
-	{
-		effect->SetTemplate(tempEffect.Object);
-		effect->bAutoActivate = false;
+	if (tempEffect.Succeeded()) {
+		effect = tempEffect.Object;
 	}
 
 	//사운드
@@ -98,13 +95,13 @@ void ARIM_TNT::ExplosionDamage()
 	TArray<FOverlapResult> hitInfos;
 
 	//TNT 위치 ★★★왜 액터 로케이션 안 사용?
-	FVector center = GetActorLocation(); 
+	FVector center = GetActorLocation();
 
 	//TNT 폭발 범위(blastRange)
 	FCollisionShape blastCollision = FCollisionShape::MakeSphere(blastRange);
 	FCollisionObjectQueryParams objectQuerry;
 	objectQuerry.AddObjectTypesToQuery(ECC_WorldDynamic);
-	objectQuerry.AddObjectTypesToQuery(ECC_Destructible);
+	objectQuerry.AddObjectTypesToQuery(ECC_WorldStatic);
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(this);
 	//★★★???
@@ -118,18 +115,10 @@ void ARIM_TNT::ExplosionDamage()
 		//★★★???
 		for (FOverlapResult& hit : hitInfos) // [i] = FOverlapResult& hit
 		{
-			//이펙트
-			effect->Activate(true);
-			//SetHiddenInGame(false);
-			SetActorEnableCollision(false);
-			effect->OnSystemFinished.AddDynamic(this, &ARIM_TNT::OnEffectFinished);
-
-
 			if (hit.GetActor() != nullptr) {
 				FString name = hit.GetActor()->GetName();
 				if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
 					double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
-					UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
 					if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
 					{
 						if (name.Contains("Pig")) {
@@ -161,29 +150,25 @@ void ARIM_TNT::ExplosionDamage()
 	}
 }
 
-
-//오브젝트 -----> 폭탄
 void ARIM_TNT::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	FString name = Hit.GetActor()->GetName();
-	if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
-		UE_LOG(LogTemp, Warning, TEXT("Hit by %s"), *OtherActor->GetName());
-		ExplosionDamage();
-		Die();
+	AActor* actor = Hit.GetActor();
+	if (actor) {
+		if (actor->GetVelocity().Length() > 100) {
+			FString name = actor->GetName();
+			if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
+				ExplosionDamage();
+				Die();
+			}
+		}
 	}
 }
 
 
 //폭탄 없어진다
 void ARIM_TNT::Die() {
+	//이펙트
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect, GetActorLocation());
 	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound, 5);
 	this->Destroy();
 }
-
-
-//이펙트 종료
-void ARIM_TNT::OnEffectFinished(class UParticleSystemComponent* PSystem)
-{
-	Destroy();
-}
-

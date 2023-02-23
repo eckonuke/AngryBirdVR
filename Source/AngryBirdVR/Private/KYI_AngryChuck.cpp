@@ -20,12 +20,11 @@ AKYI_AngryChuck::AKYI_AngryChuck()
 	skeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	//skeletalMesh->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 	skeletalMesh->SetupAttachment(sphereComp);
+	skeletalMesh->SetRelativeRotation(FRotator(0, -90, 0));
+	skeletalMesh->SetRelativeLocation(FVector(0, 0, -10));
+	skeletalMesh->SetRelativeScale3D(FVector(0.2));
 	movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
 	movement->SetUpdatedComponent(sphereComp);
-	movement->InitialSpeed = 1000;
-	movement->MaxSpeed = 2000;
-	movement->bShouldBounce = true;
-	movement->Bounciness = 0.5f;
 }
 
 // Called when the game starts or when spawned
@@ -34,6 +33,7 @@ void AKYI_AngryChuck::BeginPlay()
 	Super::BeginPlay();
 	SetLifeSpan(4);
 	player = Cast<ARIM_Player>(GetOwner());
+	sphereComp->OnComponentBeginOverlap.AddDynamic(this, &AKYI_AngryChuck::ComponentHitObject);
 }
 
 // Called every frame
@@ -46,3 +46,13 @@ void AKYI_AngryChuck::BirdYellowSkill() {
 	
 }
 
+void AKYI_AngryChuck::ComponentHitObject(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
+{
+	AActor* actor = Hit.GetActor();
+	if (actor) {
+		FString name = actor->GetName();
+		if (name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
+			actor->Destroy();	
+		}
+	}
+}

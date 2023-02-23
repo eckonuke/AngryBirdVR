@@ -17,6 +17,9 @@
 #include <Components/BoxComponent.h>
 #include "RIM_Player.h"
 #include "RIM_TNT.h"
+#include <Particles/ParticleSystem.h>
+#include <Kismet/GameplayStatics.h>
+#include <Sound/SoundBase.h>
 
 // Sets default values
 ARIM_BirdBlack::ARIM_BirdBlack()
@@ -28,7 +31,7 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 	compCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 	RootComponent = compCollision; //루트컴포넌트로 세팅. compCollision->SetupAttachment(RootComponent);
 	compCollision->SetCollisionProfileName(TEXT("BlockAll"));
-	compCollision->SetSphereRadius(10); //▶충돌체 크기. 추후 수정
+	compCollision->SetSphereRadius(60); //▶충돌체 크기. 추후 수정
 	compCollision->SetSimulatePhysics(true);
 
 	//외관
@@ -41,7 +44,9 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 // 	}
 	meshBlack->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//meshBlue->SetRelativeLocation(FVector(0, 0, 0)); //▶추후 수정
-	meshBlack->SetRelativeScale3D(FVector(0.08f)); //▶추후 수정
+	meshBlack->SetRelativeScale3D(FVector(0.8f)); //▶추후 수정
+	meshBlack->SetRelativeLocation(FVector(-6, 1, -54));
+	meshBlack->SetRelativeRotation(FRotator(0, 90, 0));
 
 	//발사체 ★★★영상에 의하면 필요없으나 일단 넣음
 	compMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
@@ -51,6 +56,16 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 	compMovement->bShouldBounce = true; //반동여부. 튕기는 여부
 	compMovement->Bounciness = 0.5f; //얼마나 잘 튕기에 할 것인가. 반동. 탄성. ▶필요시 추후 수정
 	//InitialLifeSpan = 10.0f; //생명 시간. ▶필요시 추후 수정
+
+	//이펙트
+	ConstructorHelpers::FObjectFinder<UParticleSystem> tempEffect(TEXT("/Script/Engine.ParticleSystem'/Game/Realistic_Starter_VFX_Pack_Vol2/Particles/Explosion/P_Explosion_Big_A.P_Explosion_Big_A'"));
+	if (tempEffect.Succeeded()) {
+		explodeEffect = tempEffect.Object;
+	}
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/TNTExplosionSound.TNTExplosionSound'"));
+	if (tempSound.Succeeded()) {
+		explosionSound = tempSound.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -58,6 +73,7 @@ void ARIM_BirdBlack::BeginPlay()
 {
 	Super::BeginPlay();
 	player = Cast<ARIM_Player>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	compCollision->OnComponentHit.AddDynamic(this, &ARIM_BirdBlack::ComponentHitObject);
 	SetLifeSpan(4);
 }
 
@@ -68,16 +84,16 @@ void ARIM_BirdBlack::Tick(float DeltaTime)
 
 }
 
-//일정 시간 지난 후 새 파괴
-//void ARIM_BirdBlack::Death()
-//{
-//	Destroy();
-//}
-
-
-//[새가 터지면 발생하는 일]
-//1. blastRange(폭탄 범위) 에서 폭탄에 일정 거리 이하로 위치해 있을 때, 적, 나무, 유리 파괴된다.
-//2. blastRange(폭탄 범위) 에서 폭탄에 일정 거리 이상으로 위치해 있을 때, 적, 나무, 유리 충격으로 날아간다.
+void ARIM_BirdBlack::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	AActor* actor = Hit.GetActor();
+	if (actor) {
+		FString name = actor->GetName();
+		if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
+			actor->Destroy();
+		}
+	}
+}
 
 
 //새 폭발 범위에 따른 피해. 파괴 또는 충격
@@ -107,43 +123,48 @@ void ARIM_BirdBlack::ExplosionDamage()
 		//★★★???
 		for (FOverlapResult& hit : hitInfos) // [i] = FOverlapResult& hit
 		{
-			FString name = hit.GetActor()->GetName();
-			if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig") || name.Contains("TNT")) {
-				double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
-				UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
-				tnt = Cast<ARIM_TNT>(hit.GetActor());
-				if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
-				{
-					if (name.Contains("Pig")) {
-						player->score += 5000;
+			if (hit.GetActor() != nullptr) {
+				FString name = hit.GetActor()->GetName();
+				if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig") || name.Contains("TNT")) {
+					double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
+					UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
+					tnt = Cast<ARIM_TNT>(hit.GetActor());
+					if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
+					{
+						if (name.Contains("Pig")) {
+							player->score += 5000;
+						}
+						else if (name.Contains("Wood") || name.Contains("Glass")) {
+							player->score += 500;
+						}
+						else if (tnt) {
+							tnt->ExplosionDamage();
+						}
+						hit.GetActor()->Destroy();
 					}
-					else if (name.Contains("Wood") || name.Contains("Glass")) {
-						player->score += 500;
-					}
-					else if (tnt) {
-						tnt->ExplosionDamage();
-					}
-					hit.GetActor()->Destroy();
-				}
-				else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
-				{
-					glass = Cast<AKYI_Glass>(hit.GetActor());
-					wood = Cast<AKYI_Wood>(hit.GetActor());
-					pig = Cast<ARIM_Pig>(hit.GetActor());
-					if (glass) {
-						glass->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
-					}
-					else if (wood) {
-						wood->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
-					}
-					else if (pig) {
-						pig->compCollision->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
-					}
-					else if (tnt) {
-						tnt->ExplosionDamage();
+					else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
+					{
+						glass = Cast<AKYI_Glass>(hit.GetActor());
+						wood = Cast<AKYI_Wood>(hit.GetActor());
+						pig = Cast<ARIM_Pig>(hit.GetActor());
+						if (glass) {
+							glass->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+						}
+						else if (wood) {
+							wood->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+						}
+						else if (pig) {
+							pig->compCollision->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+						}
+						else if (tnt) {
+							tnt->ExplosionDamage();
+						}
 					}
 				}
 			}
 		}
 	}
+	//폭발 이펙트
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explodeEffect, GetActorLocation());
+	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound, 5);
 }

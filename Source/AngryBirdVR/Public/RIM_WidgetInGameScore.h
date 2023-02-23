@@ -53,6 +53,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UImage* img_Star_Yellow3;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* Score;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class ARIM_Player* player;
 
 public:
 	UPROPERTY()
@@ -83,14 +88,10 @@ public:
 // 	UFUNCTION()
 // 	void Bind_Star3();
 
+private:
 	UFUNCTION()
-	void Bind_Star_Yellow1();
-
+	void starCalc(int32 point);
 	UFUNCTION()
-	void Bind_Star_Yellow2();
-
-	UFUNCTION()
-	void Bind_Star_Yellow3();
-
-
+	void Init();
+	float targetScore = 0;
 };

@@ -169,14 +169,19 @@ public:
 	void cancelShoot();
 	//소리 재생
 	void playSound(class USoundBase* sound);
+	//컨트롤러 햅틱 피드백
+	void rightConHaptic();
 
 	//아래 코드 용일님 추가
-	float score = 0;
-	int32 birdCount = 0;
+	int32 score = 0;
 	int32 redCount = 1;
 	int32 blueCount = 1;
 	int32 yellowCount = 1;
 	int32 blackCount = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 birdCount = redCount + yellowCount + blueCount + blackCount;
+
+	bool finish = false;
 
 private:
 	//아래 코드 용일님 추가
@@ -184,4 +189,7 @@ private:
 	bool bWillShoot = true;
 	FVector rightHandPosition;
 	FVector fireVelocity;
+
+	//새 갯수 계산
+	void birdCalc();
 };

@@ -27,8 +27,6 @@ AKYI_AngryRed::AKYI_AngryRed()
 	skeletalMesh->SetupAttachment(sphereComp);
 	movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
 	movement->SetUpdatedComponent(sphereComp);
-	movement->InitialSpeed = 1000;
-	movement->MaxSpeed = 2000;
 	movement->bShouldBounce = true;
 	movement->Bounciness = 0.5f;
 }
@@ -37,6 +35,7 @@ AKYI_AngryRed::AKYI_AngryRed()
 void AKYI_AngryRed::BeginPlay()
 {
 	Super::BeginPlay();
+	sphereComp->OnComponentHit.AddDynamic(this, &AKYI_AngryRed::ComponentHitObject);
 	SetLifeSpan(4);
 }
 
@@ -47,3 +46,13 @@ void AKYI_AngryRed::Tick(float DeltaTime)
 	
 }
 
+void AKYI_AngryRed::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	AActor* actor = Hit.GetActor();
+	if (actor) {
+		FString name = actor->GetName();
+		if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
+			actor->Destroy();
+		}
+	}
+}

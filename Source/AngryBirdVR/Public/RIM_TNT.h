@@ -57,7 +57,7 @@ public:
 	float blastRange = 1000.0f;
 
 	UPROPERTY(EditAnywhere)
-	float blastRangeDie = 300.0f;
+	float blastRangeDie = 500.0f;
 
 public:
 	//ªı
@@ -83,9 +83,5 @@ public:
 public:
 	//¿Ã∆Â∆Æ
 	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* effect;
-	UFUNCTION()
-	void OnEffectFinished(class UParticleSystemComponent* PSystem);
-
-
+	class UParticleSystem* effect;
 };

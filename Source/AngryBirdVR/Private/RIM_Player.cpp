@@ -22,6 +22,7 @@
 #include "AngryBirdVR_GameModeBase.h"
 #include <Sound/SoundBase.h>
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputActionValue.h>
+#include "RIM_Pig.h"
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -153,14 +154,6 @@ void ARIM_Player::BeginPlay()
 
 	//3. 가져온 Subsystem 에 IMC 를 등록한다.(우선순위 0번)
 	subsys->AddMappingContext(vrMapping, 0);
-
-	birdCount = redCount + yellowCount + blueCount + blackCount; // ---> 용일님 추가
-
-	//아래 코드 용일님 추가
-	//게임모드 케스팅 
-	AAngryBirdVR_GameModeBase* gameMode = Cast<AAngryBirdVR_GameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	//불러온 게임모드한테 플레이어가 나라고 알려 줌
-	gameMode->player = this;
 }
 
 // Called every frame
@@ -189,6 +182,7 @@ void ARIM_Player::Tick(float DeltaTime)
 			path->mesh->SetCollisionProfileName(TEXT("NoCollision"));
 		}
 	}
+	birdCalc();
 }
 
 // Called to bind functionality to input
@@ -203,6 +197,7 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	{
 		//새 스킬들 사용 ---> 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용
 		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::readyShoot); // ---> 용일님 추가
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Ongoing, this, &ARIM_Player::rightConHaptic);
 		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Completed, this, &ARIM_Player::shootBird); // ---> 용일님 추가
 
 		EnhancedInputComponent->BindAction(leftX, ETriggerEvent::Started, this, &ARIM_Player::cancelShoot); // ---> 용일님 추가
@@ -301,6 +296,11 @@ void ARIM_Player::readyShoot() {
 	playSound(slingSound);
 }
 
+void ARIM_Player::cancelShoot() {
+	bWillShoot = false;
+	bShouldPredict = false;
+}
+
 //아래 코드 용일님 추가
 void ARIM_Player::shootBird() {
 	if (!bWillShoot) {
@@ -338,8 +338,11 @@ void ARIM_Player::playSound(class USoundBase* sound) {
 	UGameplayStatics::PlaySound2D(GetWorld(), sound, 5);
 }
 
-void ARIM_Player::cancelShoot() {
-	bWillShoot = false;
-	bShouldPredict = false;
+void ARIM_Player::rightConHaptic() {
+	
+}
+
+void ARIM_Player::birdCalc() {
+	birdCount = redCount + yellowCount + blueCount + blackCount;
 }
 
