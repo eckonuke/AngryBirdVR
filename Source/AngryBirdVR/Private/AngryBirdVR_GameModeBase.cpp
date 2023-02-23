@@ -47,6 +47,7 @@ void AAngryBirdVR_GameModeBase::Tick(float DeltaTime) //추가
 			
 		}
 	}
+	FindEnemyActor();
 }
 
 
@@ -58,6 +59,9 @@ void AAngryBirdVR_GameModeBase::FindEnemyActor()
 	if (pig.Num() == 0) //돼지가 0 이면
 	{
 		EnemyAllDie = true;
+	}
+	else {
+		EnemyAllDie = false;
 	}
 	
 
