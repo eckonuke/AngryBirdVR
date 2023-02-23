@@ -169,6 +169,8 @@ public:
 	void cancelShoot();
 	//소리 재생
 	void playSound(class USoundBase* sound);
+	//컨트롤러 햅틱 피드백
+	void rightConHaptic();
 
 	//아래 코드 용일님 추가
 	int32 score = 0;

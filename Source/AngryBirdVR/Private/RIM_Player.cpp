@@ -197,6 +197,7 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	{
 		//새 스킬들 사용 ---> 오른손 그립 ★★★실제 게임에서는 오른손 트리거 사용
 		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Started, this, &ARIM_Player::readyShoot); // ---> 용일님 추가
+		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Ongoing, this, &ARIM_Player::rightConHaptic);
 		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Completed, this, &ARIM_Player::shootBird); // ---> 용일님 추가
 
 		EnhancedInputComponent->BindAction(leftX, ETriggerEvent::Started, this, &ARIM_Player::cancelShoot); // ---> 용일님 추가
@@ -335,6 +336,10 @@ void ARIM_Player::shootBird() {
 
 void ARIM_Player::playSound(class USoundBase* sound) {
 	UGameplayStatics::PlaySound2D(GetWorld(), sound, 5);
+}
+
+void ARIM_Player::rightConHaptic() {
+	
 }
 
 void ARIM_Player::birdCalc() {
