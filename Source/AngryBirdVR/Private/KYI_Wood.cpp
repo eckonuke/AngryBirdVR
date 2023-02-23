@@ -25,7 +25,7 @@ AKYI_Wood::AKYI_Wood()
 void AKYI_Wood::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	boxComp->OnComponentHit.AddDynamic(this, &AKYI_Wood::ComponentHitObject);
 }
 
 // Called every frame
@@ -35,3 +35,20 @@ void AKYI_Wood::Tick(float DeltaTime)
 
 }
 
+void AKYI_Wood::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	if (Hit.GetActor()) {
+		FString name = Hit.GetActor()->GetName();
+		if (name.Contains("Red") || name.Contains("Wood") || name.Contains("Yellow") || name.Contains("Black")) {
+			Die();
+		}
+	}
+}
+
+void AKYI_Wood::Die(){
+	if (life > 0) {
+		life--;
+	}
+	else {
+		Destroy();
+	}
+}

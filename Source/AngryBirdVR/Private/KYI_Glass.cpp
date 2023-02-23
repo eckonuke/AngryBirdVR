@@ -25,7 +25,7 @@ AKYI_Glass::AKYI_Glass()
 void AKYI_Glass::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	boxComp->OnComponentHit.AddDynamic(this, &AKYI_Glass::ComponentHitObject);
 }
 
 // Called every frame
@@ -35,3 +35,20 @@ void AKYI_Glass::Tick(float DeltaTime)
 
 }
 
+void AKYI_Glass::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	if (Hit.GetActor()) {
+		FString name = Hit.GetActor()->GetName();
+		if (name.Contains("Angry") || name.Contains("Wood") || name.Contains("Glass")) {
+			Die();
+		}
+	}
+}
+
+void AKYI_Glass::Die() {
+	if (life > 0) {
+		life--;
+	}
+	else {
+		Destroy();
+	}
+}

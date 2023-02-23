@@ -17,6 +17,7 @@
 #include "RIM_Player.h"
 #include <Particles/ParticleSystemComponent.h>
 #include <Sound/SoundBase.h>
+#include <Particles/ParticleSystem.h>
 
 
 // Sets default values
@@ -45,13 +46,9 @@ ARIM_TNT::ARIM_TNT()
 	}
 
 	//¿Ã∆Â∆Æ
-	effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Effect"));
-	effect->SetupAttachment(compCollision);
 	ConstructorHelpers::FObjectFinder<UParticleSystem> tempEffect(TEXT("/Script/Engine.ParticleSystem'/Game/Realistic_Starter_VFX_Pack_Vol2/Particles/Explosion/P_Explosion_Big_A.P_Explosion_Big_A'"));
-	if (tempEffect.Succeeded())
-	{
-		effect->SetTemplate(tempEffect.Object);
-		effect->bAutoActivate = false;
+	if (tempEffect.Succeeded()) {
+		effect = tempEffect.Object;
 	}
 
 	//ªÁøÓµÂ
@@ -118,13 +115,6 @@ void ARIM_TNT::ExplosionDamage()
 		//°⁄°⁄°⁄???
 		for (FOverlapResult& hit : hitInfos) // [i] = FOverlapResult& hit
 		{
-			//¿Ã∆Â∆Æ
-			effect->Activate(true);
-			//SetHiddenInGame(false);
-			SetActorEnableCollision(false);
-			effect->OnSystemFinished.AddDynamic(this, &ARIM_TNT::OnEffectFinished);
-
-
 			if (hit.GetActor() != nullptr) {
 				FString name = hit.GetActor()->GetName();
 				if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
@@ -165,11 +155,15 @@ void ARIM_TNT::ExplosionDamage()
 //ø¿∫Í¡ß∆Æ -----> ∆¯≈∫
 void ARIM_TNT::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	FString name = Hit.GetActor()->GetName();
-	if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
-		UE_LOG(LogTemp, Warning, TEXT("Hit by %s"), *OtherActor->GetName());
-		ExplosionDamage();
-		Die();
+	if (Hit.GetActor()) {
+		FString name = Hit.GetActor()->GetName();
+		if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
+			UE_LOG(LogTemp, Warning, TEXT("Hit by %s"), *OtherActor->GetName());
+			ExplosionDamage();
+			//¿Ã∆Â∆Æ
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect, GetActorLocation());
+			Die();
+		}
 	}
 }
 
@@ -179,11 +173,3 @@ void ARIM_TNT::Die() {
 	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound, 5);
 	this->Destroy();
 }
-
-
-//¿Ã∆Â∆Æ ¡æ∑·
-void ARIM_TNT::OnEffectFinished(class UParticleSystemComponent* PSystem)
-{
-	Destroy();
-}
-

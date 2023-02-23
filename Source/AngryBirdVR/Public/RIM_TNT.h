@@ -83,9 +83,5 @@ public:
 public:
 	//¿Ã∆Â∆Æ
 	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* effect;
-	UFUNCTION()
-	void OnEffectFinished(class UParticleSystemComponent* PSystem);
-
-
+	class UParticleSystem* effect;
 };
