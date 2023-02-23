@@ -53,7 +53,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UImage* img_Star_Yellow3;
 
-
 public:
 	UPROPERTY()
 	class ARIM_WidgetInGameScoreActor* widgetInGameScoreActor;

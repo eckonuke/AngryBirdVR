@@ -95,13 +95,13 @@ void ARIM_TNT::ExplosionDamage()
 	TArray<FOverlapResult> hitInfos;
 
 	//TNT 위치 ★★★왜 액터 로케이션 안 사용?
-	FVector center = GetActorLocation(); 
+	FVector center = GetActorLocation();
 
 	//TNT 폭발 범위(blastRange)
 	FCollisionShape blastCollision = FCollisionShape::MakeSphere(blastRange);
 	FCollisionObjectQueryParams objectQuerry;
 	objectQuerry.AddObjectTypesToQuery(ECC_WorldDynamic);
-	objectQuerry.AddObjectTypesToQuery(ECC_Destructible);
+	objectQuerry.AddObjectTypesToQuery(ECC_WorldStatic);
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(this);
 	//★★★???
@@ -119,7 +119,6 @@ void ARIM_TNT::ExplosionDamage()
 				FString name = hit.GetActor()->GetName();
 				if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
 					double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
-					UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
 					if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
 					{
 						if (name.Contains("Pig")) {
@@ -151,16 +150,16 @@ void ARIM_TNT::ExplosionDamage()
 	}
 }
 
-
-//오브젝트 -----> 폭탄
 void ARIM_TNT::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (Hit.GetActor()) {
-		FString name = Hit.GetActor()->GetName();
-		if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
-			UE_LOG(LogTemp, Warning, TEXT("Hit by %s"), *OtherActor->GetName());
-			ExplosionDamage();
-			Die();
+	AActor* actor = Hit.GetActor();
+	if (actor) {
+		if (actor->GetVelocity().Length() > 100) {
+			FString name = actor->GetName();
+			if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
+				ExplosionDamage();
+				Die();
+			}
 		}
 	}
 }

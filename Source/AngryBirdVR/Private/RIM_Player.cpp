@@ -155,12 +155,6 @@ void ARIM_Player::BeginPlay()
 	subsys->AddMappingContext(vrMapping, 0);
 
 	birdCount = redCount + yellowCount + blueCount + blackCount; // ---> 용일님 추가
-
-	//아래 코드 용일님 추가
-	//게임모드 케스팅 
-	AAngryBirdVR_GameModeBase* gameMode = Cast<AAngryBirdVR_GameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	//불러온 게임모드한테 플레이어가 나라고 알려 줌
-	gameMode->player = this;
 }
 
 // Called every frame

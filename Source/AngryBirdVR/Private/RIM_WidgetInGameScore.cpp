@@ -5,6 +5,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "Components/Button.h"
 #include "RIM_WidgetInGameScoreActor.h"
+#include <UMG/Public/Components/Image.h>
 
 //BeginPlay 와 같은 동작
 void URIM_WidgetInGameScore::NativeConstruct()
@@ -65,6 +66,8 @@ void URIM_WidgetInGameScore::Bind_btn_GoNext()
 void URIM_WidgetInGameScore::Bind_Star_Yellow1()
 {
 	widgetInGameScoreActor->yellowStar1();
+	img_Star_Yellow1->SetVisibility(ESlateVisibility::Hidden);
+
 }
 
 void URIM_WidgetInGameScore::Bind_Star_Yellow2()

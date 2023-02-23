@@ -47,6 +47,6 @@ public:
 	
 	//적(돼지) 죽음 확인 여부
 	bool EnemyAllDie = false; //True 이면 다 죽음
-
+	bool spawnedScreen = false;
 };
 

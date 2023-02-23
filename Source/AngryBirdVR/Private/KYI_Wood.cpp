@@ -13,12 +13,15 @@ AKYI_Wood::AKYI_Wood()
 	boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Comp"));
 	SetRootComponent(boxComp);
 	boxComp->SetBoxExtent(FVector(50));
+	boxComp->SetSimulatePhysics(true);
 
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh Comp"));
 	meshComp->SetupAttachment(boxComp);
 	ConstructorHelpers::FObjectFinder<UStaticMesh> tempMesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
 	if (tempMesh.Succeeded())
 		meshComp->SetStaticMesh(tempMesh.Object);
+	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	meshComp->SetSimulatePhysics(false);
 }
 
 // Called when the game starts or when spawned

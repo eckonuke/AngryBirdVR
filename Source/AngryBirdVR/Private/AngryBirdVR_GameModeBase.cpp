@@ -19,35 +19,30 @@ AAngryBirdVR_GameModeBase::AAngryBirdVR_GameModeBase() //추가
 void AAngryBirdVR_GameModeBase::BeginPlay() //추가
 {
 	Super::BeginPlay();
-	
-
+	player = Cast<ARIM_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 }
 
 void AAngryBirdVR_GameModeBase::Tick(float DeltaTime) //추가
 {
 	Super::Tick(DeltaTime);
-
-	currentTime += DeltaTime;
+	FindEnemyActor();
 	if (player) {
-		if (EnemyAllDie == true) //적이 다 죽으면
+		if (EnemyAllDie == true && spawnedScreen == false) //적이 다 죽으면
 		{
-			if (currentTime < 2) //2초 지나고
-			{
-				//점수 위젯을 보여준다 게임 승리 화면 (점수와 별 추가)
-				GetWorld()->SpawnActor<ARIM_WidgetInGameScoreActor>(ARIM_WidgetInGameScoreActor::StaticClass(), player->GetActorLocation() + player->GetActorForwardVector() * 200, FRotator(0.0f, 180.0f, 0.0f)); //★★★★★★
-			}
+			//점수 위젯을 보여준다 게임 승리 화면 (점수와 별 추가)
+			//★★★★★★
+			ARIM_WidgetInGameScoreActor* screen = GetWorld()->SpawnActor<ARIM_WidgetInGameScoreActor>
+				(ARIM_WidgetInGameScoreActor::StaticClass(), player->GetActorLocation() + player->GetActorForwardVector() * 200, FRotator(0.0f, 180.0f, 0.0f));
+			
 		}
 		//새가 0개 이고 적이 살아있다면
 		else if (player->birdCount == 0) {
-			if (currentTime < 2) //2초 지나고
-			{
-				//실패한 화면을 보여준다
-				GetWorld()->SpawnActor<ARIM_WidgetInGameFailActor>(ARIM_WidgetInGameFailActor::StaticClass(), player->GetActorLocation() + player->GetActorForwardVector() * 200, FRotator(0.0f, 180.0f, 0.0f));
-			}
-			
+			//실패한 화면을 보여준다
+			GetWorld()->SpawnActor<ARIM_WidgetInGameFailActor>
+				(ARIM_WidgetInGameFailActor::StaticClass(), player->GetActorLocation() + player->GetActorForwardVector() * 200, FRotator(0.0f, 180.0f, 0.0f));
 		}
+		spawnedScreen = true;
 	}
-	FindEnemyActor();
 }
 
 
@@ -63,6 +58,6 @@ void AAngryBirdVR_GameModeBase::FindEnemyActor()
 	else {
 		EnemyAllDie = false;
 	}
-	
+
 
 }

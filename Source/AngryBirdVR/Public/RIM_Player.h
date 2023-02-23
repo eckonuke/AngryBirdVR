@@ -173,7 +173,7 @@ public:
 	//아래 코드 용일님 추가
 	float score = 0;
 	int32 birdCount = 0;
-	int32 redCount = 1;
+	int32 redCount = 99;
 	int32 blueCount = 1;
 	int32 yellowCount = 1;
 	int32 blackCount = 1;

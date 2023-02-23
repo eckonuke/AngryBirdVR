@@ -70,7 +70,7 @@ void ARIM_Pig::BeginPlay()
 	compCollision->OnComponentHit.AddDynamic(this, &ARIM_Pig::ComponentHitBird); //새 -----> 적
 	compCollision->OnComponentHit.AddDynamic(this, &ARIM_Pig::ComponentHitObject); //오브젝트(나무, 유리) -----> 적
 	//compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapEnemy) //적 낙하 ★★★일단 오버랩으로 진행. OnComponentHit 추후 확인
-	player = Cast<ARIM_Player>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	player = Cast<ARIM_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 }
 
 // Called every frame
@@ -161,6 +161,7 @@ void ARIM_Pig::ComponentHitBird(UPrimitiveComponent* HitComponent, AActor* Other
 //오브젝트 -----> 적
  void ARIM_Pig::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {	
+	UE_LOG(LogTemp, Warning, TEXT("Pig hit power :%f"), Hit.ImpactNormal.Length());
 	if (Hit.GetActor()->GetName().Contains(TEXT("Wood"))) //오브젝트 "나무"에 닿으면
 	{
 		AKYI_Wood* woodOverlap = Cast<AKYI_Wood>(OtherActor);
