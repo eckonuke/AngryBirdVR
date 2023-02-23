@@ -6,6 +6,9 @@
 #include "Components/Button.h"
 #include "RIM_WidgetInGameScoreActor.h"
 #include <UMG/Public/Components/Image.h>
+#include "RIM_Player.h"
+#include <UMG/Public/Components/TextBlock.h>
+#include "RIM_Pig.h"
 
 //BeginPlay 와 같은 동작
 void URIM_WidgetInGameScore::NativeConstruct()
@@ -14,15 +17,9 @@ void URIM_WidgetInGameScore::NativeConstruct()
 	btn_Menu->OnPressed.AddDynamic(this, &URIM_WidgetInGameScore::Bind_btn_GoMenu);
 	btn_Restart->OnPressed.AddDynamic(this, &URIM_WidgetInGameScore::Bind_btn_GoRestart);
 	btn_Next->OnPressed.AddDynamic(this, &URIM_WidgetInGameScore::Bind_btn_GoNext);
+	Init();
 	
-// 	Bind_Star1();
-// 	Bind_Star2();
-// 	Bind_Star3();
-
-	Bind_Star_Yellow1();
-	Bind_Star_Yellow2();
-	Bind_Star_Yellow3();
-
+	starCalc(player->score);
 }
 
 
@@ -46,36 +43,28 @@ void URIM_WidgetInGameScore::Bind_btn_GoNext()
 	widgetInGameScoreActor->GoNext();
 }
 
-
-//[별]
-// void URIM_WidgetInGameScore::Bind_Star1()
-// {
-// 	
-// }
-// 
-// void URIM_WidgetInGameScore::Bind_Star2()
-// {
-// 
-// }
-// 
-// void URIM_WidgetInGameScore::Bind_Star3()
-// {
-// 
-// }
-
-void URIM_WidgetInGameScore::Bind_Star_Yellow1()
+void URIM_WidgetInGameScore::starCalc(int32 point)
 {
-	widgetInGameScoreActor->yellowStar1();
+	int32 starCount = player->birdCount;
+	if (starCount >= 2) {
+		img_Star_Yellow1->SetVisibility(ESlateVisibility::Visible);
+		img_Star_Yellow2->SetVisibility(ESlateVisibility::Visible);
+		img_Star_Yellow3->SetVisibility(ESlateVisibility::Visible);
+	}
+	else if (starCount >= 1) {
+		img_Star_Yellow1->SetVisibility(ESlateVisibility::Visible);
+		img_Star_Yellow2->SetVisibility(ESlateVisibility::Visible);
+	}
+	else if (starCount == 0) {
+		img_Star_Yellow1->SetVisibility(ESlateVisibility::Visible);
+	}
+	FString str = FString::FromInt(player->score);
+	Score->SetText(FText::FromString(str));
+}
+
+void URIM_WidgetInGameScore::Init() {
+	player = Cast<ARIM_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	img_Star_Yellow1->SetVisibility(ESlateVisibility::Hidden);
-
-}
-
-void URIM_WidgetInGameScore::Bind_Star_Yellow2()
-{
-	widgetInGameScoreActor->yellowStar2();
-}
-
-void URIM_WidgetInGameScore::Bind_Star_Yellow3()
-{
-	widgetInGameScoreActor->yellowStar3();
+	img_Star_Yellow2->SetVisibility(ESlateVisibility::Hidden);
+	img_Star_Yellow3->SetVisibility(ESlateVisibility::Hidden);
 }

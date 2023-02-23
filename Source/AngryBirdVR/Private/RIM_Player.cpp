@@ -22,6 +22,7 @@
 #include "AngryBirdVR_GameModeBase.h"
 #include <Sound/SoundBase.h>
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputActionValue.h>
+#include "RIM_Pig.h"
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -153,8 +154,6 @@ void ARIM_Player::BeginPlay()
 
 	//3. 가져온 Subsystem 에 IMC 를 등록한다.(우선순위 0번)
 	subsys->AddMappingContext(vrMapping, 0);
-
-	birdCount = redCount + yellowCount + blueCount + blackCount; // ---> 용일님 추가
 }
 
 // Called every frame
@@ -183,6 +182,7 @@ void ARIM_Player::Tick(float DeltaTime)
 			path->mesh->SetCollisionProfileName(TEXT("NoCollision"));
 		}
 	}
+	birdCalc();
 }
 
 // Called to bind functionality to input
@@ -295,6 +295,11 @@ void ARIM_Player::readyShoot() {
 	playSound(slingSound);
 }
 
+void ARIM_Player::cancelShoot() {
+	bWillShoot = false;
+	bShouldPredict = false;
+}
+
 //아래 코드 용일님 추가
 void ARIM_Player::shootBird() {
 	if (!bWillShoot) {
@@ -332,8 +337,7 @@ void ARIM_Player::playSound(class USoundBase* sound) {
 	UGameplayStatics::PlaySound2D(GetWorld(), sound, 5);
 }
 
-void ARIM_Player::cancelShoot() {
-	bWillShoot = false;
-	bShouldPredict = false;
+void ARIM_Player::birdCalc() {
+	birdCount = redCount + yellowCount + blueCount + blackCount;
 }
 

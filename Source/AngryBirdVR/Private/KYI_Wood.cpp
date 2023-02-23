@@ -48,10 +48,8 @@ void AKYI_Wood::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* Ot
 }
 
 void AKYI_Wood::Die(){
-	if (life > 0) {
-		life--;
-	}
-	else {
+	life--;
+	if (life <= 0) {
 		Destroy();
 	}
 }

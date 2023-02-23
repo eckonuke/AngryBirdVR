@@ -48,10 +48,8 @@ void AKYI_Glass::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* O
 }
 
 void AKYI_Glass::Die() {
-	if (life > 0) {
-		life--;
-	}
-	else {
+	life--;
+	if (life <= 0) {
 		Destroy();
 	}
 }
