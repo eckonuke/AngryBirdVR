@@ -88,9 +88,21 @@ void ARIM_BirdBlack::ComponentHitObject(UPrimitiveComponent* HitComponent, AActo
 {
 	AActor* actor = Hit.GetActor();
 	if (actor) {
-		FString name = actor->GetName();
-		if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
-			actor->Destroy();
+		glass = Cast<AKYI_Glass>(actor);
+		wood = Cast<AKYI_Wood>(actor);
+		pig = Cast<ARIM_Pig>(actor);
+		tnt = Cast<ARIM_TNT>(actor);
+		if (glass) {
+			glass->Die();
+		}
+		else if (wood) {
+			wood->Die();
+		}
+		else if (pig) {
+			pig->Die();
+		}
+		else if (tnt) {
+			tnt->Die();
 		}
 	}
 }

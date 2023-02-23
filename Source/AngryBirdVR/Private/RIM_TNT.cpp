@@ -119,21 +119,25 @@ void ARIM_TNT::ExplosionDamage()
 				FString name = hit.GetActor()->GetName();
 				if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
 					double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
+					glass = Cast<AKYI_Glass>(hit.GetActor());
+					wood = Cast<AKYI_Wood>(hit.GetActor());
+					pig = Cast<ARIM_Pig>(hit.GetActor());
 					if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
 					{
-						if (name.Contains("Pig")) {
-							player->score += 5000;
-						}
-						else if (name.Contains("Wood") || name.Contains("Glass")) {
+						if (glass) {
 							player->score += 500;
+							glass->Die();
 						}
-						hit.GetActor()->Destroy();
+						else if (wood) {
+							player->score += 500;
+							wood->Die();
+						}
+						else if (pig) {
+							pig->Die();
+						}
 					}
 					else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
 					{
-						glass = Cast<AKYI_Glass>(hit.GetActor());
-						wood = Cast<AKYI_Wood>(hit.GetActor());
-						pig = Cast<ARIM_Pig>(hit.GetActor());
 						if (glass) {
 							glass->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
 						}
@@ -154,10 +158,9 @@ void ARIM_TNT::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* Oth
 {
 	AActor* actor = Hit.GetActor();
 	if (actor) {
-		if (actor->GetVelocity().Length() > 100) {
+		if (actor->GetVelocity().Length() > 300) {
 			FString name = actor->GetName();
 			if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
-				ExplosionDamage();
 				Die();
 			}
 		}
@@ -170,5 +173,6 @@ void ARIM_TNT::Die() {
 	//이펙트
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect, GetActorLocation());
 	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound, 5);
+	ExplosionDamage();
 	this->Destroy();
 }

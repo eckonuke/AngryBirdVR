@@ -25,7 +25,7 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere)
-	class USphereComponent* compCollision;
+	class UBoxComponent* compCollision;
 
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* compMesh;

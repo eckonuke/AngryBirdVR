@@ -3,6 +3,7 @@
 
 #include "RIM_Pig.h"
 #include <Components/CapsuleComponent.h>
+#include <Components/BoxComponent.h>
 #include <Components/SphereComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include "KYI_AngryRed.h"
@@ -24,9 +25,9 @@ ARIM_Pig::ARIM_Pig()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//콜리전
-	compCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
+	compCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	compCollision->SetupAttachment(RootComponent);
-	compCollision->SetSphereRadius(65);
+	compCollision->SetBoxExtent(FVector(25));
 	SetRootComponent(compCollision);
 	//compCollision-> //콜리전
 	compCollision->SetSimulatePhysics(true);
@@ -89,7 +90,7 @@ void ARIM_Pig::Tick(float DeltaTime)
 {	
 	 AActor* actor = Hit.GetActor();
 	 if (actor) {
-		 if (actor->GetVelocity().Length() > 100) {
+		 if (actor->GetVelocity().Length() > 300) {
 			 FString name = actor->GetName();
 			 if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
 				 Die();

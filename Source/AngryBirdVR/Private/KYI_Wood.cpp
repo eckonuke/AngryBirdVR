@@ -4,6 +4,8 @@
 #include "KYI_Wood.h"
 #include <Components/BoxComponent.h>
 #include <Components/StaticMeshComponent.h>
+#include <Kismet/GameplayStatics.h>
+#include <Particles/ParticleSystem.h>
 
 // Sets default values
 AKYI_Wood::AKYI_Wood()
@@ -22,6 +24,12 @@ AKYI_Wood::AKYI_Wood()
 		meshComp->SetStaticMesh(tempMesh.Object);
 	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	meshComp->SetSimulatePhysics(false);
+
+	//¿Ã∆Â∆Æ
+	ConstructorHelpers::FObjectFinder<UParticleSystem> tempEffect(TEXT("/Script/Engine.ParticleSystem'/Game/Realistic_Starter_VFX_Pack_Vol2/Particles/Destruction/P_Destruction_Wood.P_Destruction_Wood'"));
+	if (tempEffect.Succeeded()) {
+		damageEffect = tempEffect.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -41,9 +49,9 @@ void AKYI_Wood::Tick(float DeltaTime)
 void AKYI_Wood::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	AActor* actor = Hit.GetActor();
 	if (Hit.GetActor()) {
-		if (actor->GetVelocity().Length() > 100) {
+		if (actor->GetVelocity().Length() > 300) {
 			FString name = Hit.GetActor()->GetName();
-			if (name.Contains("Red") || name.Contains("Wood") || name.Contains("Yellow") || name.Contains("Black")) {
+			if (name.Contains("Red") || name.Contains("Yellow") || name.Contains("Black")) {
 				Die();
 			}
 		}
@@ -51,8 +59,7 @@ void AKYI_Wood::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* Ot
 }
 
 void AKYI_Wood::Die() {
-	life--;
-	if (life <= 0) {
-		Destroy();
-	}
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), damageEffect, GetActorLocation());
+	Destroy();
+
 }

@@ -6,6 +6,10 @@
 #include <Components/SkeletalMeshComponent.h>
 #include <Components/SphereComponent.h>
 #include "RIM_Player.h"
+#include "KYI_Glass.h"
+#include "KYI_Wood.h"
+#include "RIM_Pig.h"
+#include "RIM_TNT.h"
 
 // Sets default values
 AKYI_AngryChuck::AKYI_AngryChuck()
@@ -50,9 +54,21 @@ void AKYI_AngryChuck::ComponentHitObject(class UPrimitiveComponent* OverlappedCo
 {
 	AActor* actor = Hit.GetActor();
 	if (actor) {
-		FString name = actor->GetName();
-		if (name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
-			actor->Destroy();	
+		AKYI_Glass* glass = Cast<AKYI_Glass>(actor);
+		AKYI_Wood* wood = Cast<AKYI_Wood>(actor);
+		ARIM_Pig* pig = Cast<ARIM_Pig>(actor);
+		ARIM_TNT* tnt = Cast<ARIM_TNT>(actor);
+		if (glass) {
+			glass->Die();
+		}
+		else if (wood) {
+			wood->Die();
+		}
+		else if (pig) {
+			pig->Die();
+		}
+		else if (tnt) {
+			tnt->Die();
 		}
 	}
 }

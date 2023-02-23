@@ -7,6 +7,9 @@
 #include <GameFramework/ProjectileMovementComponent.h>
 #include "RIM_Player.h"
 #include <Components/SkeletalMeshComponent.h>
+#include "KYI_Glass.h"
+#include "RIM_Pig.h"
+#include "RIM_TNT.h"
 
 
 // Sets default values
@@ -68,8 +71,17 @@ void ARIM_BirdBlue::ComponentHitObject(class UPrimitiveComponent* OverlappedComp
 	AActor* actor = Hit.GetActor();
 	if (actor) {
 		FString name = actor->GetName();
-		if (name.Contains("Glass") || name.Contains("Pig")) {
-			actor->Destroy();
+		AKYI_Glass* glass = Cast<AKYI_Glass>(actor);
+		ARIM_Pig* pig = Cast<ARIM_Pig>(actor);
+		ARIM_TNT* tnt = Cast<ARIM_TNT>(actor);
+		if (glass) {
+			glass->Die();
+		}
+		else if (pig) {
+			pig->Die();
+		}
+		else if (tnt) {
+			tnt->Die();
 		}
 	}
 }

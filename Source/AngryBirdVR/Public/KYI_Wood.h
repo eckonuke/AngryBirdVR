@@ -31,7 +31,9 @@ public:
 	class UStaticMeshComponent* meshComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float life = 3;
-private:
+	UPROPERTY(EditAnywhere)
+		class UParticleSystem* damageEffect;
+
 	void Die();
 
 };
