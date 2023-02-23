@@ -13,10 +13,10 @@ UCLASS()
 class ANGRYBIRDVR_API AKYI_GeometryCollection : public AGeometryCollectionActor
 {
 	GENERATED_BODY()
-//public:
-//	// Sets default values for this character's properties
-//	AKYI_GeometryCollection();
-//
+public:
+	// Sets default values for this character's properties
+	AKYI_GeometryCollection();
+
 //protected:
 //	// Called when the game starts or when spawned
 //	virtual void BeginPlay() override;
@@ -24,4 +24,7 @@ class ANGRYBIRDVR_API AKYI_GeometryCollection : public AGeometryCollectionActor
 //public:
 //	// Called every frame
 //	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditAnywhere)
+	class UGeometryCollectionComponent* geometry;
 };

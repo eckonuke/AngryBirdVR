@@ -15,6 +15,9 @@
 #include "RIM_Pig.h"
 #include <Kismet/GameplayStatics.h>
 #include "RIM_Player.h"
+#include "KYI_GeometryCollection.h"
+#include "GeometryCollection/GeometryCollectionComponent.h"
+#include "Components/SceneComponent.h"
 
 
 
