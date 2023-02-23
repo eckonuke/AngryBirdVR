@@ -17,6 +17,9 @@
 #include <Components/BoxComponent.h>
 #include "RIM_Player.h"
 #include "RIM_TNT.h"
+#include <Particles/ParticleSystem.h>
+#include <Kismet/GameplayStatics.h>
+#include <Sound/SoundBase.h>
 
 // Sets default values
 ARIM_BirdBlack::ARIM_BirdBlack()
@@ -28,7 +31,7 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 	compCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 	RootComponent = compCollision; //루트컴포넌트로 세팅. compCollision->SetupAttachment(RootComponent);
 	compCollision->SetCollisionProfileName(TEXT("BlockAll"));
-	compCollision->SetSphereRadius(10); //▶충돌체 크기. 추후 수정
+	compCollision->SetSphereRadius(60); //▶충돌체 크기. 추후 수정
 	compCollision->SetSimulatePhysics(true);
 
 	//외관
@@ -41,7 +44,9 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 // 	}
 	meshBlack->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//meshBlue->SetRelativeLocation(FVector(0, 0, 0)); //▶추후 수정
-	meshBlack->SetRelativeScale3D(FVector(0.08f)); //▶추후 수정
+	meshBlack->SetRelativeScale3D(FVector(0.8f)); //▶추후 수정
+	meshBlack->SetRelativeLocation(FVector(-6, 1, -54));
+	meshBlack->SetRelativeRotation(FRotator(0, 90, 0));
 
 	//발사체 ★★★영상에 의하면 필요없으나 일단 넣음
 	compMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
@@ -51,6 +56,16 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 	compMovement->bShouldBounce = true; //반동여부. 튕기는 여부
 	compMovement->Bounciness = 0.5f; //얼마나 잘 튕기에 할 것인가. 반동. 탄성. ▶필요시 추후 수정
 	//InitialLifeSpan = 10.0f; //생명 시간. ▶필요시 추후 수정
+
+	//이펙트
+	ConstructorHelpers::FObjectFinder<UParticleSystem> tempEffect(TEXT("/Script/Engine.ParticleSystem'/Game/Realistic_Starter_VFX_Pack_Vol2/Particles/Explosion/P_Explosion_Big_A.P_Explosion_Big_A'"));
+	if (tempEffect.Succeeded()) {
+		explodeEffect = tempEffect.Object;
+	}
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/TNTExplosionSound.TNTExplosionSound'"));
+	if (tempSound.Succeeded()) {
+		explosionSound = tempSound.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -146,4 +161,7 @@ void ARIM_BirdBlack::ExplosionDamage()
 			}
 		}
 	}
+	//폭발 이펙트
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explodeEffect, GetActorLocation());
+	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound, 5);
 }

@@ -32,7 +32,9 @@ ARIM_BirdBlue::ARIM_BirdBlue()
 // 	}
 	meshBlue->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//meshBlue->SetRelativeLocation(FVector(0, 0, 0)); //▶추후 수정
-	meshBlue->SetRelativeScale3D(FVector(0.08f)); //▶추후 수정
+	meshBlue->SetRelativeScale3D(FVector(0.11f)); //▶추후 수정
+	meshBlue->SetRelativeLocation(FVector(0, 0, -6));
+	meshBlue->SetRelativeRotation(FRotator(0, 90, 0));
 
 	//발사체 ★★★영상에 의하면 필요없으나 일단 넣음
 	compMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));

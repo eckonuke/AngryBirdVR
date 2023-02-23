@@ -160,8 +160,6 @@ void ARIM_TNT::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* Oth
 		if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
 			UE_LOG(LogTemp, Warning, TEXT("Hit by %s"), *OtherActor->GetName());
 			ExplosionDamage();
-			//ÀÌÆåÆ®
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect, GetActorLocation());
 			Die();
 		}
 	}
@@ -170,6 +168,8 @@ void ARIM_TNT::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* Oth
 
 //ÆøÅº ¾ø¾îÁø´Ù
 void ARIM_TNT::Die() {
+	//ÀÌÆåÆ®
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect, GetActorLocation());
 	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound, 5);
 	this->Destroy();
 }
