@@ -51,13 +51,9 @@ ARIM_BirdBlue::ARIM_BirdBlue()
 void ARIM_BirdBlue::BeginPlay()
 {
 	Super::BeginPlay();
+	compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_BirdBlue::ComponentHitObject);
 	//일정 시간 지난 후 새 파괴
 	SetLifeSpan(4);
-
-	//FTimerHandle deathTimer;
-	//GetWorld()->GetTimerManager().SetTimer(deathTimer, this, &ARIM_BirdBlue::Death, delayDeathTime, false); //타이머
-
-	
 }
 
 // Called every frame
@@ -65,16 +61,15 @@ void ARIM_BirdBlue::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//앞방향으로 계속 이동 ★★★영상에 의하면 필요없으나 일단 넣음
-	//P = P0 + vt
-	//FVector p0 = GetActorLocation();
-	//FVector vt = GetActorLocation() * 2000 * DeltaTime;
-
 }
 
-//일정 시간 지난 후 새 파괴
-//void ARIM_BirdBlue::Death()
-//{
-//	Destroy();
-//}
-
+void ARIM_BirdBlue::ComponentHitObject(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
+{
+	AActor* actor = Hit.GetActor();
+	if (actor) {
+		FString name = actor->GetName();
+		if (name.Contains("Glass") || name.Contains("Pig")) {
+			actor->Destroy();
+		}
+	}
+}

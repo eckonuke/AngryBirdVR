@@ -33,52 +33,14 @@ public:
 	UPROPERTY(EditAnywhere)
 	class USoundBase* dieSound;
 
-	bool redBirdAttack = false;
-	bool yellowBirdAttack = false;
-	bool blueBirdAttack = false;
-	bool blackBierdAttack = false;
-	bool woodAttack = false;
-	bool glassAttack = false;
-	bool enemyFall = false;
-
 public:
-	UPROPERTY()
-	class AKYI_AngryRed* red;
-
-	UPROPERTY()
-	class AKYI_AngryChuck* yellow;
-
-	UPROPERTY()
-	class ARIM_BirdBlue* blue;
-
-	UPROPERTY()
-	class ARIM_BirdBlack* black;
-
-	UPROPERTY()
-	class AKYI_Wood* wood;
-
-	UPROPERTY()
-	class AKYI_Glass* glass;
-
 	UPROPERTY()
 	class ARIM_Player* player;
 
 public:
-	//»õ
-	UFUNCTION()
-	void ComponentHitBird(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-	//¿ÀºêÁ§Æ®
+	//OnComponentHit
 	UFUNCTION()
 	void ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-	//µÅÁö
- 	//UFUNCTION()
- 	//void ComponentBeginOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	//Á¶°Çº°·Î Á×À½
-	UFUNCTION()
-	void Damaged();
 
 	//Á×À½
 	UFUNCTION()

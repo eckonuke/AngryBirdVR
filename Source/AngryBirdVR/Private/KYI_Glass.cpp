@@ -39,10 +39,13 @@ void AKYI_Glass::Tick(float DeltaTime)
 }
 
 void AKYI_Glass::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	AActor* actor = Hit.GetActor();
 	if (Hit.GetActor()) {
-		FString name = Hit.GetActor()->GetName();
-		if (name.Contains("Angry") || name.Contains("Wood") || name.Contains("Glass")) {
-			Die();
+		if (actor->GetVelocity().Length() > 100) {
+			FString name = Hit.GetActor()->GetName();
+			if (name.Contains("Red") || name.Contains("Wood") || name.Contains("Yellow") || name.Contains("Black")) {
+				Die();
+			}
 		}
 	}
 }

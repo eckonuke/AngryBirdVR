@@ -72,8 +72,6 @@ public:
 	//폭탄에 범위에 따른 피해. 파괴 또는 충격
 	UFUNCTION()
 		void ExplosionDamage();
-
-
-
-
+	UFUNCTION()
+		void ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

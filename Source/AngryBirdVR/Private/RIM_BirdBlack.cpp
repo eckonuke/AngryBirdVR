@@ -73,6 +73,7 @@ void ARIM_BirdBlack::BeginPlay()
 {
 	Super::BeginPlay();
 	player = Cast<ARIM_Player>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	compCollision->OnComponentHit.AddDynamic(this, &ARIM_BirdBlack::ComponentHitObject);
 	SetLifeSpan(4);
 }
 
@@ -83,16 +84,16 @@ void ARIM_BirdBlack::Tick(float DeltaTime)
 
 }
 
-//일정 시간 지난 후 새 파괴
-//void ARIM_BirdBlack::Death()
-//{
-//	Destroy();
-//}
-
-
-//[새가 터지면 발생하는 일]
-//1. blastRange(폭탄 범위) 에서 폭탄에 일정 거리 이하로 위치해 있을 때, 적, 나무, 유리 파괴된다.
-//2. blastRange(폭탄 범위) 에서 폭탄에 일정 거리 이상으로 위치해 있을 때, 적, 나무, 유리 충격으로 날아간다.
+void ARIM_BirdBlack::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	AActor* actor = Hit.GetActor();
+	if (actor) {
+		FString name = actor->GetName();
+		if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig")) {
+			actor->Destroy();
+		}
+	}
+}
 
 
 //새 폭발 범위에 따른 피해. 파괴 또는 충격
@@ -122,40 +123,42 @@ void ARIM_BirdBlack::ExplosionDamage()
 		//★★★???
 		for (FOverlapResult& hit : hitInfos) // [i] = FOverlapResult& hit
 		{
-			FString name = hit.GetActor()->GetName();
-			if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig") || name.Contains("TNT")) {
-				double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
-				UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
-				tnt = Cast<ARIM_TNT>(hit.GetActor());
-				if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
-				{
-					if (name.Contains("Pig")) {
-						player->score += 5000;
+			if (hit.GetActor() != nullptr) {
+				FString name = hit.GetActor()->GetName();
+				if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig") || name.Contains("TNT")) {
+					double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
+					UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
+					tnt = Cast<ARIM_TNT>(hit.GetActor());
+					if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
+					{
+						if (name.Contains("Pig")) {
+							player->score += 5000;
+						}
+						else if (name.Contains("Wood") || name.Contains("Glass")) {
+							player->score += 500;
+						}
+						else if (tnt) {
+							tnt->ExplosionDamage();
+						}
+						hit.GetActor()->Destroy();
 					}
-					else if (name.Contains("Wood") || name.Contains("Glass")) {
-						player->score += 500;
-					}
-					else if (tnt) {
-						tnt->ExplosionDamage();
-					}
-					hit.GetActor()->Destroy();
-				}
-				else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
-				{
-					glass = Cast<AKYI_Glass>(hit.GetActor());
-					wood = Cast<AKYI_Wood>(hit.GetActor());
-					pig = Cast<ARIM_Pig>(hit.GetActor());
-					if (glass) {
-						glass->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
-					}
-					else if (wood) {
-						wood->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
-					}
-					else if (pig) {
-						pig->compCollision->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
-					}
-					else if (tnt) {
-						tnt->ExplosionDamage();
+					else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
+					{
+						glass = Cast<AKYI_Glass>(hit.GetActor());
+						wood = Cast<AKYI_Wood>(hit.GetActor());
+						pig = Cast<ARIM_Pig>(hit.GetActor());
+						if (glass) {
+							glass->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+						}
+						else if (wood) {
+							wood->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+						}
+						else if (pig) {
+							pig->compCollision->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+						}
+						else if (tnt) {
+							tnt->ExplosionDamage();
+						}
 					}
 				}
 			}
