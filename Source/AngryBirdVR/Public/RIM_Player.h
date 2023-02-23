@@ -143,12 +143,12 @@ public:
 	//검은새(총알)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ARIM_BirdBlack> blackFactory;
-
 	//경로 공장 ---> 용일님 추가
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class APredictionObject> pathFactory;
-
-	
+	//햅틱 피드백
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UHapticFeedbackEffect_Base* grabHaptic;
 
 public:
 	//플레이어 회전
@@ -173,10 +173,15 @@ public:
 	void rightConHaptic();
 
 	//아래 코드 용일님 추가
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 score = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 redCount = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 blueCount = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 yellowCount = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 blackCount = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 birdCount = redCount + yellowCount + blueCount + blackCount;

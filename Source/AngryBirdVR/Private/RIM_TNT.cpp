@@ -139,13 +139,13 @@ void ARIM_TNT::ExplosionDamage()
 					else //폭발 범위가 blastRangeDie 이상 일 때, 충격이 발생한다. ★★★수정 필요
 					{
 						if (glass) {
-							glass->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+							glass->boxComp->AddRadialImpulse(GetActorLocation(), blastRange, 1000.0f, ERadialImpulseFalloff::RIF_Linear, true);
 						}
 						else if (wood) {
-							wood->boxComp->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+							wood->boxComp->AddRadialImpulse(GetActorLocation(), blastRange, 1000.0f, ERadialImpulseFalloff::RIF_Linear, true);
 						}
 						else if (pig) {
-							pig->compCollision->AddRadialImpulse(GetActorLocation(), 1000.0f, 5000.0f, ERadialImpulseFalloff::RIF_Linear, true);
+							pig->compCollision->AddRadialImpulse(GetActorLocation(), blastRange, 1000.0f, ERadialImpulseFalloff::RIF_Linear, true);
 						}
 					}
 				}

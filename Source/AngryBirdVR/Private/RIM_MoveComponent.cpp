@@ -10,6 +10,7 @@
 #include "Components/CapsuleComponent.h"
 #include <Components/TextRenderComponent.h>
 #include "RIM_MoveLocation.h"
+#include <Kismet/GameplayStatics.h>
 
 
 
@@ -40,12 +41,17 @@ void URIM_MoveComponent::BeginPlay()
 void URIM_MoveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (bIsShowLine) //만약 라인이 보이면
+	FString name = UGameplayStatics::GetCurrentLevelName(currentWorld);
+	if (name.Contains("Main") || name.Contains("Select")) {
+		isTeleport = false;
+	}
+	else {
+		isTeleport = true;
+	}
+	if (bIsShowLine && isTeleport) //만약 라인이 보이면
 	{
 		DrawMoveLine(); //이동 곡선(이동할 곡선을 화면에 그린다) 함수 실행
 	}
-	
 }
 
 
@@ -55,9 +61,11 @@ void URIM_MoveComponent::SetupPlayerInputComponent(class UEnhancedInputComponent
 	//Super::SetupPlayerInputComponent(PlayerInputComponent); //★★★다른 파일에서 가상함수 만들 때 Super 사용했는데 여긴 필요 없는거야? 왜?
 
 	//[오른손]
-		//오른손 트리거 ---> 이동
+	//오른손 트리거 ---> 이동
+	if (isTeleport) {
 		PlayerInputComponent->BindAction(rightTrigger, ETriggerEvent::Started, this, &URIM_MoveComponent::rightTriggerShowLine);
 		PlayerInputComponent->BindAction(rightTrigger, ETriggerEvent::Completed, this, &URIM_MoveComponent::rightTriggerHideLine);
+	}
 
 	//테스트
 // 	PlayerInputComponent->BindAction(rightTrigger, ETriggerEvent::Triggered, this, &URIM_MoveComponent::OnTriggerR);

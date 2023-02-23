@@ -78,8 +78,8 @@ public:
 
 	//이동 라인이 안 보인다
 	bool bIsShowLine = false; //true 일 때 매 프레임마다 그려라
+	bool isTeleport = true;;
 
 private:
 	class UWorld* currentWorld;
-
 };

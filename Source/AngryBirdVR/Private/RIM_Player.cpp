@@ -23,6 +23,8 @@
 #include <Sound/SoundBase.h>
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputActionValue.h>
 #include "RIM_Pig.h"
+#include "RIM_WidgetInGameScoreActor.h"
+#include "RIM_WidgetInGameFailActor.h"
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -183,6 +185,20 @@ void ARIM_Player::Tick(float DeltaTime)
 		}
 	}
 	birdCalc();
+	FString name = UGameplayStatics::GetCurrentLevelName(GetWorld());
+	if (name.Contains("Stage1_")) {
+		compWidgetPointer_right->bShowDebug = false;
+	}
+	TArray<AActor*> tempArray;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARIM_WidgetInGameScoreActor::StaticClass(), tempArray);
+	float gameNum = tempArray.Num();
+	tempArray.Empty();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARIM_WidgetInGameFailActor::StaticClass(), tempArray);
+	float failNum = tempArray.Num();
+	UE_LOG(LogTemp, Warning, TEXT("%d, %d"), gameNum, failNum);
+	if (gameNum > 0 || failNum > 0) {
+		compWidgetPointer_right->bShowDebug = true;
+	}
 }
 
 // Called to bind functionality to input
@@ -339,7 +355,7 @@ void ARIM_Player::playSound(class USoundBase* sound) {
 }
 
 void ARIM_Player::rightConHaptic() {
-	
+	GetWorld()->GetFirstPlayerController()->PlayHapticEffect(grabHaptic, EControllerHand::Right, 1, false);
 }
 
 void ARIM_Player::birdCalc() {

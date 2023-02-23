@@ -54,10 +54,10 @@ public:
 	bool pigAttack = false;
 
 	UPROPERTY(EditAnywhere)
-	float blastRange = 500.0f;
+	float blastRange = 200.0f;
 
 	UPROPERTY(EditAnywhere)
-	float blastRangeDie = 200.0f;
+	float blastRangeDie = 100.0f;
 
 public:
 	//»õ
