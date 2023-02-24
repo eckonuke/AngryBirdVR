@@ -115,6 +115,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	class USoundBase* yellowSound;
 	UPROPERTY(EditAnywhere)
+	class USoundBase* blackSound;
+	UPROPERTY(EditAnywhere)
 	class USoundBase* slingSound;
 	UPROPERTY(EditAnywhere)
 	class USoundBase* exploSound;

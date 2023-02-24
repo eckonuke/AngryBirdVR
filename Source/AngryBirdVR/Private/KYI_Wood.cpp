@@ -6,6 +6,7 @@
 #include <Components/StaticMeshComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <Particles/ParticleSystem.h>
+#include <Sound/SoundBase.h>
 
 // Sets default values
 AKYI_Wood::AKYI_Wood()
@@ -29,6 +30,10 @@ AKYI_Wood::AKYI_Wood()
 	ConstructorHelpers::FObjectFinder<UParticleSystem> tempEffect(TEXT("/Script/Engine.ParticleSystem'/Game/Realistic_Starter_VFX_Pack_Vol2/Particles/Destruction/P_Destruction_Wood.P_Destruction_Wood'"));
 	if (tempEffect.Succeeded()) {
 		damageEffect = tempEffect.Object;
+	}
+	ConstructorHelpers::FObjectFinder<USoundBase> tempExploSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/WoodDestroySound.WoodDestroySound'"));
+	if (tempExploSound.Succeeded()) {
+		dieSound = tempExploSound.Object;
 	}
 }
 
@@ -59,6 +64,7 @@ void AKYI_Wood::ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* Ot
 }
 
 void AKYI_Wood::Die() {
+	UGameplayStatics::PlaySound2D(GetWorld(), dieSound, 5);
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), damageEffect, GetActorLocation());
 	Destroy();
 

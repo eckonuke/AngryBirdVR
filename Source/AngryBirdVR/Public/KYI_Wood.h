@@ -33,6 +33,8 @@ public:
 	float life = 3;
 	UPROPERTY(EditAnywhere)
 		class UParticleSystem* damageEffect;
+	UPROPERTY(EditAnywhere)
+		class USoundBase* dieSound;
 
 	void Die();
 

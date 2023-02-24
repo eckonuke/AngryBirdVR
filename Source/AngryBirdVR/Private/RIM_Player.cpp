@@ -133,6 +133,10 @@ ARIM_Player::ARIM_Player()
 	if (tempYellowSound.Succeeded()) {
 		yellowSound = tempYellowSound.Object;
 	}
+	ConstructorHelpers::FObjectFinder<USoundBase> tempBlackSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/YellowBirdFlySound.YellowBirdFlySound'"));
+	if (tempYellowSound.Succeeded()) {
+		blackSound = tempBlackSound.Object;
+	}
 	ConstructorHelpers::FObjectFinder<USoundBase> tempExploSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/TNTExplosionSound.TNTExplosionSound'"));
 	if (tempExploSound.Succeeded()) {
 		exploSound = tempExploSound.Object;
@@ -351,6 +355,7 @@ void ARIM_Player::shootBird() {
 	else if (blackCount > 0) {
 		birdBlack = GetWorld()->SpawnActor<ARIM_BirdBlack>(blackFactory, position, GetActorRotation());
 		birdBlack->compCollision->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
+		playSound(blackSound);
 		blackCount--;
 	}
 }
