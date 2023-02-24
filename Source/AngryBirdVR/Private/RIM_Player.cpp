@@ -23,6 +23,8 @@
 #include <Sound/SoundBase.h>
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/InputActionValue.h>
 #include "RIM_Pig.h"
+#include "RIM_WidgetInGameScoreActor.h"
+#include "RIM_WidgetInGameFailActor.h"
 
 // Sets default values
 ARIM_Player::ARIM_Player()
@@ -56,11 +58,11 @@ ARIM_Player::ARIM_Player()
 	meshLeftHand->SetRelativeRotation(FRotator(0.0f, 90.0f, -90.0f)); //▶필요 시 추후 변경
 	meshLeftHand->SetRelativeScale3D(FVector(0.3f)); //▶필요 시 추후 변경
 	//로그(확인용)
-	//logLeft = CreateDefaultSubobject<UTextRenderComponent>(TEXT("LeftLogText"));
-	//logLeft->SetupAttachment(compLeftCon);
-	//logLeft->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f)); //텍스트 180 수정
-	//logLeft->SetTextRenderColor(FColor::Yellow);
-	//logLeft->SetHorizontalAlignment(EHTA_Center);
+	logLeft = CreateDefaultSubobject<UTextRenderComponent>(TEXT("LeftLogText"));
+	logLeft->SetupAttachment(compLeftCon);
+	logLeft->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f)); //텍스트 180 수정
+	logLeft->SetTextRenderColor(FColor::Yellow);
+	logLeft->SetHorizontalAlignment(EHTA_Right);
 	//모션 소스 선택
 	compLeftCon->MotionSource = "Left"; //★★★???
 
@@ -131,6 +133,10 @@ ARIM_Player::ARIM_Player()
 	if (tempYellowSound.Succeeded()) {
 		yellowSound = tempYellowSound.Object;
 	}
+	ConstructorHelpers::FObjectFinder<USoundBase> tempBlackSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/YellowBirdFlySound.YellowBirdFlySound'"));
+	if (tempYellowSound.Succeeded()) {
+		blackSound = tempBlackSound.Object;
+	}
 	ConstructorHelpers::FObjectFinder<USoundBase> tempExploSound(TEXT("/Script/Engine.SoundWave'/Game/Resource/Sound/TNTExplosionSound.TNTExplosionSound'"));
 	if (tempExploSound.Succeeded()) {
 		exploSound = tempExploSound.Object;
@@ -154,6 +160,7 @@ void ARIM_Player::BeginPlay()
 
 	//3. 가져온 Subsystem 에 IMC 를 등록한다.(우선순위 0번)
 	subsys->AddMappingContext(vrMapping, 0);
+	logLeft->SetVisibility(false);
 }
 
 // Called every frame
@@ -182,7 +189,24 @@ void ARIM_Player::Tick(float DeltaTime)
 			path->mesh->SetCollisionProfileName(TEXT("NoCollision"));
 		}
 	}
+	//현재 가지고있는 새의 갯수를 계산한다
 	birdCalc();
+	//현재레벨을 보고 포인터 디버그라인을 비활성화한다
+	FString name = UGameplayStatics::GetCurrentLevelName(GetWorld());
+	if (name.Contains("Stage1_")) {
+		compWidgetPointer_right->bShowDebug = false;
+	}
+	//만약에 지금 화면에 점수화면이 있다면 포인터 라인을 보여서 선택하기 쉽게 한다
+	TArray<AActor*> tempArray;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARIM_WidgetInGameScoreActor::StaticClass(), tempArray);
+	float gameNum = tempArray.Num();
+	tempArray.Empty();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARIM_WidgetInGameFailActor::StaticClass(), tempArray);
+	float failNum = tempArray.Num();
+	UE_LOG(LogTemp, Warning, TEXT("%d, %d"), gameNum, failNum);
+	if (gameNum > 0 || failNum > 0) {
+		compWidgetPointer_right->bShowDebug = true;
+	}
 }
 
 // Called to bind functionality to input
@@ -200,9 +224,10 @@ void ARIM_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Ongoing, this, &ARIM_Player::rightConHaptic);
 		EnhancedInputComponent->BindAction(rightGrip, ETriggerEvent::Completed, this, &ARIM_Player::shootBird); // ---> 용일님 추가
 
-		EnhancedInputComponent->BindAction(leftX, ETriggerEvent::Started, this, &ARIM_Player::cancelShoot); // ---> 용일님 추가
-
-
+		EnhancedInputComponent->BindAction(rightA, ETriggerEvent::Started, this, &ARIM_Player::Reset); // ---> 용일님 추가
+		EnhancedInputComponent->BindAction(leftY, ETriggerEvent::Started, this, &ARIM_Player::showCount);
+		EnhancedInputComponent->BindAction(leftY, ETriggerEvent::Completed, this, &ARIM_Player::hideCount);
+		EnhancedInputComponent->BindAction(leftX, ETriggerEvent::Started, this, &ARIM_Player::cancelShoot);
 		//테스트 ---> 파란새 스킬
 		//EnhancedInputComponent->BindAction(rightA, ETriggerEvent::Started, this, &ARIM_Player::BlueSkill); // ---> 용일님 수정
 		//테스트 ---> 검은새 스킬
@@ -330,6 +355,7 @@ void ARIM_Player::shootBird() {
 	else if (blackCount > 0) {
 		birdBlack = GetWorld()->SpawnActor<ARIM_BirdBlack>(blackFactory, position, GetActorRotation());
 		birdBlack->compCollision->AddImpulse(fireVelocity, FName("NAME_NONE"), true);
+		playSound(blackSound);
 		blackCount--;
 	}
 }
@@ -339,10 +365,28 @@ void ARIM_Player::playSound(class USoundBase* sound) {
 }
 
 void ARIM_Player::rightConHaptic() {
-	
+	GetWorld()->GetFirstPlayerController()->PlayHapticEffect(grabHaptic, EControllerHand::Right, 1, false);
+	GetWorld()->GetFirstPlayerController()->PlayHapticEffect(grabHaptic, EControllerHand::Left, 1, false);
 }
 
 void ARIM_Player::birdCalc() {
+	FString count = FString::Printf(TEXT("Bird Count: %d\nRed: %d\nYellow: %d\nBlue: %d\nBlack: %d"), birdCount, redCount, yellowCount, blueCount, blackCount);
+	logLeft->SetText(FText::FromString(count));
 	birdCount = redCount + yellowCount + blueCount + blackCount;
+}
+
+void ARIM_Player::Reset() {
+	redCount = 1;
+	yellowCount = 1;
+	blueCount = 1;
+	blackCount = 1;
+}
+
+void ARIM_Player::showCount() {
+	logLeft->SetVisibility(true);
+}
+
+void ARIM_Player::hideCount() {
+	logLeft->SetVisibility(false);
 }
 

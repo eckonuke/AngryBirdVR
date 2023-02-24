@@ -17,6 +17,7 @@
 #include <Sound/SoundBase.h>
 #include "RIM_Player.h"
 #include <Particles/ParticleSystemComponent.h>
+#include "AngryBirdVR_GameModeBase.h"
 
 // Sets default values
 ARIM_Pig::ARIM_Pig()
@@ -33,15 +34,12 @@ ARIM_Pig::ARIM_Pig()
 	compCollision->SetSimulatePhysics(true);
 	compCollision->SetNotifyRigidBodyCollision(true);
 	compCollision->BodyInstance.SetCollisionProfileName("BlockAllDynamic");
-
-
 	//메시
 	compMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Enemy"));
 	compMesh->SetupAttachment(compCollision);
 	compMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ConstructorHelpers::FObjectFinder<UStaticMesh> tempMesh(TEXT("/Script/Engine.StaticMesh'/Game/Resource/Pig/Pig.Pig'"));
-	if (tempMesh.Succeeded())
-	{
+	if (tempMesh.Succeeded()) {
 		compMesh->SetStaticMesh(tempMesh.Object);
 	}
 	compMesh->SetRelativeLocation(FVector(0, 0, -23));
@@ -55,12 +53,9 @@ ARIM_Pig::ARIM_Pig()
 
 	//이펙트
 	ConstructorHelpers::FObjectFinder<UParticleSystem> tempEffect(TEXT("/Script/Engine.ParticleSystem'/Game/Realistic_Starter_VFX_Pack_Vol2/Particles/Smoke/P_Steam_A.P_Steam_A'"));
-	if (tempEffect.Succeeded())
-	{
+	if (tempEffect.Succeeded()) {
 		dieEffect = tempEffect.Object;
 	}
-
-
 }
 
 // Called when the game starts or when spawned
@@ -71,6 +66,7 @@ void ARIM_Pig::BeginPlay()
 	compCollision->OnComponentHit.AddDynamic(this, &ARIM_Pig::ComponentHitObject); //오브젝트(나무, 유리) -----> 적
 	//compCollision->OnComponentBeginOverlap.AddDynamic(this, &ARIM_Pig::ComponentBeginOverlapEnemy) //적 낙하 ★★★일단 오버랩으로 진행. OnComponentHit 추후 확인
 	player = Cast<ARIM_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	gameMode = Cast<AAngryBirdVR_GameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
 // Called every frame
@@ -106,5 +102,6 @@ void ARIM_Pig::Die()
 	UGameplayStatics::PlaySound2D(GetWorld(), dieSound, 20);
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), dieEffect, GetActorLocation(), FRotator::ZeroRotator, true, EPSCPoolMethod::None, true);
 	player->score += 5000;
+	gameMode->currentPig--;
 	Destroy();
 }

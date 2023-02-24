@@ -10,6 +10,7 @@
 #include "KYI_Glass.h"
 #include "RIM_Pig.h"
 #include "RIM_TNT.h"
+#include "KYI_Wood.h"
 
 
 // Sets default values
@@ -72,10 +73,14 @@ void ARIM_BirdBlue::ComponentHitObject(class UPrimitiveComponent* OverlappedComp
 	if (actor) {
 		FString name = actor->GetName();
 		AKYI_Glass* glass = Cast<AKYI_Glass>(actor);
+		AKYI_Wood* wood = Cast<AKYI_Wood>(actor);
 		ARIM_Pig* pig = Cast<ARIM_Pig>(actor);
 		ARIM_TNT* tnt = Cast<ARIM_TNT>(actor);
 		if (glass) {
 			glass->Die();
+		}
+		else if (wood) {
+			wood->Die();
 		}
 		else if (pig) {
 			pig->Die();

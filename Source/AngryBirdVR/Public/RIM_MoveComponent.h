@@ -61,25 +61,25 @@ public:
 	class ARIM_Player* player;
 	
 	//이동 라인을 그리는 시간 간격
-	float lineTimeInterval = 0.1f; //▶필요 시 조정
+	float lineTimeInterval = 0.05f; //▶필요 시 조정
 
 	//현재 위치에서 이동할 위치 사이의...
-	int32 lineTimeSegment = 50; //▶필요 시 조정
+	int32 lineTimeSegment = 100; //▶필요 시 조정
 
 	//이동할 위치
 	TArray<FVector> lineLocation; 
 
 	//파워
 	UPROPERTY(EditAnywhere)
-	float power = 10000; //▶필요 시 조정
+	float power = 20000; //▶필요 시 조정
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class ARIM_MoveLocation* position;
 
 	//이동 라인이 안 보인다
 	bool bIsShowLine = false; //true 일 때 매 프레임마다 그려라
+	bool isTeleport = true;;
 
 private:
 	class UWorld* currentWorld;
-
 };

@@ -22,7 +22,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	UFUNCTION()
 	void ComponentHitObject(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -33,6 +33,8 @@ public:
 	float life = 3;
 	UPROPERTY(EditAnywhere)
 		class UParticleSystem* damageEffect;
+	UPROPERTY(EditAnywhere)
+		class USoundBase* dieSound;
 
 	void Die();
 

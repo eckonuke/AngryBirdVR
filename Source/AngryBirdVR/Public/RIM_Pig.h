@@ -33,6 +33,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	class USoundBase* dieSound;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AAngryBirdVR_GameModeBase* gameMode;
 public:
 	UPROPERTY()
 	class ARIM_Player* player;

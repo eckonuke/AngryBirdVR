@@ -46,7 +46,7 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 	//meshBlue->SetRelativeLocation(FVector(0, 0, 0)); //▶추후 수정
 	meshBlack->SetRelativeScale3D(FVector(0.8f)); //▶추후 수정
 	meshBlack->SetRelativeLocation(FVector(-6, 1, -54));
-	meshBlack->SetRelativeRotation(FRotator(0, 90, 0));
+	meshBlack->SetRelativeRotation(FRotator(0, -90, 0));
 
 	//발사체 ★★★영상에 의하면 필요없으나 일단 넣음
 	compMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
@@ -139,7 +139,6 @@ void ARIM_BirdBlack::ExplosionDamage()
 				FString name = hit.GetActor()->GetName();
 				if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig") || name.Contains("TNT")) {
 					double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
-					UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
 					tnt = Cast<ARIM_TNT>(hit.GetActor());
 					if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
 					{

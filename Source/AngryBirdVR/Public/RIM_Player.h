@@ -80,16 +80,17 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	class UInputAction* rightGrip;
 
-	//파란새 스킬 ---> 테스트
+	//새 갯수 리셋
 	UPROPERTY(EditAnywhere)
 	class UInputAction* rightA;
-
-	//검은새 스킬 ---> 테스트
+	//새 스킬 공통
 	UPROPERTY(EditAnywhere)
 	class UInputAction* rightB;
 	//발사 취소버튼
 	UPROPERTY(EditAnywhere)
 	class UInputAction* leftX;
+	UPROPERTY(EditAnywhere)
+	class UInputAction* leftY;
 	//플레이어 회전 키
 	UPROPERTY(EditAnywhere)
 		class UInputAction* rightThumbstick;
@@ -113,6 +114,8 @@ public:
 	class USoundBase* blueSound;
 	UPROPERTY(EditAnywhere)
 	class USoundBase* yellowSound;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* blackSound;
 	UPROPERTY(EditAnywhere)
 	class USoundBase* slingSound;
 	UPROPERTY(EditAnywhere)
@@ -143,12 +146,12 @@ public:
 	//검은새(총알)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ARIM_BirdBlack> blackFactory;
-
 	//경로 공장 ---> 용일님 추가
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class APredictionObject> pathFactory;
-
-	
+	//햅틱 피드백
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UHapticFeedbackEffect_Base* grabHaptic;
 
 public:
 	//플레이어 회전
@@ -173,10 +176,15 @@ public:
 	void rightConHaptic();
 
 	//아래 코드 용일님 추가
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 score = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 redCount = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 blueCount = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 yellowCount = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 blackCount = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 birdCount = redCount + yellowCount + blueCount + blackCount;
@@ -192,4 +200,10 @@ private:
 
 	//새 갯수 계산
 	void birdCalc();
+	//새 갯수 리셋
+	void Reset();
+	//현재 새 갯수 보이기
+	void showCount();
+	//현재 새 갯수 숨기기
+	void hideCount();
 };
