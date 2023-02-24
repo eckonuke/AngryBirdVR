@@ -46,7 +46,7 @@ ARIM_BirdBlack::ARIM_BirdBlack()
 	//meshBlue->SetRelativeLocation(FVector(0, 0, 0)); //▶추후 수정
 	meshBlack->SetRelativeScale3D(FVector(0.8f)); //▶추후 수정
 	meshBlack->SetRelativeLocation(FVector(-6, 1, -54));
-	meshBlack->SetRelativeRotation(FRotator(0, 90, 0));
+	meshBlack->SetRelativeRotation(FRotator(0, -90, 0));
 
 	//발사체 ★★★영상에 의하면 필요없으나 일단 넣음
 	compMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
