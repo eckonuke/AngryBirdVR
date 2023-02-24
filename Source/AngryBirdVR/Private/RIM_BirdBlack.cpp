@@ -139,7 +139,6 @@ void ARIM_BirdBlack::ExplosionDamage()
 				FString name = hit.GetActor()->GetName();
 				if (name.Contains("Angry") || name.Contains("Glass") || name.Contains("Wood") || name.Contains("Pig") || name.Contains("TNT")) {
 					double distance = FVector::Distance(GetActorLocation(), hit.GetActor()->GetActorLocation());
-					UE_LOG(LogTemp, Warning, TEXT("%f"), distance);
 					tnt = Cast<ARIM_TNT>(hit.GetActor());
 					if (distance <= blastRangeDie) //폭발 범위가 blastRangeDie 이하 일 때, 파괴된다. ★★★수정 필요
 					{

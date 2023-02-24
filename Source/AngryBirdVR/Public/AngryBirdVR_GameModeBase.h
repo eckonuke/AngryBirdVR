@@ -29,8 +29,8 @@ public:
 	class ARIM_Player* player;
 
 	//현재 적(돼지)
-	UPROPERTY()
-	class ARIM_Pig* currentPig;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 currentPig;
 
 	//현재 시간
 	UPROPERTY()

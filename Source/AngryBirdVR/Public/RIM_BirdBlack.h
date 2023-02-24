@@ -60,10 +60,10 @@ public:
 		class ARIM_TNT* tnt;
 
 	UPROPERTY(EditAnywhere)
-		float blastRange = 1000.0f;
+		float blastRange = 200.0f;
 
 	UPROPERTY(EditAnywhere)
-		float blastRangeDie = 300.0f;
+		float blastRangeDie = 150.0f;
 
 public:
 	//일정 시간 지난 후 새 파괴

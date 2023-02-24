@@ -17,10 +17,13 @@ AAngryBirdVR_GameModeBase::AAngryBirdVR_GameModeBase() //추가
 
 }
 
-void AAngryBirdVR_GameModeBase::BeginPlay() //추가
+void AAngryBirdVR_GameModeBase::BeginPlay() //추가 
 {
 	Super::BeginPlay();
 	player = Cast<ARIM_Player>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	TArray<AActor*> tempArray;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARIM_Pig::StaticClass(), tempArray);
+	currentPig = tempArray.Num();
 }
 
 void AAngryBirdVR_GameModeBase::Tick(float DeltaTime) //추가

@@ -57,7 +57,7 @@ public:
 	float blastRange = 200.0f;
 
 	UPROPERTY(EditAnywhere)
-	float blastRangeDie = 100.0f;
+	float blastRangeDie = 150.0f;
 
 public:
 	//»õ
