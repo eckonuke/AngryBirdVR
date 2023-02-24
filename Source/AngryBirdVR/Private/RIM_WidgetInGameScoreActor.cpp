@@ -100,8 +100,7 @@ void ARIM_WidgetInGameScoreActor::GoNext()
 	}
 	else if (levelName.Contains("Stage1_3")) //현재 스테이지3 이면
 	{
-		//★★★★★★★★★ 추가 필요
- 		//마지막 스테이지 입니다. 위젯 노출 or 버튼 아예 비활성화
+		UGameplayStatics::OpenLevel(GetWorld(), "01_Main");
 	}
 }
 
